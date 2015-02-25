@@ -6,6 +6,7 @@ var pdfChangeTimer = null;
 $(document).ready(function() {
 	// bind events to all the input fields on the left side, to generate a PDF on change
 	$("div.left input, div.left textarea").on("input", pdfChangeWait);
+	$(".highlander").on("change", pdfChangeWait);
 	$("#eventdate, input[type='radio']").change(pdfChangeWait);
 
 	// bind a date picker to the event date (thanks, jQuery UI)
@@ -342,7 +343,17 @@ function generateDecklistPDF(outputtype) {
 			// Ignore zero quantity entries (blank)
 			if (maindeck[i][1] != 0) {
 				dl.text(maindeck[i][1], x, y);
-				dl.text(maindeck[i][0], x + 38, y);
+				if($(".highlander").is(":checked")) {
+					cardtext = maindeck[i][0];
+					goodcards.forEach(function(element, index, array) {
+						if(element.n == cardtext) {
+							cardtext = cardtext + " " + Array(element.p+1).join("*");
+						}
+					});
+					dl.text(cardtext, x + 38, y);
+				} else {
+					dl.text(maindeck[i][0], x + 38, y);
+				}
 			}
 
 			y = y + 18;  // move to the next row
@@ -356,7 +367,17 @@ function generateDecklistPDF(outputtype) {
 		for (i = 0; i < sideboard.length; i++) {
 
 			dl.text(sideboard[i][1], x, y);
-			dl.text(sideboard[i][0], x + 38, y);
+			if($(".highlander").is(":checked")) {
+				cardtext = sideboard[i][0];
+				goodcards.forEach(function(element, index, array) {
+					if(element.n == cardtext) {
+						cardtext = cardtext + " " + Array(element.p+1).join("*");
+					}
+				});
+				dl.text(cardtext, x + 38, y);
+			} else {
+				dl.text(sideboard[i][0], x + 38, y);
+			}
 			y = y + 18;  // move to the next row
 		}
 	}
@@ -403,7 +424,8 @@ function validateInput() {
 		"eventdate": [],
 		"eventlocation": [],
 		"deckmain": [],
-		"deckside": []
+		"deckside": [],
+		"highlander": []
 	};
 	
 	// check first name (non-blank, too long)
@@ -457,6 +479,15 @@ function validateInput() {
 		}
 	}
 	if (excessCards.length) { validate.deckmain.push({"error": "quantity"}); }
+	
+	if($(".highlander").is(":checked"))
+	{
+		totalHLPoints = 0;
+		goodcards.forEach(function(element, index, array) {
+			totalHLPoints += element.p;
+		});
+		if (totalHLPoints > 7) { validate.highlander.push({"error": "toomanypoints"}); }
+	}
 	
 	unrecognizedCards = {};
 	unparseableCards = [];
@@ -587,7 +618,7 @@ function statusAndTooltips(valid) {
 				if (validationObject["warning"] === "size") {
 					notifications.push(prop, ["Most decks consist of exactly 60 cards", validType]); }
 				else if (validationObject["error"] === "toosmall") {
-					notifications.push(prop, ["Decks may not consist of less than 60 cards", validType]);
+					notifications.push(prop, ["Decks may not consist of fewer than 60 cards", validType]);
 				} else if (validationObject["error"] === "toolarge") {
 					notifications.push(prop, ["This PDF only has space for up to 44 unique cards (including spaces)", validType]);
 				} else if (validationObject["error"] === "quantity") {
@@ -608,6 +639,10 @@ function statusAndTooltips(valid) {
 					notifications.push(prop, ["Most sideboards consist of exactly 15 cards", validType]);
 				} else if (validationObject["error"] === "toolarge") {
 					notifications.push(prop, ["Sideboards may not consist of more than 15 cards", validType]);
+				}
+			} else if (prop === "highlander") {
+				if (validationObject["error"] === "toomanypoints") {
+					notifications.push(prop, ["Highlander lists may contain a maximum of 7 points", validType]);
 				}
 			}
 		}

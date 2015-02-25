@@ -22,6 +22,17 @@
 	<!-- Code for the website -->
 	<script type="text/javascript" src="js/decklist/decklist.js"></script>
 	<script type="text/javascript" src="js/decklist/main.js"></script>
+
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-60118112-1', 'auto');
+	  ga('send', 'pageview');
+
+	</script>
 </head>
 
 <body>
@@ -65,7 +76,7 @@
 						<input type="text" id="deckdesigner" placeholder="(optional)">
 					</label>
 					<label for="deckmain">
-						<span>Main Deck:</span> 
+						<span>Main Deck:<br/><br/><input class="highlander" type="checkbox" id="highlander" name="highlander">Highlander?</span> 
 						<textarea id="deckmain"></textarea>
 						<span id="protip">(Pro tip: You can simply paste in MTGO, MWS, MTG Salvation, Deckbox "Print", or Tappedout "Text" decks without separating out the sideboard!)</span>
 					</label>
@@ -113,7 +124,7 @@
 		</div>
 
 		<div class="footer">
-			Magic: the Gathering Decklist Generator by <a href="http://www.twoevils.org/">April King</a>. Please send feedback to <a href="mailto:april@twoevils.org?subject=Decklist.org%20feedback">april@twoevils.org</a>, or contribute issue reports or code additions <a href="https://github.com/marumari/decklist">via GitHub</a>.<br />Please read the <a href="html/directlinking.html">direct linking</a> instructions, on how to link directly to decklist.org from your website.<br /><br />Magic: The Gathering &reg; Wizards of the Coast.
+			Magic: the Gathering Decklist Generator by <a href="http://www.twoevils.org/">April King</a>. Please send feedback to <a href="mailto:april@twoevils.org?subject=Decklist.org%20feedback">april@twoevils.org</a>, or contribute issue reports or code additions <a href="https://github.com/marumari/decklist">via GitHub</a>.<br />Please read the <a href="html/directlinking.html">direct linking</a> instructions, on how to link directly to decklist.org from your website.<br /><br />Modified by <a href="mailto:fryx0r@gmail.com">Fry</a> for Australian 7pt Highlander<br /><br />Magic: The Gathering &reg; Wizards of the Coast.
 		</div>
 	</div>
 </body>

@@ -57,6 +57,11 @@ h2 {
 	text-align: left;
 }
 
+.highlander {
+	width: auto !important;
+	height: auto !important;
+}
+
 .left input, .left textarea {
 	border: solid 1px #dadada;
 	color: #777;

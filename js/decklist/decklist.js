@@ -17,6 +17,7 @@ function parseDecklist() {
 	unrecognized = {};
 	unparseable = [];
 	
+	goodcards = [];
 	
 	// Stop processing the function if there's no main deck
 	if (deckmain == "") { return(null, null); }
@@ -124,8 +125,10 @@ function parseDecklist() {
 		// Always add the card to the list, regardless of if the card is recognized
 		// Still, if not recognized, add it to its special dictionary (unrecognized)
 
-		if (recognized) { list_add(list, recognized, quantity); }
-		else {
+		if (recognized) {
+			list_add(list, recognized.n, quantity);
+			goodcards.push(recognized);
+		} else {
 			list_add(list, card, quantity);
 			unrecognized[htmlEncode(card)] = 1;
 		}
@@ -146,7 +149,7 @@ function parseDecklist() {
 	function objectHasPropertyCI(obj, val) {
 		for (var p in obj) {
 			if (obj.hasOwnProperty(p) && p.toLowerCase() === val.toLowerCase()) {
-				return obj[p].n;
+				return obj[p];
 			}
 		}
 		return false;

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import sys
 
 # Just FYI!
 # b (banned) = [sml] (standard, modern, legacy)
@@ -32,6 +33,13 @@ jsonfh = open("AllCards-x.json", "r")
 
 # Load all the cards into a giant dictionary
 cards = json.load(jsonfh)
+
+# Open and read the Highlander points file
+hlcards = {}
+with open("highlander.txt", "r") as hlfh:
+	for line in hlfh:
+		(card, points) = line.strip().rsplit(" ", 1)
+		hlcards[card] = int(points)
 
 # Gotta store these cards in a dictionary
 ocards = {}
@@ -77,6 +85,9 @@ for card in cards:
 
 	# And put the true name in there as well
 	ocards[ocard]['n'] = card
+
+	# Check highlander points
+	ocards[ocard]['p'] = hlcards.get(card, 0)
 
 	# Now to handle split cards (ugh)
 	if 'names' in cards[card]:
