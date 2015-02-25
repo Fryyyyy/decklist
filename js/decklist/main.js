@@ -389,6 +389,7 @@ function generateDecklistPDF(outputtype) {
 				cardtext = sideboard[i][0];
 				goodcards.forEach(function(element, index, array) {
 					if(element.n == cardtext) {
+						if (typeof element.p === 'undefined') { element.p = 0; }
 						cardtext = cardtext + " " + Array(element.p+1).join("*");
 					}
 				});
