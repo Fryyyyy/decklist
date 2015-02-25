@@ -124,12 +124,7 @@ function detectPDFPreviewSupport() {
 	}
 }
 
-
-// Generates the part of the PDF that never changes (lines, boxes, etc.)
-function generateDecklistLayout() {
-	// Create a new dl
-	dl = new jsPDF('portrait', 'pt', 'letter');
-
+function addTemplateToDL(dl) {
 	// Add the logo
 	dl.addImage(logo, 'JPEG', 27, 54, 90, 32);
 
@@ -250,32 +245,20 @@ function generateDecklistLayout() {
 		y = y + 18;
 	}
 
+	//return dl;
+}
+
+// Generates the part of the PDF that never changes (lines, boxes, etc.)
+function generateDecklistLayout() {
+	// Create a new dl
+	dl = new jsPDF('portrait', 'pt', 'letter');
+
+	addTemplateToDL(dl);
+
 	return(dl);
 }
 
-function generateDecklistPDF(outputtype) {
-	// default type is dataurlstring (live preview)
-	// stupid shitty javascript and its lack of default arguments
-	outputtype = typeof outputtype !== 'undefined' ? outputtype : 'dataurlstring';
-
-	// clear the input timeout before we can generate the PDF
-	pdfChangeTimer = null;
-
-	// don't generate the preview if showpreview == false
-	if ((outputtype == 'dataurlstring') && (showpreview == false)) {
-		$("#decklistpreview").empty();
-		$("#decklistpreview").html("Automatic decklist preview only supported in non-mobile Firefox, Safari, and Chrome.<br /><br />");
-	}
-		
-	// start with the blank PDF
-	dl = generateDecklistLayout();
-	
-	// Parse the deck list
-	parseDecklist();
-
-	// Validate the input
-	validateInput();
-
+function addMetaDataToDL(dl) {
 	// Helvetica, fuck yeah
 	dl.setFont('helvetica');
 	dl.setFontSize(11);
@@ -331,6 +314,33 @@ function generateDecklistPDF(outputtype) {
 			y = y - 24;
 		}
 	}
+	dl.setFontStyle('normal');
+}
+
+function generateDecklistPDF(outputtype) {
+	// default type is dataurlstring (live preview)
+	// stupid shitty javascript and its lack of default arguments
+	outputtype = typeof outputtype !== 'undefined' ? outputtype : 'dataurlstring';
+
+	// clear the input timeout before we can generate the PDF
+	pdfChangeTimer = null;
+
+	// don't generate the preview if showpreview == false
+	if ((outputtype == 'dataurlstring') && (showpreview == false)) {
+		$("#decklistpreview").empty();
+		$("#decklistpreview").html("Automatic decklist preview only supported in non-mobile Firefox, Safari, and Chrome.<br /><br />");
+	}
+		
+	// start with the blank PDF
+	dl = generateDecklistLayout();
+	
+	// Parse the deck list
+	parseDecklist();
+
+	// Validate the input
+	validateInput();
+
+	addMetaDataToDL(dl);
 
 	// Add the deck to the decklist
 	var x = 82;
@@ -338,6 +348,13 @@ function generateDecklistPDF(outputtype) {
 	dl.setFontStyle('normal');
 	if (maindeck != []) {
 		for (i = 0; i < maindeck.length; i++) {
+			if(i > 0 && ((i == 44 && maindeck.length > 44) || (i == 80 && maindeck.length > 80))) {
+				dl.addPage();
+				addTemplateToDL(dl);
+				addMetaDataToDL(dl);
+				x = 82;
+				y = 182;
+			}
 			if (i == 32) { x = 356; y = 182; } // jump to the next row
 
 			// Ignore zero quantity entries (blank)
@@ -347,6 +364,7 @@ function generateDecklistPDF(outputtype) {
 					cardtext = maindeck[i][0];
 					goodcards.forEach(function(element, index, array) {
 						if(element.n == cardtext) {
+							if (typeof element.p === 'undefined') { element.p = 0; }
 							cardtext = cardtext + " " + Array(element.p+1).join("*");
 						}
 					});
@@ -457,7 +475,7 @@ function validateInput() {
 	// check maindeck (size, number of unique cards)
 	if ((maindeck_count == 0) || (maindeck_count > 60)) { validate.deckmain.push({"warning": "size"});   }
 	else if (maindeck_count < 60)                       { validate.deckmain.push({"error": "toosmall"}); }
-	if (maindeck.length > 44)                           { validate.deckmain.push({"error": "toolarge"}); }
+	//if (maindeck.length > 44)                           { validate.deckmain.push({"error": "toolarge"}); }
 
 	// check sideboard (size)
 	if (sideboard_count > 15) { validate.deckside.push({"error": "toolarge"});   }
