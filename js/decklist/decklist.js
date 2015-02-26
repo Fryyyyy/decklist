@@ -20,7 +20,7 @@ function parseDecklist() {
 	goodcards = [];
 	
 	// Stop processing the function if there's no main deck
-	//if (deckmain == "") { return(null, null); }
+	if (deckmain == "") { return(null, null); }
 
 	// Split main deck and sideboard by newlines
 	deckmain = deckmain.split('\n');
@@ -76,8 +76,7 @@ function parseDecklist() {
 		// If we see "Sideboard:", then we're in the TappedOut style sideboard entries from now on
 		else if (tosb_re.test(deckmain[i])) { in_sb = true; }
 		
-		// Could not be parsed, store in appropriate array
-		// Or, just assume it's 1x
+		// Assume anything else is 1x cardname
 		else {
 			//addUnparseable(deckmain[i]);
 			if(deckmain[i] != "") {

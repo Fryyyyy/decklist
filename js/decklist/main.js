@@ -27,6 +27,7 @@ $(document).ready(function() {
 	});
 
 	// Enter on the manual card entry defaults to Main deck
+	// Adding to sideboard still requires a click though
 	$("#cardentry").keyup(function(event) {
 		if(event.keyCode == 13) {
 			cardToMain();
