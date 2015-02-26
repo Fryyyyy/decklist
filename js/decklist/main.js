@@ -18,10 +18,19 @@ $(document).ready(function() {
 
 	$("#cardtomain").button();
 	$("#cardtoside").button();
+
 	var cardNames = [];
 	$.each(cards, function(key, value) { cardNames.push(cards[key]["n"]) })
 	$("#cardentry").autocomplete({
+		autoFocus: true,
 		source: cardNames
+	});
+
+	// Enter on the manual card entry defaults to Main deck
+	$("#cardentry").keyup(function(event) {
+		if(event.keyCode == 13) {
+			cardToMain();
+		}
 	});
 
 	// initialize field tooltips, replace | with <br /> in tooltip content
@@ -45,13 +54,20 @@ $(document).ready(function() {
 });
 
 function cardToMain() {
-	$("#deckmain").val($("#deckmain").val() + $("#cardentry").val());
+	if($("#deckmain").val() == "") {
+		linebreak = "";
+	} else {
+		linebreak = "\r\n";
+	}
+	$("#deckmain").val($("#deckmain").val() + linebreak + $("#cardentry").val());
 	$("#cardentry").val("");
+	pdfChangeWait();
 }
 
 function cardToSide() {
 	$("#deckside").val($("#deckside").val() + $("#cardentry").val());
-	$("#cardentry").val("");	
+	$("#cardentry").val("");
+	pdfChangeWait();
 }
 
 // Blocks updates to the PDF

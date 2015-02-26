@@ -20,7 +20,7 @@ function parseDecklist() {
 	goodcards = [];
 	
 	// Stop processing the function if there's no main deck
-	if (deckmain == "") { return(null, null); }
+	//if (deckmain == "") { return(null, null); }
 
 	// Split main deck and sideboard by newlines
 	deckmain = deckmain.split('\n');
@@ -98,7 +98,10 @@ function parseDecklist() {
 			recognizeCard(card, quantity, "side");
 		} else {
 			// Could not be parsed, store in appropriate array
-			addUnparseable(deckside[i]);
+			//addUnparseable(deckside[i]);
+			card = deckside[i];
+			quantity = "1";
+			recognizeCard(card, quantity, "side");
 		}
 	}
 
