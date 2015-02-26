@@ -15,7 +15,15 @@ $(document).ready(function() {
 	$("#download").button();
 	$("#upload").button();
 	$("#sortorderfloat").buttonset();
-	
+
+	$("#cardtomain").button();
+	$("#cardtoside").button();
+	var cardNames = [];
+	$.each(cards, function(key, value) { cardNames.push(cards[key]["n"]) })
+	$("#cardentry").autocomplete({
+		source: cardNames
+	});
+
 	// initialize field tooltips, replace | with <br /> in tooltip content
 	$(".left input, .left textarea").tooltip({
 		content: function(callback) {
@@ -35,6 +43,16 @@ $(document).ready(function() {
 	// parse the GET parameters and set them, also generates preview (via event)
 	parseGET();
 });
+
+function cardToMain() {
+	$("#deckmain").val($("#deckmain").val() + $("#cardentry").val());
+	$("#cardentry").val("");
+}
+
+function cardToSide() {
+	$("#deckside").val($("#deckside").val() + $("#cardentry").val());
+	$("#cardentry").val("");	
+}
 
 // Blocks updates to the PDF
 function pdfChangeWait() {

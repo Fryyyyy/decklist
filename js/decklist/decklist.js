@@ -77,8 +77,14 @@ function parseDecklist() {
 		else if (tosb_re.test(deckmain[i])) { in_sb = true; }
 		
 		// Could not be parsed, store in appropriate array
+		// Or, just assume it's 1x
 		else {
-			addUnparseable(deckmain[i]);
+			//addUnparseable(deckmain[i]);
+			if(deckmain[i] != "") {
+				card = deckmain[i];
+				quantity = "1";
+				recognizeCard(card, quantity);
+			}
 		}
 	}
 

@@ -62,6 +62,11 @@ h2 {
 	height: auto !important;
 }
 
+.cardbutton {
+	width: auto !important;
+	margin: 2px 6px 0px 0px !important;
+}
+
 .left input, .left textarea {
 	border: solid 1px #dadada;
 	color: #777;

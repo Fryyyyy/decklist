@@ -80,6 +80,12 @@
 						<textarea id="deckmain"></textarea>
 						<span id="protip">(Pro tip: You can simply paste in MTGO, MWS, MTG Salvation, Deckbox "Print", or Tappedout "Text" decks without separating out the sideboard!)</span>
 					</label>
+					<label for="cardentry">
+						<span>Manual Card Entry:</span>
+						<input type="text" id="cardentry" style="width: 40%;">
+						<input type="button" id="cardtomain" value="↑" class="cardbutton ui-button" role="button" onclick="cardToMain();">
+						<input type="button" id="cardtoside" value="↓" class="cardbutton ui-button" role="button" onclick="cardToSide();">
+					</label>
 					<label for="deckside">
 						<span>Sideboard:</span> 
 						<textarea id="deckside"></textarea>
