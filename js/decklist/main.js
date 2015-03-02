@@ -524,7 +524,10 @@ function validateInput() {
 		"Snow-Covered Plains", "Snow-Covered Island", "Snow-Covered Swamp", "Snow-Covered Mountain",
 		"Snow-Covered Forest", "Relentless Rats", "Shadowborn Apostle"];
 	for (i = 0; i < mainPlusSide.length; i++) {
-		if (parseInt(mainPlusSide[i][1]) > 4) {
+		var maxNumber = 4;
+		if($(".highlander").is(":checked")) { maxNumber = 1; }
+
+		if (parseInt(mainPlusSide[i][1]) > maxNumber) {
 			allowed = false;
 			allowedDupes.forEach(function(element, index, array){
 				allowed = allowed || element === mainPlusSide[i][0];
@@ -678,7 +681,7 @@ function statusAndTooltips(valid) {
 				} else if (validationObject["error"] === "quantity") {
 					// include a list of cards that exceed 4 across the main/side
 					excessCardsHtml = "<ul><li>" + excessCards.join("</li><li>") + "</li></ul>";
-					notifications.push(prop, ["The following cards exceed 4 copies:" + excessCardsHtml, validType]);
+					notifications.push(prop, ["The following cards exceed the maximum allowable number of copies:" + excessCardsHtml, validType]);
 				} else if (validationObject["warning"] === "unrecognized") {
 					// include a list of unrecognized card names
 					unrecognizedCardsHtml = "<ul><li>" + Object.getOwnPropertyNames(unrecognizedCards).join("</li><li>") + "</li></ul>";

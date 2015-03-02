@@ -98,9 +98,11 @@ function parseDecklist() {
 		} else {
 			// Could not be parsed, store in appropriate array
 			//addUnparseable(deckside[i]);
-			card = deckside[i];
-			quantity = "1";
-			recognizeCard(card, quantity, "side");
+			if(deckside[i] != "") {
+				card = deckside[i];
+				quantity = "1";
+				recognizeCard(card, quantity, "side");
+			}
 		}
 	}
 
