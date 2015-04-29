@@ -1,6 +1,7 @@
 // global timeout filters
 var decklistChangeTimer = null;
 var pdfChangeTimer = null;
+var cardQuantity = 1;
 
 // When the page loads, generate a blank deck list preview
 $(document).ready(function() {
@@ -20,10 +21,20 @@ $(document).ready(function() {
 	$("#cardtoside").button();
 
 	var cardNames = [];
+	var numberRegExp = /^([0-9]+) (.*)$/;
 	$.each(cards, function(key, value) { cardNames.push(cards[key]["n"]) })
+	
 	$("#cardentry").autocomplete({
 		autoFocus: true,
-		source: cardNames
+		delay: 0,
+		source: cardNames,
+		search: function(event, ui) {
+			if(numberRegExp.test(event.target.value)) {
+				var matches = numberRegExp.exec(event.target.value);
+				cardQuantity = matches[1];
+				event.target.value = matches[2];
+			}
+		}
 	});
 
 	// Enter on the manual card entry defaults to Main deck
@@ -60,8 +71,9 @@ function cardToMain() {
 	} else {
 		linebreak = "\r\n";
 	}
-	$("#deckmain").val($("#deckmain").val() + linebreak + $("#cardentry").val());
+	$("#deckmain").val($("#deckmain").val() + linebreak + cardQuantity + " " + $("#cardentry").val());
 	$("#cardentry").val("");
+	cardQuantity = 1;
 	pdfChangeWait();
 }
 
