@@ -26,8 +26,17 @@ $(document).ready(function() {
 	
 	$("#cardentry").autocomplete({
 		autoFocus: true,
-		delay: 0,
-		source: cardNames,
+		delay: 100,
+		source: function(request, response) {
+			var filteredArray = $.map(cardNames, function(item) {
+				if(item.toUpperCase().indexOf(request.term.toUpperCase()) == 0) {
+					return item;
+				} else {
+					return null;
+				}
+			});
+			response(filteredArray);
+		},
 		search: function(event, ui) {
 			if(numberRegExp.test(event.target.value)) {
 				var matches = numberRegExp.exec(event.target.value);
