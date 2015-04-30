@@ -27,24 +27,48 @@ $(document).ready(function() {
 	$("#cardentry").autocomplete({
 		autoFocus: true,
 		delay: 100,
-		source: function(request, response) {
-			var filteredArray = $.map(cardNames, function(item) {
-				if(item.toUpperCase().indexOf(request.term.toUpperCase()) == 0) {
-					return item;
-				} else {
-					return null;
-				}
-			});
-			response(filteredArray);
-		},
+		source: cardNames,
 		search: function(event, ui) {
 			if(numberRegExp.test(event.target.value)) {
 				var matches = numberRegExp.exec(event.target.value);
 				cardQuantity = matches[1];
 				event.target.value = matches[2];
 			}
+		},
+		response: function(event, ui) {
+			ui.content.sort(function(a, b){
+				return ((a.label < b.label) ? -1 : ((a.label > b.label) ? 1 : 0));
+			});
 		}
-	});
+	}).data('ui-autocomplete')._renderItem = function( ul, item ) {
+        var term = $('#cardentry').val();
+        var label = item.label.replace(new RegExp(term, 'i'), '<span class="highlight">$&</span>');
+        
+        return $( '<li></li>' )
+            .data( 'ui-autocomplete-item', item )
+            .append( '<a>' + label + '</a>' )
+            .appendTo( ul );
+    };
+	
+	 // Overrides the default autocomplete filter function to search only from the beginning of the string
+    $.ui.autocomplete.filter = function (array, term) {
+        var matcher = new RegExp('(^| )' + $.ui.autocomplete.escapeRegex(term), 'i');
+        return $.grep(array, function (value) {
+            return matcher.test(value.label || value.value || value);
+        });
+    };
+	
+	/*$("#cardentry").autocomplete({
+		lookup: cardNames,
+		autoSelectFirst: true,
+		onSearchStart: function(query){
+			if(numberRegExp.test(event.target.value)) {
+				var matches = numberRegExp.exec(event.target.value);
+				cardQuantity = matches[1];
+				$("#cardentry").val(matches[2]);
+			}
+		}
+	});*/
 
 	// Enter on the manual card entry defaults to Main deck
 	// Adding to sideboard still requires a click though
