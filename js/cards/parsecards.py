@@ -48,11 +48,7 @@ ocards = {}
 for card in cards:
 
 	# We're going to store them in lowercase
-	ocard = card.lower()
-
-	# Python's Unicode support sucks, as does everybodies.  Manually
-	# replace the Ae to lower case
-	ocard = ocard.replace(u'\xc6', u'\xe6')
+	ocard = card.replace(u"Æ", "Ae").lower()
 
 	# Skip tokens
 	if cards[card]['layout'] == 'token': continue
@@ -84,7 +80,7 @@ for card in cards:
 	if legality != "": ocards[ocard]['b'] = legality
 
 	# And put the true name in there as well
-	ocards[ocard]['n'] = card
+	ocards[ocard]['n'] = card.replace(u"Æ", "Ae")
 
 	# Check highlander points
 	ocards[ocard]['p'] = hlcards.get(card, 0)

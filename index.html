@@ -6,10 +6,12 @@
 
 	<link rel="stylesheet" type="text/css" href="css/decklist.css">
 	<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+	<!--<link rel="stylesheet" type="text/css" href="css/autocomplete.css">-->
 
 	<!-- jQuery -->
 	<script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui/jquery-ui.min.js"></script>
+	<!--<script type="text/javascript" src="js/decklist/select2.full.min.js"></script>-->
 
 	<!-- List of all cards (thanks, mtgjson!) -->
 	<script type="text/javascript" src="js/cards/decklist-cards-min.js" ></script>
@@ -118,6 +120,8 @@
 			<form>
 				<input type="button" id="download" value="Download Decklist" onclick="generateDecklistPDF('dataurlnewwindow');">
 				<input type="button" id="upload" value="Upload Decklist" onclick="uploadDecklistPDF();">
+                <input type="button" id="getlink" value="Get Link To Decklist" onclick="getLinkToDecklistPDF();" class="ui-button ui-widget ui-state-default ui-corner-all">
+                <div id="deckURL"></div>
 			</form>
 			<form id="formupload" enctype="multipart/form-data" method="post">
 				<input type="hidden" id="decklistPDF" name="decklistPDF">

@@ -125,6 +125,8 @@ function pdfChangeWait() {
 	// Wait 1500 milliseconds to generate a new PDF
 	if (pdfChangeTimer) { clearTimeout(pdfChangeTimer); }
 	pdfChangeTimer = setTimeout(generateDecklistPDF, 1500);
+    
+    $("#deckURL")[0].innerText = "";
 }
 
 // Good ol' Javascript, not having a capitalize function on string objects
@@ -150,7 +152,7 @@ String.prototype.capitalize = function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-	var params = ["firstname", "lastname", "dcinumber", "event", "eventdate", "eventlocation", "deckmain", "deckside"];
+	var params = ["firstname", "lastname", "dcinumber", "event", "eventdate", "eventlocation", "deckmain", "deckside", "highlander"];
 
 	// check for event, eventdate, or eventlocation and lock down those input fields
 	for (var i = 0; i < params.length; i++) {
@@ -158,18 +160,26 @@ function parseGET() {
 		var field = "#" + param;
 
 		if ($._GET[ param ] != undefined) {
-			$(field).val( $._GET[param] );    // set it to the GET variable
+            if (param != "highlander") {
+                $(field).val( $._GET[param] );    // set it to the GET variable
+            }
+            else {
+                $(field)[0].checked = $._GET[param];
+            }
 
 			if ((param != "deckmain") && (param != "deckside")) {
 				$(field).prop("disabled", true);  // disable all decklist fields that are in the URL
-			}
+			} else {
+                $(field).attr("disabled", true);
+                $("#cardentry").prop("disabled", true);
+            }
 		}
 	}
 
 	// load the logo
-	if ($._GET['logo'] == undefined) { $._GET['logo'] = 'dcilogo'; } // if logo isn't specified, use the DCI logo
+	if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the DCI logo
 
-	var logos = ['dcilogo', 'legion', 'gpsanantonio'];
+	var logos = ['dcilogo', 'legion', 'gpsanantonio', 'auseternal'];
 
 	for (var i = 0; i < logos.length; i++) {
 		if ($._GET['logo'] == logos[i]) {
@@ -425,17 +435,24 @@ function generateDecklistPDF(outputtype) {
 	// Add the deck to the decklist
 	var x = 82;
 	var y = 182;
+    var numPages = 0;
 	dl.setFontStyle('normal');
 	if (maindeck != []) {
 		for (i = 0; i < maindeck.length; i++) {
-			if(i > 0 && ((i == 44 && maindeck.length > 44) || (i == 80 && maindeck.length > 80))) {
+			if(i > 0 && ((i % 44 == 0) && maindeck.length > (44 * (numPages+1))))
+            {
+                numPages++;
 				dl.addPage();
 				addTemplateToDL(dl);
 				addMetaDataToDL(dl);
 				x = 82;
 				y = 182;
 			}
-			if (i == 32) { x = 356; y = 182; } // jump to the next row
+            // 32 in the first column (+ 44 * pages)
+			if (i == (32 + (numPages * 44)))
+            {
+                    x = 356; y = 182;
+            } // jump to the next row
 
 			// Ignore zero quantity entries (blank)
 			if (maindeck[i][1] != 0) {
@@ -831,4 +848,34 @@ function uploadDecklistPDF() {
 
 	// and make a POST, huzzah!
 	$( "#formupload" ).submit();
+}
+
+function getLinkToDecklistPDF() {
+    var deckURL = "";
+    deckURL += "http://www.auseternal.com/decklist/index.php?";
+    deckURL += "firstname=" + this.firstname;
+    deckURL += "&lastname=" + this.lastname;
+    deckURL += "&dcinumber=" + this.dcinumber;
+    deckURL += "&eventdate=" + this.eventdate.value;
+    deckURL += "&event=" + $("#event")[0].value;
+    deckURL += "&eventlocation=" + this.eventlocation.value;
+    deckURL += "&highlander=" + $("#highlander")[0].checked;
+    deckURL += "&deckmain="
+    if (this.deckmain != []) {
+        for (i = 0; i < this.deckmain.length; i++) {
+            if(this.deckmain[i] != "") {
+                var x = encodeURIComponent(this.deckmain[i]);
+                deckURL += x + "%0A";
+            }
+        }
+    }
+    deckURL += "&deckside="
+    if (this.deckside != []) {
+        for (i = 0; i < this.deckside.length; i++) {
+            if(this.deckside[i] != "") {
+                deckURL += encodeURIComponent(this.deckside[i]) + "%0A";
+            }
+        }
+    }
+    $("#deckURL")[0].innerHTML = "<a href=\"" + deckURL + "\">Copy this link</a>";
 }
