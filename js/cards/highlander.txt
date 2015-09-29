@@ -1,6 +1,5 @@
 Ancestral Recall 4
 Black Lotus 4
-Tinker 4
 Demonic Tutor 3
 Imperial Seal 3
 Mox Emerald 3
@@ -11,6 +10,7 @@ Mox Sapphire 3
 Sol Ring 3
 Time Vault 3
 Time Walk 3
+Tinker 3
 Vampiric Tutor 3
 Yawgmoth's Will 3
 Channel 2
@@ -43,6 +43,7 @@ Memory Jar 1
 Merchant Scroll 1
 Personal Tutor 1
 Protean Hulk 1
+Snapcaster Mage 1
 Steelshaper's Gift 1
 Stoneforge Mystic 1
 Survival of the Fittest 1

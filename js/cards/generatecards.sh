@@ -13,5 +13,5 @@ unzip AllCards-x.json.zip
 java -jar ../../tools/yuicompressor-2.4.8.jar -o '.js$:-min.js' *.js
 
 # Clean up a bit
-rm AllCards*
-rm decklist-cards.js
+#rm AllCards*
+#rm decklist-cards.js

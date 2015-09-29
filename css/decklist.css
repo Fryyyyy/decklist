@@ -7,10 +7,20 @@
 	float: left;
 	width: 100%;
 }
+
+.personal{
+    margin-bottom: 21px;
+}
+
+.form{
+    margin-bottom: 8px;
+}
+
 .wrapleft{
 	float: left;
 	width: 100%;
 }
+
 .left, #sortorderwrapper {
 	margin-right: 450px;
 }
@@ -46,12 +56,13 @@ iframe{
 }
 
 h2 {
-	font-size: 20px;
-	padding: 0px 0px 10px 10px;
-	display: block;
-	border-bottom: 1px solid #e4e4e4;
-	color: #777;
-	margin-right: 10%;
+
+	font-weight:normal;
+	font-style:normal;
+	font-size:100%;
+	line-height:1;
+	font-family:inherit;
+	text-align:left;
 }
 .right h2 {
 	text-align: left;
@@ -65,9 +76,10 @@ h2 {
 .highlight {
     background-color: yellow;
 }
+
 .cardbutton {
 	width: auto !important;
-	margin: 2px 6px 0px 0px !important;
+	margin: 0px 5px 5px 5px !important;
 }
 
 .left input, .left textarea {
@@ -146,10 +158,14 @@ h2 {
 #sortorderfloat {
 	display: block;
 	text-align: center;
+	padding: 10px 25px;
 }
 
-#download, #upload, #getlink {
-	margin-top: 10px;
+#download, #downloadcsv, #upload, #getlink {
+	display: block;
+	text-align: center;
+	padding: 10px 25px;
+	margin: 0 auto;
 }
 
 #upload, #formupload {
