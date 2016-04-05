@@ -100,6 +100,9 @@ $(document).ready(function() {
 });
 
 function cardToMain() {
+	if($("#cardentry").val() == "") {
+		return;
+	}
     if($("#deckmain").val() == "") {
         linebreak = "";
     } else {
