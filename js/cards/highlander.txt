@@ -2,11 +2,11 @@ Ancestral Recall 4
 Black Lotus 4
 Demonic Tutor 3
 Imperial Seal 3
-Mox Emerald 3
-Mox Jet 3
-Mox Pearl 3
-Mox Ruby 3
-Mox Sapphire 3
+Mox Emerald 2
+Mox Jet 2
+Mox Pearl 2
+Mox Ruby 2
+Mox Sapphire 2
 Sol Ring 3
 Time Vault 3
 Time Walk 3
@@ -47,7 +47,6 @@ Snapcaster Mage 1
 Steelshaper's Gift 1
 Stoneforge Mystic 1
 Survival of the Fittest 1
-Sylvan Tutor 1
 Tainted Pact 1
 Time Spiral 1
 Timetwister 1
