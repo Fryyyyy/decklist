@@ -10,23 +10,16 @@ import sys
 # m (CMC) = N  (Split = 98, Land = 99)
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
 
+FORMATS = ('Standard', 'Modern', 'Legacy')
+
 def getLegalities(card, cards):
     # Let's figure out legalities
-    banned = ""
+    banned = 'sml'
 
-    if 'legalities' not in cards[card]: pass
-    else:
+    for legality in cards[card].get('legalities', []):
+        if legality.get('format') in FORMATS and legality.get('legality') != 'Banned':
+            banned = banned.replace(legality.get('format')[0].lower(), '')
 
-        # If it doesn't have an entry in the JSON file, that means it's outside the format; we'll call that banned
-        if not any('Standard' in x['format'] for x in cards[card]['legalities']): cards[card]['legalities'].append({"format":"Standard","legality":"Banned"})
-        if not any('Modern' in x['format'] for x in cards[card]['legalities']): cards[card]['legalities'].append({"format":"Modern","legality":"Banned"})
-        if not any('Legacy' in x['format'] for x in cards[card]['legalities']): cards[card]['legalities'].append({"format":"Legacy","legality":"Banned"})
-
-        # Now to see if we should add them to our list
-        if [x['legality'] for x in cards[card]['legalities'] if x['format'] == 'Standard'][0] == "Banned": banned += "s"
-        if [x['legality'] for x in cards[card]['legalities'] if x['format'] == 'Modern'][0]   == "Banned": banned += "m"
-        if [x['legality'] for x in cards[card]['legalities'] if x['format'] == 'Legacy'][0]   == "Banned": banned += "l"
-    
     return(banned)
 
 # Open the JSON file
@@ -75,7 +68,7 @@ for card in cards:
     # Now try to deal with CMC
     if 'cmc' not in cards[card]: ocards[ocard]['m'] = 99
     else: ocards[ocard]['m'] = cards[card]['cmc']
-    
+
     # Add it into the file if the banned list isn't empty
     legality = getLegalities(card, cards)
     if legality != "": ocards[ocard]['b'] = legality
@@ -93,7 +86,7 @@ for card in cards:
 
         ocards[ocard] = {}
         ocards[ocard]['c'] = 'S'
-        ocards[ocard]['m'] = 98 
+        ocards[ocard]['m'] = 98
         ocards[ocard]['n'] = name
 
         legality = getLegalities(card, cards)

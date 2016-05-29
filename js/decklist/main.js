@@ -1,3 +1,6 @@
+/* jslint browser: true */
+/* global $, jQuery, jsPDF */
+
 // global timeout filters
 var decklistChangeTimer = null;
 var pdfChangeTimer = null;
@@ -6,7 +9,7 @@ var cardQuantity = 1;
 // When the page loads, generate a blank deck list preview
 $(document).ready(function() {
     // bind events to all the input fields on the left side, to generate a PDF on change
-    $("div.left input, div.left textarea").on("input", pdfChangeWait);
+    $('div.left input, div.left textarea').on('input', pdfChangeWait);
     $(".highlander").on("change", pdfChangeWait);
     $("#eventdate, input[type='radio']").change(pdfChangeWait);
 
@@ -15,7 +18,7 @@ $(document).ready(function() {
     $("#eventdate").datepicker({ dateFormat: "yy-mm-dd" }); // ISO-8601, woohoo
     $("#download").button();
     $("#downloadcsv").button();
-    $("#upload").button();
+    $('#upload').button();
     $("#sortorderfloat").buttonset();
 
     $("#cardtomain").button();
@@ -59,18 +62,6 @@ $(document).ready(function() {
         });
     };
 
-    /*$("#cardentry").autocomplete({
-        lookup: cardNames,
-        autoSelectFirst: true,
-        onSearchStart: function(query){
-            if(numberRegExp.test(event.target.value)) {
-                var matches = numberRegExp.exec(event.target.value);
-                cardQuantity = matches[1];
-                $("#cardentry").val(matches[2]);
-            }
-        }
-    });*/
-
     // Enter on the manual card entry defaults to Main deck
     // Adding to sideboard still requires a click though
     $("#cardentry").keyup(function(event) {
@@ -100,9 +91,9 @@ $(document).ready(function() {
 });
 
 function cardToMain() {
-	if($("#cardentry").val() == "") {
-		return;
-	}
+    if($("#cardentry").val() == "") {
+        return;
+    }
     if($("#deckmain").val() == "") {
         linebreak = "";
     } else {
@@ -142,7 +133,7 @@ String.prototype.capitalize = function() {
 // A way to get the GET parameters, setting them in an array called $._GET
 (function($) {
     $._GET = (function(a) {
-        if (a == "") return {};
+        if (a == '') return {};
         var b = {};
         for (var i = 0; i < a.length; ++i)
         {
@@ -156,16 +147,16 @@ String.prototype.capitalize = function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-    var params = ["firstname", "lastname", "dcinumber", "event", "eventdate", "eventlocation", "deckmain", "deckside", "highlander"];
+    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckmain', 'deckside', 'highlander'];
 
     // check for event, eventdate, or eventlocation and lock down those input fields
     for (var i = 0; i < params.length; i++) {
         var param = params[i];
-        var field = "#" + param;
+        var field = '#' + param;
 
         if ($._GET[ param ] != undefined) {
                 if (param != "highlander") {
-                    $(field).val( $._GET[param] );    // set it to the GET variable
+                    $(field).val( $._GET[param] );  // set it to the GET variable
                 }
                 else {
                     $(field)[0].checked = $.parseJSON($._GET[param]);
@@ -209,16 +200,20 @@ function detectPDFPreviewSupport() {
     showpreview = false;
 
     // Safari and Chrome have application/pdf in navigator.mimeTypes
-    if (navigator.mimeTypes["application/pdf"] != undefined) { showpreview = true; }
+    if (navigator.mimeTypes['application/pdf'] != undefined) { showpreview = true; }
 
     // Firefox desktop uses pdf.js, but not mobile or tablet
-    if (navigator.userAgent.indexOf("Firefox") != -1) {
-        if ((navigator.userAgent.indexOf("Mobile") == -1) && (navigator.userAgent.indexOf("Tablet") == -1)) { showpreview = true; }
+    if (navigator.userAgent.indexOf('Firefox') != -1) {
+        if ((navigator.userAgent.indexOf('Mobile') == -1) && (navigator.userAgent.indexOf('Tablet') == -1)) { showpreview = true; }
         else { showpreview = false; } // have to reset it, as FF Mobile application/pdf listed, but not supported (wtf?)
     }
 }
 
-function addTemplateToDL(dl) {
+// Generates the part of the PDF that never changes (lines, boxes, etc.)
+function generateDecklistLayout() {
+    // Create a new dl
+    var dl = new jsPDF('portrait', 'pt', 'a4');
+
     // Add the logo
     dl.addImage(logo, 'JPEG', 27, 54, 90, 32);
 
@@ -338,16 +333,6 @@ function addTemplateToDL(dl) {
         dl.line(390, y, 580, y);
         y = y + 18;
     }
-
-    //return dl;
-}
-
-// Generates the part of the PDF that never changes (lines, boxes, etc.)
-function generateDecklistLayout() {
-    // Create a new dl
-    dl = new jsPDF('portrait', 'pt', 'letter');
-
-    addTemplateToDL(dl);
 
     return(dl);
 }
@@ -577,62 +562,80 @@ function validateInput() {
     // validation object
     // key = HTML form object (input or textarea) ID
     // value = array of error objects: {error_level: error_type}
-    // error levels include "warning" and "error"
-    // error types include "blank", "nonnum", "toolarge", "toosmall",
-    //       "size", "unrecognized", "quantity", "futuredate"
+    // error levels include 'warning' and 'error'
+    // error types include 'blank', 'nonnum', 'toolarge', 'toosmall',
+    //       'size', 'unrecognized', 'quantity', 'futuredate'
     validate = {
-        "firstname": [],
-        "lastname": [],
-        "dcinumber": [],
-        "event": [],
-        "eventdate": [],
-        "eventlocation": [],
-        "deckmain": [],
-        "deckside": [],
-        "highlander": []
+        'firstname': [],
+        'lastname': [],
+        'dcinumber': [],
+        'event': [],
+        'eventdate': [],
+        'eventlocation': [],
+        'deckmain': [],
+        'deckside': []
     };
 
     // check first name (non-blank, too long)
-    if ($("#firstname").val() === "")           { validate.firstname.push({"warning": "blank"});  }
-    else if ($("#firstname").val().length > 20) { validate.firstname.push({"error": "toolarge"}); }
+    if ($('#firstname').val() === '') {
+        validate.firstname.push({'warning': 'blank'});
+    } else if ($('#firstname').val().length > 20) {
+        validate.firstname.push({'error': 'toolarge'});
+    }
 
     // check last name (non-blank, too long)
-    if ($("#lastname").val() === "")           { validate.lastname.push({"warning": "blank"});  }
-    else if ($("#lastname").val().length > 20) { validate.lastname.push({"error": "toolarge"}); }
+    if ($('#lastname').val() === '') {
+        validate.lastname.push({'warning': 'blank'});
+    } else if ($('#lastname').val().length > 20) {
+        validate.lastname.push({'error': 'toolarge'});
+    }
 
     // check DCI number (non-blank, numeric, < 11 digits)
-    if ($("#dcinumber").val() === "")                 { validate.dcinumber.push({"warning": "blank"});  }
-    else if (!$("#dcinumber").val().match(/^[\d]+$/)) { validate.dcinumber.push({"error": "nonnum"});   }
-    if ($("#dcinumber").val().length >= 11)           { validate.dcinumber.push({"error": "toolarge"}); }
+    if ($('#dcinumber').val() === '') {
+        validate.dcinumber.push({'warning': 'blank'});
+    } else if (!$('#dcinumber').val().match(/^[\d]+$/)) {
+        validate.dcinumber.push({'error': 'nonnum'});
+    }
+    if ($('#dcinumber').val().length >= 11) {
+        validate.dcinumber.push({'error': 'toolarge'});
+    }
 
     // check event name (non-blank)
-    if ($("#event").val() === "") { validate.event.push({"warning": "blank"}); }
+    if ($('#event').val() === '') {
+        validate.event.push({'warning': 'blank'});
+    }
 
     // check event date (non-blank, unrecognized format, before today)
-    if ($("#eventdate").val() === "")                               { validate.eventdate.push({"warning": "blank"});      }
-    else if (!$("#eventdate").val().match(/^\d{4}\-\d{2}\-\d{2}$/)) { validate.eventdate.push({"error": "unrecognized"}); }
-    else if (Date.parse($("#eventdate").val()) <= new Date(new Date().setDate(new Date().getDate()-1)).setHours(0)) {
-        validate.eventdate.push({"warning": "futuredate"});
+    if ($('#eventdate').val() === '') {
+        validate.eventdate.push({'warning': 'blank'});
+    } else if (!$('#eventdate').val().match(/^\d{4}\-\d{2}\-\d{2}$/)) {
+        validate.eventdate.push({'error': 'unrecognized'});
+    } else if (Date.parse($('#eventdate').val()) <= new Date(new Date().setDate(new Date().getDate()-1)).setHours(0)) {
+        validate.eventdate.push({'warning': 'futuredate'});
     }
 
     // check event location (non-blank)
-    if ($("#eventlocation").val() === "") {    validate.eventlocation.push({"warning": "blank"}); }
+    if ($('#eventlocation').val() === '') {
+        validate.eventlocation.push({'warning': 'blank'});
+    }
 
     // check maindeck (size, number of unique cards)
-    if ((maindeck_count == 0) || (maindeck_count > 60)) { validate.deckmain.push({"warning": "size"});   }
-    else if (maindeck_count < 60)                       { validate.deckmain.push({"error": "toosmall"}); }
-    //if (maindeck.length > 44)                           { validate.deckmain.push({"error": "toolarge"}); }
+    if ((maindeck_count == 0) || (maindeck_count > 60)) {
+        validate.deckmain.push({'warning': 'size'});
+    } else if (maindeck_count < 60) {
+        validate.deckmain.push({'error': 'toosmall'});
+    }
 
     // check sideboard (size)
-    if (sideboard_count > 15) { validate.deckside.push({"error": "toolarge"});   }
-    if (sideboard_count < 15) { validate.deckside.push({"warning": "toosmall"}); }
+    if (sideboard_count > 15) { validate.deckside.push({'error': 'toolarge'});}
+    if (sideboard_count < 15) { validate.deckside.push({'warning': 'toosmall'}); }
 
     // check combined main/sb (quantity of each unique card, unrecognized cards)
     mainPlusSide = mainAndSide();
     excessCards = [];
-    allowedDupes = ["Plains", "Island", "Swamp", "Mountain", "Forest",
-        "Snow-Covered Plains", "Snow-Covered Island", "Snow-Covered Swamp", "Snow-Covered Mountain",
-        "Snow-Covered Forest", "Relentless Rats", "Shadowborn Apostle"];
+    allowedDupes = ['Plains', 'Island', 'Swamp', 'Mountain', 'Forest',
+    'Snow-Covered Plains', 'Snow-Covered Island', 'Snow-Covered Swamp', 'Snow-Covered Mountain',
+    'Snow-Covered Forest', 'Wastes', 'Relentless Rats', 'Shadowborn Apostle'];
     for (i = 0; i < mainPlusSide.length; i++) {
         var maxNumber = 4;
         if($(".highlander").is(":checked")) { maxNumber = 1; }
@@ -645,7 +648,7 @@ function validateInput() {
             if (!allowed) { excessCards.push(mainPlusSide[i][0]); }
         }
     }
-    if (excessCards.length) { validate.deckmain.push({"error": "quantity"}); }
+    if (excessCards.length) { validate.deckmain.push({'error': 'quantity'}); }
 
     if($(".highlander").is(":checked"))
     {
@@ -653,18 +656,18 @@ function validateInput() {
         goodcards.forEach(function(element, index, array) {
             totalHLPoints += element.p;
         });
-        if (totalHLPoints > 7) { validate.highlander.push({"error": "toomanypoints"}); }
+        if (totalHLPoints > 7) { validate.highlander.push({'error': 'toomanypoints'}); }
     }
 
     unrecognizedCards = {};
     unparseableCards = [];
     if (Object.getOwnPropertyNames(unrecognized).length !== 0) {
         unrecognizedCards = unrecognized;
-        validate.deckmain.push({"warning": "unrecognized"});
+        validate.deckmain.push({'warning': 'unrecognized'});
     }
     if (unparseable.length !== 0) {
         unparseableCards = unparseable;
-        validate.deckmain.push({"warning": "unparseable"});
+        validate.deckmain.push({'warning': 'unparseable'});
     }
 
     // pass validation data to output status/tooltip information
@@ -693,7 +696,7 @@ function mainAndSide() {
                 foundSideElement = i;
             }
         }
-        if (typeof foundSideElement === "number") {
+        if (typeof foundSideElement === 'number') {
             element[1] = (parseInt(element[1]) + parseInt(sideQuants[foundSideElement][1])).toString();
             sideQuants.splice(foundSideElement, 1);
         }
@@ -710,14 +713,14 @@ function statusAndTooltips(valid) {
     //   ...
     // }
     // in this case, the key 'for' represents the input element id, and
-    // the value 'level' represents the string "warning" or "error"
+    // the value 'level' represents the string 'warning' or 'error'
     notifications = {};
 
     // define push method for notifications
     // accepts a key and an array (assumed [message, level] input)
     // if the key does not exist, add [array], else push it to that key's array
     notifications.push = function(key, array) {
-        if (typeof this[key] === "undefined") {
+        if (typeof this[key] === 'undefined') {
             this[key] = [array];
         } else {
             this[key].push(array);
@@ -736,80 +739,80 @@ function statusAndTooltips(valid) {
             validationObject = valid[prop][i];
 
             // store validation object type for abstraction
-            validType = (validationObject["warning"] ? "warning" : "error");
+            validType = (validationObject['warning'] ? 'warning' : 'error');
 
             // bitwise AND the current error level and that of the validation object
-            errorLevel = errorLevel | (validType === "warning" ? 0x010 : 0x100);
+            errorLevel = errorLevel | (validType === 'warning' ? 0x010 : 0x100);
 
             // add notification message for the validation object
             //   note: this section runs only once per validation object, so all checks
             //   can be run in else-if blocks; only one update is made per object
 
-            if (prop === "firstname") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing first name", validType]);
-                } else if (validationObject["error"] === "toolarge") {
-                    notifications.push(prop, ["First name too long", validType]);
+            if (prop === 'firstname') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing first name', validType]);
+                } else if (validationObject['error'] === 'toolarge') {
+                    notifications.push(prop, ['First name too long', validType]);
                 }
-            } else if (prop === "lastname") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing last name", validType]);
-                } else if (validationObject["error"] === "toolarge") {
-                    notifications.push(prop, ["Last name too long", validType]);
+            } else if (prop === 'lastname') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing last name', validType]);
+                } else if (validationObject['error'] === 'toolarge') {
+                    notifications.push(prop, ['Last name too long', validType]);
                 }
-            } else if (prop === "dcinumber") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing DCI number", validType]);
-                } else if (validationObject["error"] === "nonnum") {
-                    notifications.push(prop, ["DCI number must contain only numbers", validType]);
-                } else if (validationObject["error"] === "toolarge") {
-                    notifications.push(prop, ["DCI numbers must be 10 digits or less", validType]);
+            } else if (prop === 'dcinumber') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing DCI number', validType]);
+                } else if (validationObject['error'] === 'nonnum') {
+                    notifications.push(prop, ['DCI number must contain only numbers', validType]);
+                } else if (validationObject['error'] === 'toolarge') {
+                    notifications.push(prop, ['DCI numbers must be 10 digits or fewer', validType]);
                 }
-            } else if (prop === "event") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing event name", validType]);
+            } else if (prop === 'event') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing event name', validType]);
                 }
-            } else if (prop === "eventdate") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing event date", validType]);
-                } else if (validationObject["warning"] === "futuredate") {
-                    notifications.push(prop, ["Event date is set in the past", validType]);
-                } else if (validationObject["error"] === "unrecognized") {
-                    notifications.push(prop, ["Event dates should be in the following format: YYYY-MM-DD", validType]);
+            } else if (prop === 'eventdate') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing event date', validType]);
+                } else if (validationObject['warning'] === 'futuredate') {
+                    notifications.push(prop, ['Event date is set in the past', validType]);
+                } else if (validationObject['error'] === 'unrecognized') {
+                    notifications.push(prop, ['Event dates should be in the following format: YYYY-MM-DD', validType]);
                 }
-            } else if (prop === "eventlocation") {
-                if (validationObject["warning"] === "blank") {
-                    notifications.push(prop, ["Missing event location", validType]);
+            } else if (prop === 'eventlocation') {
+                if (validationObject['warning'] === 'blank') {
+                    notifications.push(prop, ['Missing event location', validType]);
                 }
-            } else if (prop === "deckmain") {
-                if (validationObject["warning"] === "size") {
-                    notifications.push(prop, ["Most decks consist of exactly 60 cards", validType]); }
-                else if (validationObject["error"] === "toosmall") {
-                    notifications.push(prop, ["Decks may not consist of fewer than 60 cards", validType]);
-                } else if (validationObject["error"] === "toolarge") {
-                    notifications.push(prop, ["This PDF only has space for up to 44 unique cards (including spaces)", validType]);
-                } else if (validationObject["error"] === "quantity") {
+            } else if (prop === 'deckmain') {
+                if (validationObject['warning'] === 'size') {
+                    notifications.push(prop, ['Most decks consist of exactly 60 cards', validType]); }
+                else if (validationObject['error'] === 'toosmall') {
+                    notifications.push(prop, ['Decks may not consist of fewer than 60 cards', validType]);
+                } else if (validationObject['error'] === 'toolarge') {
+                    notifications.push(prop, ['This PDF only has space for up to 44 unique cards (including spaces)', validType]);
+                } else if (validationObject['error'] === 'quantity') {
                     // include a list of cards that exceed 4 across the main/side
-                    excessCardsHtml = "<ul><li>" + excessCards.join("</li><li>") + "</li></ul>";
-                    notifications.push(prop, ["The following cards exceed the maximum allowable number of copies:" + excessCardsHtml, validType]);
-                } else if (validationObject["warning"] === "unrecognized") {
+                    excessCardsHtml = '<ul><li>' + excessCards.join('</li><li>') + '</li></ul>';
+                    notifications.push(prop, ['The following cards exceed the maximum allowable number of copies:' + excessCardsHtml, validType]);
+                } else if (validationObject['warning'] === 'unrecognized') {
                     // include a list of unrecognized card names
-                    unrecognizedCardsHtml = "<ul><li>" + Object.getOwnPropertyNames(unrecognizedCards).join("</li><li>") + "</li></ul>";
-                    notifications.push(prop, ["Couldn't recognize the following card(s):" + unrecognizedCardsHtml, validType]);
-                } else if (validationObject["warning"] === "unparseable") {
+                    unrecognizedCardsHtml = '<ul><li>' + Object.getOwnPropertyNames(unrecognizedCards).join('</li><li>') + '</li></ul>';
+                    notifications.push(prop, ['Couldn\'t recognise the following card(s):' + unrecognizedCardsHtml, validType]);
+                } else if (validationObject['warning'] === 'unparseable') {
                     // include a list of unparseable lines
-                    unparseableCardsHtml = "<ul><li>" + unparseableCards.join("</li><li>") + "</li></ul>";
-                    notifications.push(prop, ["Couldn't parse the following lines:" + unparseableCardsHtml, validType]);
+                    unparseableCardsHtml = '<ul><li>' + unparseableCards.join('</li><li>') + '</li></ul>';
+                    notifications.push(prop, ['Couldn\'t parse the following lines:' + unparseableCardsHtml, validType]);
                 }
-            } else if (prop === "deckside") {
-                if (validationObject["warning"] === "toosmall") {
-                    notifications.push(prop, ["Most sideboards consist of exactly 15 cards", validType]);
-                } else if (validationObject["error"] === "toolarge") {
-                    notifications.push(prop, ["Sideboards may not consist of more than 15 cards", validType]);
+            } else if (prop === 'deckside') {
+                if (validationObject['warning'] === 'toosmall') {
+                    notifications.push(prop, ['Most sideboards consist of exactly 15 cards', validType]);
+                } else if (validationObject['error'] === 'toolarge') {
+                    notifications.push(prop, ['Sideboards may not consist of more than 15 cards', validType]);
                 }
-            } else if (prop === "highlander") {
-                if (validationObject["error"] === "toomanypoints") {
-                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points", validType]);
+            } else if (prop === 'highlander') {
+                if (validationObject['error'] === 'toomanypoints') {
+                    notifications.push(prop, ['Highlander lists may contain a maximum of 7 points', validType]);
                 }
             }
         }
@@ -818,36 +821,36 @@ function statusAndTooltips(valid) {
     // check if all fields are empty; if they are, set errorLevel accordingly
     // close active tooltips, clear titles and classes for new tooltip text
     allEmpty = true;
-    $(".left input, .left textarea").tooltip("close");
-    $(".left input, .left textarea").each(function() {
+    $('.left input, .left textarea').tooltip('close');
+    $('.left input, .left textarea').each(function() {
         if ($(this).val()) {
             allEmpty = false;
         }
-        $(this).prop("title", "");
-        $(this).removeClass("warning error");
+        $(this).prop('title', '');
+        $(this).removeClass('warning error');
     });
     if (allEmpty) {
         errorLevel = 0x001;
     }
 
     // compose new notifications HTML fragment, set new tooltips, and set input field classes
-    statusBoxHtml = "";
+    statusBoxHtml = '';
     for (key in notifications) {
         // exclude any functions of the object
-        if (typeof notifications[key] !== "function") {
-            newTitle = "";
+        if (typeof notifications[key] !== 'function') {
+            newTitle = '';
 
             notificationsLength = notifications[key].length;
-            fieldClass = "warning";
+            fieldClass = 'warning';
             for (i=0; i < notificationsLength; i++) {
                 // create status box HTML fragment
-                statusBoxHtml += "<li class=\"" + notifications[key][i][1] + "\">";
-                statusBoxHtml += "<label for=\"" + key + "\">";
-                statusBoxHtml += notifications[key][i][0] + "</label></li>";
+                statusBoxHtml += '<li class=\'' + notifications[key][i][1] + '\'>';
+                statusBoxHtml += '<label for=\'' + key + '\'>';
+                statusBoxHtml += notifications[key][i][0] + '</label></li>';
 
                 // determine field class
-                if (notifications[key][i][1] === "error") {
-                    fieldClass = "error";
+                if (notifications[key][i][1] === 'error') {
+                    fieldClass = 'error';
                 }
 
                 // construct field notification string
@@ -857,30 +860,30 @@ function statusAndTooltips(valid) {
                 } else {
                     // don't add a newline denotator (vertical bar) for first entry
                     if (i !== 0) {
-                        newTitle += "|";
+                        newTitle += '|';
                     }
-                    newTitle += "&bull; " + notifications[key][i][0];
+                    newTitle += '&bull; ' + notifications[key][i][0];
                 }
             }
 
             // update field class and title
-            fieldId = "#" + key;
+            fieldId = '#' + key;
             $(fieldId).addClass(fieldClass);
 
             // add a tooltip only for errors; people were complaining about overzealous tooltips
-            if (fieldClass === "error") { $(fieldId).prop("title", newTitle); }
+            if (fieldClass === 'error') { $(fieldId).prop('title', newTitle); }
         }
     }
 
     // compute new status
-    newStatus = "valid";
-    if (errorLevel & 0x100)      { newStatus = "error"; }
-    else if (errorLevel & 0x010) { newStatus = "warning"; }
-    else if (errorLevel & 0x001) { newStatus = "empty"; }
+    newStatus = 'valid';
+    if (errorLevel & 0x100)      { newStatus = 'error'; }
+    else if (errorLevel & 0x010) { newStatus = 'warning'; }
+    else if (errorLevel & 0x001) { newStatus = 'empty'; }
 
     // set new status, display new notifications
-    $(".status").removeClass("default empty valid warning error").addClass(newStatus);
-    $(".status .details").html(statusBoxHtml);
+    $('.status').removeClass('default empty valid warning error').addClass(newStatus);
+    $('.status .details').html(statusBoxHtml);
 }
 
 function uploadDecklistPDF() {
@@ -888,42 +891,42 @@ function uploadDecklistPDF() {
     rawPDF = generateDecklistPDF('raw');
 
     // grab the URL to POST to, set the action on the form to said URL
-    uploadURL = $._GET[ "uploadURL" ];
-    $( "#formupload" ).attr("action", uploadURL);
+    uploadURL = $._GET['uploadURL'];
+    $('formupload').attr('action', uploadURL);
 
     // set the proper input value
-    $( "#decklistPDF").val(rawPDF);
+    $('#decklistPDF').val(rawPDF);
 
     // and make a POST, huzzah!
-    $( "#formupload" ).submit();
+    $('#formupload').submit();
 }
 
 function getLinkToDecklistPDF() {
-    var deckURL = "";
-    deckURL += "http://www.auseternal.com/decklist/index.php?";
-    deckURL += "firstname=" + this.firstname;
-    deckURL += "&lastname=" + this.lastname;
-    deckURL += "&dcinumber=" + this.dcinumber;
-    deckURL += "&eventdate=" + this.eventdate.value;
-    deckURL += "&event=" + $("#event")[0].value;
-    deckURL += "&eventlocation=" + this.eventlocation.value;
-    deckURL += "&highlander=" + $("#highlander")[0].checked;
-    deckURL += "&deckmain="
+    var deckURL = '';
+    deckURL += 'http://www.auseternal.com/decklist/index.php?';
+    deckURL += 'firstname=' + this.firstname;
+    deckURL += '&lastname=' + this.lastname;
+    deckURL += '&dcinumber=' + this.dcinumber;
+    deckURL += '&eventdate=' + this.eventdate.value;
+    deckURL += '&event=' + $('#event')[0].value;
+    deckURL += '&eventlocation=' + this.eventlocation.value;
+    deckURL += '&highlander=' + $('#highlander')[0].checked;
+    deckURL += '&deckmain='
     if (this.deckmain != []) {
         for (i = 0; i < this.deckmain.length; i++) {
-            if(this.deckmain[i] != "") {
+            if(this.deckmain[i] != '') {
                 var x = encodeURIComponent(this.deckmain[i]);
-                deckURL += x + "%0A";
+                deckURL += x + '%0A';
             }
         }
     }
-    deckURL += "&deckside="
+    deckURL += '&deckside='
     if (this.deckside != []) {
         for (i = 0; i < this.deckside.length; i++) {
-            if(this.deckside[i] != "") {
-                deckURL += encodeURIComponent(this.deckside[i]) + "%0A";
+            if(this.deckside[i] != '') {
+                deckURL += encodeURIComponent(this.deckside[i]) + '%0A';
             }
         }
     }
-    $("#deckURL")[0].innerHTML = "<a href=\"" + deckURL + "\">Copy this link</a>";
+    $('#deckURL')[0].innerHTML = '<a href=\'' + deckURL + '\'>Copy this link</a>';
 }
