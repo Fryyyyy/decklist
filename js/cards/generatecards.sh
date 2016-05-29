@@ -3,7 +3,7 @@
 # Clean up a bit
 rm -f *.js *.zip
 
-curl http://mtgjson.com/json/AllCards-x.json.zip > AllCards-x.json.zip
+curl "http://mtgjson.com/json/AllCards-x.json.zip" > AllCards-x.json.zip
 unzip AllCards-x.json.zip
 
 # Parse out the giant JSON and make a much smaller one
