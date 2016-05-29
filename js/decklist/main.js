@@ -24,7 +24,7 @@ $(document).ready(function() {
     var cardNames = [];
     var numberRegExp = /^([0-9]+) (.*)$/;
     $.each(cards, function(key, value) { cardNames.push(cards[key]["n"]) })
-    
+
     $("#cardentry").autocomplete({
         autoFocus: true,
         delay: 100,
@@ -44,13 +44,13 @@ $(document).ready(function() {
     }).data('ui-autocomplete')._renderItem = function( ul, item ) {
         var term = $('#cardentry').val();
         var label = item.label.replace(new RegExp(term, 'i'), '<span class="highlight">$&</span>');
-        
+
         return $( '<li></li>' )
             .data( 'ui-autocomplete-item', item )
             .append( '<a>' + label + '</a>' )
             .appendTo( ul );
     };
-    
+
      // Overrides the default autocomplete filter function to search only from the beginning of the string
     $.ui.autocomplete.filter = function (array, term) {
         var matcher = new RegExp('(^| )' + $.ui.autocomplete.escapeRegex(term), 'i');
@@ -58,7 +58,7 @@ $(document).ready(function() {
             return matcher.test(value.label || value.value || value);
         });
     };
-    
+
     /*$("#cardentry").autocomplete({
         lookup: cardNames,
         autoSelectFirst: true,
@@ -168,7 +168,7 @@ function parseGET() {
                     $(field).val( $._GET[param] );    // set it to the GET variable
                 }
                 else {
-                    $(field)[0].checked = $._GET[param];
+                    $(field)[0].checked = $.parseJSON($._GET[param]);
                 }
 
             if ((param != "deckmain") && (param != "deckside")) {
@@ -238,7 +238,7 @@ function addTemplateToDL(dl) {
 
     dl.rect(250, 748, 56, 22); // total number main deck
     dl.rect(524, 694, 56, 22); // total number side deck
-    dl.rect(320, 722, 260, 48); // judge box 
+    dl.rect(320, 722, 260, 48); // judge box
 
 
     dl.setLineWidth(.5);
@@ -382,7 +382,7 @@ function addMetaDataToDL(dl) {
         // get a glyph width.  So we manually fix some
         lnfl = lastname.charAt(0);
         offset = 0;
-        
+
         switch (lnfl) {
             case 'I': offset = 4; break;
             case 'J': offset = 1; break;
@@ -399,8 +399,8 @@ function addMetaDataToDL(dl) {
     }
 
     dcinumber = $("#dcinumber").val();
-    
-    // put the DCI number into the PDF    
+
+    // put the DCI number into the PDF
     y = 372;
     if (dcinumber.length > 0) {
         for (var i = 0; i < dcinumber.length; i++) {
@@ -424,10 +424,10 @@ function generateDecklistPDF(outputtype) {
         $("#decklistpreview").empty();
         $("#decklistpreview").html("Automatic decklist preview only supported in non-mobile Firefox, Safari, and Chrome.<br /><br />");
     }
-        
+
     // start with the blank PDF
     dl = generateDecklistLayout();
-    
+
     // Parse the deck list
     parseDecklist();
 
@@ -557,7 +557,7 @@ function generateDecklistPDF(outputtype) {
                 data += '\r\n';
             }
         }
-        
+
         var aLink = document.createElement('a');
         var evt = document.createEvent("HTMLEvents");
         evt.initEvent("click");
@@ -591,7 +591,7 @@ function validateInput() {
         "deckside": [],
         "highlander": []
     };
-    
+
     // check first name (non-blank, too long)
     if ($("#firstname").val() === "")           { validate.firstname.push({"warning": "blank"});  }
     else if ($("#firstname").val().length > 20) { validate.firstname.push({"error": "toolarge"}); }
@@ -599,12 +599,12 @@ function validateInput() {
     // check last name (non-blank, too long)
     if ($("#lastname").val() === "")           { validate.lastname.push({"warning": "blank"});  }
     else if ($("#lastname").val().length > 20) { validate.lastname.push({"error": "toolarge"}); }
-    
+
     // check DCI number (non-blank, numeric, < 11 digits)
     if ($("#dcinumber").val() === "")                 { validate.dcinumber.push({"warning": "blank"});  }
     else if (!$("#dcinumber").val().match(/^[\d]+$/)) { validate.dcinumber.push({"error": "nonnum"});   }
     if ($("#dcinumber").val().length >= 11)           { validate.dcinumber.push({"error": "toolarge"}); }
-    
+
     // check event name (non-blank)
     if ($("#event").val() === "") { validate.event.push({"warning": "blank"}); }
 
@@ -617,7 +617,7 @@ function validateInput() {
 
     // check event location (non-blank)
     if ($("#eventlocation").val() === "") {    validate.eventlocation.push({"warning": "blank"}); }
-    
+
     // check maindeck (size, number of unique cards)
     if ((maindeck_count == 0) || (maindeck_count > 60)) { validate.deckmain.push({"warning": "size"});   }
     else if (maindeck_count < 60)                       { validate.deckmain.push({"error": "toosmall"}); }
@@ -646,7 +646,7 @@ function validateInput() {
         }
     }
     if (excessCards.length) { validate.deckmain.push({"error": "quantity"}); }
-    
+
     if($(".highlander").is(":checked"))
     {
         totalHLPoints = 0;
@@ -655,7 +655,7 @@ function validateInput() {
         });
         if (totalHLPoints > 7) { validate.highlander.push({"error": "toomanypoints"}); }
     }
-    
+
     unrecognizedCards = {};
     unparseableCards = [];
     if (Object.getOwnPropertyNames(unrecognized).length !== 0) {
@@ -666,7 +666,7 @@ function validateInput() {
         unparseableCards = unparseable;
         validate.deckmain.push({"warning": "unparseable"});
     }
-    
+
     // pass validation data to output status/tooltip information
     statusAndTooltips(validate);
 }
@@ -677,13 +677,13 @@ function mainAndSide() {
     // make deep copies by value of the maindeck and sideboard
     combined = $.extend(true,[],maindeck);
     sideQuants = $.extend(true,[],sideboard);
-    
+
     // combine the cards!
     combined.map(addSideQuants);
     combined = combined.concat(sideQuants);
-    
+
     return combined;
-    
+
     // mapping function; adds quantities of identical names in main/side
     // and removes those matching cards from sideQuants
     function addSideQuants(element) {
@@ -712,7 +712,7 @@ function statusAndTooltips(valid) {
     // in this case, the key 'for' represents the input element id, and
     // the value 'level' represents the string "warning" or "error"
     notifications = {};
-    
+
     // define push method for notifications
     // accepts a key and an array (assumed [message, level] input)
     // if the key does not exist, add [array], else push it to that key's array
@@ -727,7 +727,7 @@ function statusAndTooltips(valid) {
     // 0x000 is valid, 0x001 is empty, 0x010 is warning, 0x100 is error
     // default error level to 'valid'
     errorLevel = 0;
-    
+
     // check for validation objects in every category (firstname, lastname, etc.)
     for (prop in valid) {
         // check each instance of a warning/error per field
@@ -737,14 +737,14 @@ function statusAndTooltips(valid) {
 
             // store validation object type for abstraction
             validType = (validationObject["warning"] ? "warning" : "error");
-            
+
             // bitwise AND the current error level and that of the validation object
             errorLevel = errorLevel | (validType === "warning" ? 0x010 : 0x100);
-            
+
             // add notification message for the validation object
             //   note: this section runs only once per validation object, so all checks
             //   can be run in else-if blocks; only one update is made per object
-            
+
             if (prop === "firstname") {
                 if (validationObject["warning"] === "blank") {
                     notifications.push(prop, ["Missing first name", validType]);
@@ -814,7 +814,7 @@ function statusAndTooltips(valid) {
             }
         }
     }
-    
+
     // check if all fields are empty; if they are, set errorLevel accordingly
     // close active tooltips, clear titles and classes for new tooltip text
     allEmpty = true;
@@ -829,7 +829,7 @@ function statusAndTooltips(valid) {
     if (allEmpty) {
         errorLevel = 0x001;
     }
-    
+
     // compose new notifications HTML fragment, set new tooltips, and set input field classes
     statusBoxHtml = "";
     for (key in notifications) {
@@ -866,18 +866,18 @@ function statusAndTooltips(valid) {
             // update field class and title
             fieldId = "#" + key;
             $(fieldId).addClass(fieldClass);
-            
+
             // add a tooltip only for errors; people were complaining about overzealous tooltips
             if (fieldClass === "error") { $(fieldId).prop("title", newTitle); }
         }
     }
-    
+
     // compute new status
     newStatus = "valid";
     if (errorLevel & 0x100)      { newStatus = "error"; }
     else if (errorLevel & 0x010) { newStatus = "warning"; }
     else if (errorLevel & 0x001) { newStatus = "empty"; }
-    
+
     // set new status, display new notifications
     $(".status").removeClass("default empty valid warning error").addClass(newStatus);
     $(".status .details").html(statusBoxHtml);
