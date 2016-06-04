@@ -221,6 +221,105 @@ function detectPDFPreviewSupport() {
     }
 }
 
+function addHLTemplateToDL(dl) {
+    dl.addImage(logo, 'JPEG', 30, 17, 70, 40);
+
+    dl.setFontSize(13);
+    dl.setFontStyle('bold');
+
+    dl.setLineWidth(1);
+    dl.text('Last Name', 115, 30);
+    dl.rect(183, 17, 142, 19);
+    dl.text('First Name', 330, 30);
+    dl.rect(400, 17, 120, 19);
+    dl.text('DCI Number', 525, 30);
+    var x = 605;
+    while (x < 760) {
+        dl.rect(x, 17, 15, 19);  // dci digits
+        x = x + 15;
+    }
+    // Event Name, Deck Name, Deck Designer
+    // Date? Event?
+
+    var i;
+    var y;
+    var ymax;
+    var x;
+
+    // Quantity Columns
+    // Last one 533, 403
+    for(i = 0; i < 3; i++) {
+        y = 63;
+        x = 31 + (251 * i);
+        if(i < 2) {
+            ymax = 470;
+        } else {
+            ymax = 420;
+        }
+        while(y < ymax) {
+            dl.rect(x, y, 45, 20);
+            y = y + 20;
+        }
+    }
+    // And sideboard ones
+    dl.setFillColor(190);
+    for(i = 0; i < 3; i++) {
+        y = 493;
+        x = 31 + (251 * i);
+
+        while(y < 590) {
+            dl.rect(x, y, 45, 20, 'FD');
+            y = y + 20;
+        }
+    }
+
+    // Card columns
+    // Last one 578, 403
+    for(i = 0; i < 3; i++) {
+        y = 63;
+        x = 76 + (251 * i);
+        if(i < 2) {
+            ymax = 470;
+        } else {
+            ymax = 420;
+        }
+        while(y < ymax) {
+            dl.rect(x, y, 192, 20);
+            y = y + 20;
+        }
+    }
+    // And sideboard ones
+    dl.setFillColor(190);
+    for(i = 0; i < 3; i++) {
+        y = 493;
+        x = 76 + (251 * i);
+
+        while(y < 590) {
+            dl.rect(x, y, 192, 20, 'FD');
+            y = y + 20;
+        }
+    }
+
+
+    dl.rect(684, 444, 86, 19); // Box for main deck total
+    dl.rect(684, 464, 86, 19); // Box for side board total
+
+    // Shaded rectangles
+    dl.setLineWidth(1);
+    dl.setFillColor(150);
+    //dl.setDrawColor(150);
+    dl.rect(268.5, 62.5, 13, 421, 'F'); // Long line between Col 1 & 2
+    dl.rect(519.5, 62.5, 13, 421, 'F'); // Long line between Col 2 & 3
+    dl.rect(533, 423, 237, 20, 'FD'); // Line that says "Total"
+    dl.rect(533, 443, 150, 20, 'FD'); // Line that says "Main Deck"
+    dl.rect(533, 463, 150, 20, 'FD'); // Line that says "Sideboard"
+
+
+    dl.text('Total', 680, 438);
+    dl.text('Main Deck', 610, 458);
+    dl.text('Sideboard', 610, 478);
+}
+
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
 function addTemplateToDL(dl) {
     // Add the logo
@@ -320,7 +419,7 @@ function addTemplateToDL(dl) {
 
     // Now let's create a bunch of lines for putting cards on
     y = 186;
-    while(y < 750)                  // first column of lines
+    while(y < 750) // first column of lines
     {
         dl.line(62, y, 106, y);
         dl.line(116, y, 306, y);
@@ -328,7 +427,7 @@ function addTemplateToDL(dl) {
     }
 
     y = 186;
-    while(y < 386)                  // second column of lines (main deck)
+    while(y < 386) // second column of lines (main deck)
     {
         dl.line(336, y, 380, y);
         dl.line(390, y, 580, y);
@@ -336,7 +435,7 @@ function addTemplateToDL(dl) {
     }
 
     y = 438;
-    while(y < 696)                  // second column of lines (main deck)
+    while(y < 696) // second column of lines (main deck)
     {
         dl.line(336, y, 380, y);
         dl.line(390, y, 580, y);
@@ -353,7 +452,27 @@ function generateDecklistLayout() {
 
     addTemplateToDL(dl);
 
+    // Set iFrame W/H
+    $("#decklist")[0].height = "580";
+    $("#decklist")[0].width = "440";
+
     return(dl);
+}
+
+function generateHLDecklistLayout() {
+    dl = new jsPDF('landscape', 'pt', 'a4');
+
+    addHLTemplateToDL(dl);
+
+    // Set iFrame W/H
+    $("#decklist")[0].height = "370";
+    $("#decklist")[0].width = "470";
+
+    return(dl);
+}
+
+function addHLMetadataToDL(dl) {
+
 }
 
 function addMetaDataToDL(dl) {
@@ -415,31 +534,80 @@ function addMetaDataToDL(dl) {
     dl.setFontStyle('normal');
 }
 
-function generateDecklistPDF(outputtype) {
-    // default type is dataurlstring (live preview)
-    // stupid shitty javascript and its lack of default arguments
-    outputtype = typeof outputtype !== 'undefined' ? outputtype : 'dataurlstring';
+function addHLCardsToDL(dl) {
+    // Strip the empty lines sorting gives us, since we can fit exactly 60 on one page
+    // Maybe we can get a little bit smarter and leave as many in as possible in case basic lands free up some individual lines
+    maindeck = jQuery.grep(maindeck, function(value) {
+        return value[0] != "";
+    });
 
-    // clear the input timeout before we can generate the PDF
-    pdfChangeTimer = null;
+    // Add the deck to the decklist
+    var x = 47;
+    var y = 78;
+    var numPages = 0;
+    dl.setFontStyle('normal');
+    if (maindeck != []) {
+        for (i = 0; i < maindeck.length; i++) {
+            if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
+            {
+                numPages++;
+                dl.addPage();
+                addHLTemplateToDL(dl);
+                addHLMetadataToDL(dl);
+                x = 47;
+                y = 78;
+            }
+            if (i == (21 + (numPages * 60))) { x = 300; y = 78; } // jump to the next row
+            else if (i == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next row
 
-    // don't generate the preview if showpreview == false
-    if ((outputtype == 'dataurlstring') && (showpreview == false)) {
-        $("#decklistpreview").empty();
-        $("#decklistpreview").html("Automatic decklist preview only supported in non-mobile Firefox, Safari, and Chrome.<br /><br />");
+            // Ignore zero quantity entries (blank)
+            if(maindeck[i][1] != 0) {
+                dl.text(maindeck[i][1], x, y);
+                cardtext = maindeck[i][0];
+                goodcards.forEach(function(element, index, array) {
+                    if(element.n == cardtext) {
+                        if (typeof element.p === 'undefined') { element.p = 0; }
+                        cardtext = cardtext + " " + Array(element.p+1).join("*");
+                    }
+                });
+                dl.text(cardtext, x + 38, y);
+
+            }
+            y = y + 20;  // move to the next row
+        }
     }
 
-    // start with the blank PDF
-    dl = generateDecklistLayout();
+    // Add the sideboard to the decklist
+    var x = 47;
+    var y = 508;
+    if (sideboard != []) {
+        for (i = 0; i < sideboard.length; i++) {
+            if (i == 5) { x = 300; y = 508; } // jump to the next row
+            if (i == 10) { x = 550; y = 508; } // jump to the next row
 
-    // Parse the deck list
-    parseDecklist();
+            dl.text(sideboard[i][1], x, y);
+            cardtext = sideboard[i][0];
+            goodcards.forEach(function(element, index, array) {
+                if(element.n == cardtext) {
+                    if (typeof element.p === 'undefined') { element.p = 0; }
+                    cardtext = cardtext + " " + Array(element.p+1).join("*");
+                }
+            });
+            dl.text(cardtext, x + 38, y);
+            y = y + 20;  // move to the next row
+        }
+    }
 
-    // Validate the input
-    validateInput();
+    // Add the maindeck count and sideboard count
+    dl.setFontSize(20);
+    if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
+    if (sideboard_count != 0) {
+        if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
+        else { dl.text(String(sideboard_count), 709, 480); }
+    }
+}
 
-    addMetaDataToDL(dl);
-
+function addCardsToDL(dl) {
     // Add the deck to the decklist
     var x = 82;
     var y = 182;
@@ -461,18 +629,7 @@ function generateDecklistPDF(outputtype) {
             // Ignore zero quantity entries (blank)
             if (maindeck[i][1] != 0) {
                 dl.text(maindeck[i][1], x, y);
-                if($("select[name=eventformat]").val() == "Highlander") {
-                    cardtext = maindeck[i][0];
-                    goodcards.forEach(function(element, index, array) {
-                        if(element.n == cardtext) {
-                            if (typeof element.p === 'undefined') { element.p = 0; }
-                            cardtext = cardtext + " " + Array(element.p+1).join("*");
-                        }
-                    });
-                    dl.text(cardtext, x + 38, y);
-                } else {
-                    dl.text(maindeck[i][0], x + 38, y);
-                }
+                dl.text(maindeck[i][0], x + 38, y);
             }
 
             y = y + 18;  // move to the next row
@@ -485,18 +642,7 @@ function generateDecklistPDF(outputtype) {
     if (sideboard != []) {
         for (i = 0; i < sideboard.length; i++) {
             dl.text(sideboard[i][1], x, y);
-            if($("select[name=eventformat]").val() == "Highlander") {
-                cardtext = sideboard[i][0];
-                goodcards.forEach(function(element, index, array) {
-                    if(element.n == cardtext) {
-                        if (typeof element.p === 'undefined') { element.p = 0; }
-                        cardtext = cardtext + " " + Array(element.p+1).join("*");
-                    }
-                });
-                dl.text(cardtext, x + 38, y);
-            } else {
-                dl.text(sideboard[i][0], x + 38, y);
-            }
+            dl.text(sideboard[i][0], x + 38, y);
             y = y + 18;  // move to the next row
         }
     }
@@ -507,6 +653,38 @@ function generateDecklistPDF(outputtype) {
     if (sideboard_count != 0) {
         if (sideboard_count < 10) { dl.text(String(sideboard_count), 547, 712); }
         else { dl.text(String(sideboard_count), 541, 712); }
+    }
+}
+
+function generateDecklistPDF(outputtype) {
+    // default type is dataurlstring (live preview)
+    // stupid shitty javascript and its lack of default arguments
+    outputtype = typeof outputtype !== 'undefined' ? outputtype : 'dataurlstring';
+
+    // clear the input timeout before we can generate the PDF
+    pdfChangeTimer = null;
+
+    // don't generate the preview if showpreview == false
+    if ((outputtype == 'dataurlstring') && (showpreview == false)) {
+        $("#decklistpreview").empty();
+        $("#decklistpreview").html("Automatic decklist preview only supported in non-mobile Firefox, Safari, and Chrome.<br /><br />");
+    }
+
+    // Parse the deck list
+    parseDecklist();
+
+    // Validate the input
+    validateInput();
+
+    // start with the blank PDF
+    if($("select[name=eventformat]").val() == "Highlander") {
+        dl = generateHLDecklistLayout();
+        addHLMetadataToDL(dl);
+        addHLCardsToDL(dl);
+    } else {
+        dl = generateDecklistLayout();
+        addMetaDataToDL(dl);
+        addCardsToDL(dl);
     }
 
     // Output the dl as a blob to add to the DOM

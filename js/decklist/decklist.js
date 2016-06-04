@@ -130,6 +130,7 @@ function parseDecklist() {
 
         //if (card.slice(0,2).toLowerCase() === 'ae') { recognized = objectHasPropertyCI(cards, '\u00e6'+card.slice(2)); }
         //else { recognized = objectHasPropertyCI(cards, card); }
+        card = card.replace("’", "'");
         recognized = objectHasPropertyCI(cards, card);
 
         // Always add the card to the list, regardless of if the card is recognized
