@@ -231,9 +231,9 @@ function addHLTemplateToDL(dl) {
     dl.text('Last Name', 115, 30);
     dl.rect(183, 17, 142, 19);
     dl.text('First Name', 330, 30);
-    dl.rect(400, 17, 120, 19);
-    dl.text('DCI Number', 525, 30);
-    var x = 605;
+    dl.rect(400, 17, 135, 19);
+    dl.text('DCI Number', 540, 30);
+    var x = 620;
     while (x < 760) {
         dl.rect(x, 17, 15, 19);  // dci digits
         x = x + 15;
@@ -472,7 +472,25 @@ function generateHLDecklistLayout() {
 }
 
 function addHLMetadataToDL(dl) {
+    dl.setFontStyle('bold');
 
+    lastname = $("#lastname").val().capitalize();
+    dl.text(lastname, 188, 30);
+
+    firstname = $("#firstname").val().capitalize();
+    dl.text(firstname, 405, 30);
+
+    dcinumber = $("#dcinumber").val();
+
+    // put the DCI number into the PDF
+    x = 625;
+    if (dcinumber.length > 0) {
+        for (var i = 0; i < dcinumber.length; i++) {
+            dl.text(dcinumber.charAt(i), x, 30);
+            x = x + 15;
+        }
+    }
+    dl.setFontStyle('normal');
 }
 
 function addMetaDataToDL(dl) {
