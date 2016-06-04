@@ -25,7 +25,7 @@ function parseDecklist() {
     deckside = deckside.split('\n');
 
     var mtgoRE   = /^(\d+)x*\s(.+)/;             // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
-    var mtgosbRE = /^SB:\s+(\d+)\s(.+)/;       // Sideboard lines begin with SB:
+    var mtgosbRE = /^SB:\s+(\d+)*\s*(.+)/;       // Sideboard lines begin with SB:
     var mwsRE    = /^\s*(\d+)\s+\[.*\]\s+(.+)/;       // MWS, what an ugly format
     var mwssbRE  = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/;  // MWS, what an ugly format
     var tosbRE   = /^Sideboard/;                 // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
@@ -34,25 +34,25 @@ function parseDecklist() {
     in_sb = false;
     for (i = 0; i < deckmain.length; i++) {
         // Parse for Magic Workstation style deck
-        if (mws_re.exec(deckmain[i]) != null) {
-            quantity = mws_re.exec(deckmain[i])[1];
-            card = mws_re.exec(deckmain[i])[2];
+        if (mwsRE.exec(deckmain[i]) != null) {
+            quantity = mwsRE.exec(deckmain[i])[1];
+            card = mwsRE.exec(deckmain[i])[2];
 
             recognizeCard(card, quantity);
         }
 
         // Parse for Magic Workstation sideboards
-        else if (mwssb_re.exec(deckmain[i]) != null) {
-            quantity = mwssb_re.exec(deckmain[i])[1];
-            card = mwssb_re.exec(deckmain[i])[2];
+        else if (mwssbRE.exec(deckmain[i]) != null) {
+            quantity = mwssbRE.exec(deckmain[i])[1];
+            card = mwssbRE.exec(deckmain[i])[2];
 
             recognizeCard(card, quantity, 'side');
         }
 
         // Parse for MTGO/TappedOut style decks
-        else if (mtgo_re.exec(deckmain[i]) != null) {
-            quantity = mtgo_re.exec(deckmain[i])[1];
-            card = mtgo_re.exec(deckmain[i])[2];
+        else if (mtgoRE.exec(deckmain[i]) != null) {
+            quantity = mtgoRE.exec(deckmain[i])[1];
+            card = mtgoRE.exec(deckmain[i])[2];
 
             if (in_sb) {    // TappedOut style Sideboard listing
                 recognizeCard(card, quantity, 'side');
@@ -62,15 +62,17 @@ function parseDecklist() {
         }
 
         // Parse for MTGO style sideboard cards
-        else if (mtgosb_re.exec(deckmain[i]) != null) {
-            quantity = mtgosb_re.exec(deckmain[i])[1];
-            card = mtgosb_re.exec(deckmain[i])[2];
+        else if (mtgosbRE.exec(deckmain[i]) != null) {
+            quantity = mtgosbRE.exec(deckmain[i])[1];
+            card = mtgosbRE.exec(deckmain[i])[2];
+
+            if(quantity == undefined) { quantity = "1"; }
 
             recognizeCard(card, quantity, 'side');
         }
 
         // If we see "Sideboard:", then we're in the TappedOut style sideboard entries from now on
-        else if (tosb_re.test(deckmain[i])) { in_sb = true; }
+        else if (tosbRE.test(deckmain[i])) { in_sb = true; }
 
         // Assume anything else is 1x cardname
         else {
@@ -86,9 +88,9 @@ function parseDecklist() {
     // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO style entries
     for (i = 0; i < deckside.length; i++) {
         // Parse for MTGO/TappedOut style decks
-        if (mtgo_re.exec(deckside[i]) != null) {
-            quantity = mtgo_re.exec(deckside[i])[1];
-            card = mtgo_re.exec(deckside[i])[2];
+        if (mtgoRE.exec(deckside[i]) != null) {
+            quantity = mtgoRE.exec(deckside[i])[1];
+            card = mtgoRE.exec(deckside[i])[2];
 
             recognizeCard(card, quantity, 'side');
         } else {
@@ -126,8 +128,9 @@ function parseDecklist() {
         list = list || 'main';
         card = card.trim();
 
-        if (card.slice(0,2).toLowerCase() === 'ae') { recognized = objectHasPropertyCI(cards, '\u00e6'+card.slice(2)); }
-        else { recognized = objectHasPropertyCI(cards, card); }
+        //if (card.slice(0,2).toLowerCase() === 'ae') { recognized = objectHasPropertyCI(cards, '\u00e6'+card.slice(2)); }
+        //else { recognized = objectHasPropertyCI(cards, card); }
+        recognized = objectHasPropertyCI(cards, card);
 
         // Always add the card to the list, regardless of if the card is recognized
         // Still, if not recognized, add it to its special dictionary (unrecognized)
@@ -156,7 +159,7 @@ function parseDecklist() {
     function objectHasPropertyCI(obj, val) {
         for (var p in obj) {
             if (obj.hasOwnProperty(p) && p.toLowerCase() === val.toLowerCase()) {
-                return obj[p].n;
+                return obj[p];
             }
         }
         return false;

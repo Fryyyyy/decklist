@@ -71,7 +71,7 @@ for card in cards:
 
     # Add it into the file if the banned list isn't empty
     legality = getLegalities(card, cards)
-    if legality != "": ocards[ocard]['b'] = legality
+    ocards[ocard]['b'] = legality
 
     # And put the true name in there as well
     ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8')

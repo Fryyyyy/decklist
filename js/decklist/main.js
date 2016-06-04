@@ -10,7 +10,7 @@ var cardQuantity = 1;
 $(document).ready(function() {
     // bind events to all the input fields on the left side, to generate a PDF on change
     $('div.left input, div.left textarea').on('input', pdfChangeWait);
-    $(".highlander").on("change", pdfChangeWait);
+    $("select[name=eventformat]").on("change", pdfChangeWait);
     $("#eventdate, input[type='radio']").change(pdfChangeWait);
 
     // bind a date picker to the event date (thanks, jQuery UI)
@@ -65,7 +65,9 @@ $(document).ready(function() {
     // Enter on the manual card entry defaults to Main deck
     // Adding to sideboard still requires a click though
     $("#cardentry").keyup(function(event) {
-        if(event.keyCode == 13) {
+        if(event.altKey && event.keyCode == 13) {
+            cardToSide();
+        } else if(event.keyCode == 13) {
             cardToMain();
         }
     });
@@ -106,8 +108,17 @@ function cardToMain() {
 }
 
 function cardToSide() {
-    $("#deckside").val($("#deckside").val() + $("#cardentry").val());
+    if($("#cardentry").val() == "") {
+        return;
+    }
+    if($("#deckside").val() == "") {
+        linebreak = "";
+    } else {
+        linebreak = "\r\n";
+    }
+    $("#deckside").val($("#deckside").val() + linebreak + cardQuantity + " " + $("#cardentry").val());
     $("#cardentry").val("");
+    cardQuantity = 1;
     pdfChangeWait();
 }
 
@@ -147,7 +158,7 @@ String.prototype.capitalize = function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckmain', 'deckside', 'highlander'];
+    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckmain', 'deckside', 'eventformat'];
 
     // check for event, eventdate, or eventlocation and lock down those input fields
     for (var i = 0; i < params.length; i++) {
@@ -155,12 +166,13 @@ function parseGET() {
         var field = '#' + param;
 
         if ($._GET[ param ] != undefined) {
-                if (param != "highlander") {
-                    $(field).val( $._GET[param] );  // set it to the GET variable
-                }
-                else {
-                    $(field)[0].checked = $.parseJSON($._GET[param]);
-                }
+            if (param != "eventformat") {
+                $(field).val( $._GET[param] ); // set it to the GET variable
+            }
+            else {
+                $("select[name=eventformat] option[value=" + $._GET[param] + "]").prop('selected', true);
+                $("select[name=eventformat]").prop("disabled", true);
+            }
 
             if ((param != "deckmain") && (param != "deckside")) {
                 $(field).prop("disabled", true);  // disable all decklist fields that are in the URL
@@ -172,7 +184,7 @@ function parseGET() {
     }
 
     // load the logo
-    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the DCI logo
+    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the Auseternal logo
 
     var logos = ['dcilogo', 'legion', 'gpsanantonio', 'auseternal'];
 
@@ -210,10 +222,7 @@ function detectPDFPreviewSupport() {
 }
 
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
-function generateDecklistLayout() {
-    // Create a new dl
-    var dl = new jsPDF('portrait', 'pt', 'a4');
-
+function addTemplateToDL(dl) {
     // Add the logo
     dl.addImage(logo, 'JPEG', 27, 54, 90, 32);
 
@@ -337,6 +346,16 @@ function generateDecklistLayout() {
     return(dl);
 }
 
+// Generates the part of the PDF that never changes (lines, boxes, etc.)
+function generateDecklistLayout() {
+    // Create a new dl
+    dl = new jsPDF('portrait', 'pt', 'a4');
+
+    addTemplateToDL(dl);
+
+    return(dl);
+}
+
 function addMetaDataToDL(dl) {
     // Helvetica, fuck yeah
     dl.setFont('helvetica');
@@ -442,7 +461,7 @@ function generateDecklistPDF(outputtype) {
             // Ignore zero quantity entries (blank)
             if (maindeck[i][1] != 0) {
                 dl.text(maindeck[i][1], x, y);
-                if($(".highlander").is(":checked")) {
+                if($("select[name=eventformat]").val() == "Highlander") {
                     cardtext = maindeck[i][0];
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
@@ -466,7 +485,7 @@ function generateDecklistPDF(outputtype) {
     if (sideboard != []) {
         for (i = 0; i < sideboard.length; i++) {
             dl.text(sideboard[i][1], x, y);
-            if($(".highlander").is(":checked")) {
+            if($("select[name=eventformat]").val() == "Highlander") {
                 cardtext = sideboard[i][0];
                 goodcards.forEach(function(element, index, array) {
                     if(element.n == cardtext) {
@@ -501,14 +520,14 @@ function generateDecklistPDF(outputtype) {
         rawPDF = dl.output();
         return(rawPDF);
     }
-    else if (outputtype = 'csv') {
+    else if (outputtype == 'csv') {
         var data = $("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#dcinumber").val() + '\r\n';
         data += $("#eventdate").val() + ' ' + $("#eventlocation").val().capitalize() + ' ' + $("#event").val().capitalize() + '\r\n';
         data += "Main Deck\r\n";
         for (i = 0; i < maindeck.length; i++) {
             if (maindeck[i][1] != 0) {
                 data += maindeck[i][1] + ' ';
-                if($(".highlander").is(":checked")) {
+                if($("select[name=eventformat]").val() == "Highlander") {
                     cardtext = maindeck[i][0];
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
@@ -527,7 +546,7 @@ function generateDecklistPDF(outputtype) {
             data += "\r\nSideboard\r\n";
             for (i = 0; i < sideboard.length; i++) {
                 data += sideboard[i][1] + ' ';
-                if($(".highlander").is(":checked")) {
+                if($("select[name=eventformat]").val() == "Highlander") {
                     cardtext = sideboard[i][0];
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
@@ -573,7 +592,8 @@ function validateInput() {
         'eventdate': [],
         'eventlocation': [],
         'deckmain': [],
-        'deckside': []
+        'deckside': [],
+        'format' : []
     };
 
     // check first name (non-blank, too long)
@@ -638,7 +658,7 @@ function validateInput() {
     'Snow-Covered Forest', 'Wastes', 'Relentless Rats', 'Shadowborn Apostle'];
     for (i = 0; i < mainPlusSide.length; i++) {
         var maxNumber = 4;
-        if($(".highlander").is(":checked")) { maxNumber = 1; }
+        if($("select[name=eventformat]").val() == "Highlander") { maxNumber = 1; }
 
         if (parseInt(mainPlusSide[i][1]) > maxNumber) {
             allowed = false;
@@ -650,13 +670,33 @@ function validateInput() {
     }
     if (excessCards.length) { validate.deckmain.push({'error': 'quantity'}); }
 
-    if($(".highlander").is(":checked"))
+    if($("select[name=eventformat]").val() == "Standard") {
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('s') != -1) {
+                validate.format.push({"error" : "notlegal"});
+            }
+        });
+    } else if($("select[name=eventformat]").val() == "Modern")
+    {
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('m') != -1) {
+                validate.format.push({"error" : "notlegal"});
+            }
+        });
+    } else if($("select[name=eventformat]").val() == "Highlander")
     {
         totalHLPoints = 0;
         goodcards.forEach(function(element, index, array) {
             totalHLPoints += element.p;
         });
-        if (totalHLPoints > 7) { validate.highlander.push({'error': 'toomanypoints'}); }
+        if (totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
+    } else if($("select[name=eventformat]").val() == "Legacy")
+    {
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('l') != -1) {
+                validate.format.push({"error" : "notlegal"});
+            }
+        });
     }
 
     unrecognizedCards = {};
@@ -810,9 +850,11 @@ function statusAndTooltips(valid) {
                 } else if (validationObject['error'] === 'toolarge') {
                     notifications.push(prop, ['Sideboards may not consist of more than 15 cards', validType]);
                 }
-            } else if (prop === 'highlander') {
-                if (validationObject['error'] === 'toomanypoints') {
-                    notifications.push(prop, ['Highlander lists may contain a maximum of 7 points', validType]);
+            } else if (prop === "format") {
+                if (validationObject["error"] === "toomanypoints") {
+                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points", validType]);
+                } else if (validationObject["error"] === "notlegal") {
+                    notifications.push(prop, ["List contains a card not legal in the format", validType]);
                 }
             }
         }
@@ -910,7 +952,7 @@ function getLinkToDecklistPDF() {
     deckURL += '&eventdate=' + this.eventdate.value;
     deckURL += '&event=' + $('#event')[0].value;
     deckURL += '&eventlocation=' + this.eventlocation.value;
-    deckURL += '&highlander=' + $('#highlander')[0].checked;
+    deckURL += "&eventformat=" +  $("select[name=eventformat]").val();
     deckURL += '&deckmain='
     if (this.deckmain != []) {
         for (i = 0; i < this.deckmain.length; i++) {

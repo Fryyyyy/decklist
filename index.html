@@ -76,8 +76,18 @@
                         <span>Deck Designer:</span>
                         <input type="text" id="deckdesigner" placeholder="(optional)">
                     </label>
+                    <label for="eventformat">
+                        <span>Event Format:</span>
+                        <select name="eventformat">
+                             <option value="Any">Any</option>
+                             <option value="Standard">Standard</option>
+                             <option value="Modern">Modern</option>
+                             <option value="Highlander">Australian 7pt Highlander</option>
+                             <option value="Legacy">Legacy</option>
+                        </select>
+                    </label><br/>
                     <label for="deckmain">
-                        <span>Main Deck:<br/><br/><input class="highlander" type="checkbox" id="highlander" name="highlander">Highlander?</span>
+                        <span>Main Deck:</span>
                         <textarea id="deckmain"></textarea>
                         <span id="protip">(Pro tip: You can simply paste in MTGO, MWS, MTG Salvation, Deckbox "Print", or Tappedout "Text" decks without separating out the sideboard!)</span>
                     </label>
@@ -85,7 +95,7 @@
                         <span>Manual Card Entry:</span>
                         <input type="text" id="cardentry" style="width: 40%;">
                         <input type="button" id="cardtomain" value="↑" class="cardbutton ui-button" role="button" onclick="cardToMain();">
-                        <input type="button" id="cardtoside" value="↓" class="cardbutton ui-button" role="button" onclick="cardToSide();">
+                        <input type="button" id="cardtoside" value="↓" class="cardbutton ui-button" role="button" onclick="cardToSide();"><span id="protip">Enter for Main Deck, Alt-Enter for Sideboard</span>
                     </label>
                     <label for="deckside">
                         <span>Sideboard:</span>
