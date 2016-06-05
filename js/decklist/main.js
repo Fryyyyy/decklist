@@ -855,6 +855,13 @@ function validateInput() {
     for (i = 0; i < mainPlusSide.length; i++) {
         var maxNumber = 4;
         if($("select[name=eventformat]").val() == "Highlander") { maxNumber = 1; }
+        else if($("select[name=eventformat]").val() == "Vintage") {
+            goodcards.forEach(function(element, index, array) {
+                if((element.r).indexOf('v') != -1) {
+                    maxNumber = 1;
+                }
+            });
+        }
 
         if (parseInt(mainPlusSide[i][1]) > maxNumber) {
             allowed = false;
@@ -866,34 +873,47 @@ function validateInput() {
     }
     if (excessCards.length) { validate.deckmain.push({'error': 'quantity'}); }
 
+    illegalCards = [];
+
     if($("select[name=eventformat]").val() == "Standard") {
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('s') != -1) {
-                validate.format.push({"error" : "notlegal"});
+                illegalCards.push(element.n);
             }
         });
-    } else if($("select[name=eventformat]").val() == "Modern")
-    {
+    } else if($("select[name=eventformat]").val() == "Modern") {
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('m') != -1) {
-                validate.format.push({"error" : "notlegal"});
+                illegalCards.push(element.n);
             }
         });
-    } else if($("select[name=eventformat]").val() == "Highlander")
-    {
+    } else if($("select[name=eventformat]").val() == "Highlander") {
         totalHLPoints = 0;
         goodcards.forEach(function(element, index, array) {
             totalHLPoints += element.p;
         });
         if (totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
-    } else if($("select[name=eventformat]").val() == "Legacy")
-    {
+        if (totalHLPoints < 7) { validate.format.push({"warning": "toofewpoints"}); }
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('v') != -1) {
+                illegalCards.push(element.n);
+            }
+        });
+    } else if($("select[name=eventformat]").val() == "Legacy") {
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('l') != -1) {
-                validate.format.push({"error" : "notlegal"});
+                illegalCards.push(element.n);
+            }
+        });
+    } else if($("select[name=eventformat]").val() == "Vintage") {
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('v') != -1) {
+                illegalCards.push(element.n);
             }
         });
     }
+
+    if (illegalCards.length) { validate.format.push({'error': 'notlegal'}); }
 
     unrecognizedCards = {};
     unparseableCards = [];
@@ -1049,8 +1069,11 @@ function statusAndTooltips(valid) {
             } else if (prop === "format") {
                 if (validationObject["error"] === "toomanypoints") {
                     notifications.push(prop, ["Highlander lists may contain a maximum of 7 points", validType]);
+                } else if(validationObject["warning"] === "toofewpoints") {
+                    notifications.push(prop, ["Most Highlander lists contain 7 points", validType]);
                 } else if (validationObject["error"] === "notlegal") {
-                    notifications.push(prop, ["List contains a card not legal in the format", validType]);
+                    illegalCardsHtml = '<ul><li>' + illegalCards.join('</li><li>') + '</li></ul>';
+                    notifications.push(prop, ["List contains card/s not legal in the format:" + illegalCardsHtml, validType]);
                 }
             }
         }

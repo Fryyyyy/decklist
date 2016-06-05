@@ -5,22 +5,34 @@ import json
 import sys
 
 # Just FYI!
-# b (banned) = [sml] (standard, modern, legacy)
+# b (banned) = [smlv] (standard, modern, legacy, vintage)
 # c (color) = White = A, Blue = B, Black = C, Red = D, Green = E, Gold = F, Artifact = G , Split = S, Unknown = X, Land = Z
 # m (CMC) = N  (Split = 98, Land = 99)
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
+# r (restricted) = [v] (vintage)
 
-FORMATS = ('Standard', 'Modern', 'Legacy')
+FORMATS = ('Standard', 'Modern', 'Legacy', 'Vintage')
 
 def getLegalities(card, cards):
     # Let's figure out legalities
-    banned = 'sml'
+    banned = 'smlv'
 
     for legality in cards[card].get('legalities', []):
         if legality.get('format') in FORMATS and legality.get('legality') != 'Banned':
             banned = banned.replace(legality.get('format')[0].lower(), '')
 
-    return(banned)
+    return banned
+
+# Yes it's stupid checking restrictions in non-Vintage formats
+# But you never know :P
+def getRestrictions(card, cards):
+    restricted = ''
+
+    for legality in cards[card].get('legalities', []):
+        if legality.get('format') in FORMATS and legality.get('legality') == 'Restricted':
+            restricted += legality.get('format')[0].lower()
+
+    return restricted
 
 # Open the JSON file
 jsonfh = open("AllCards-x.json", "r")
@@ -72,6 +84,8 @@ for card in cards:
     # Add it into the file if the banned list isn't empty
     legality = getLegalities(card, cards)
     ocards[ocard]['b'] = legality
+    restrictions = getRestrictions(card, cards)
+    ocards[ocard]['r'] = restrictions
 
     # And put the true name in there as well
     ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8')

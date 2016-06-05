@@ -24,11 +24,11 @@ function parseDecklist() {
     deckmain = deckmain.split('\n');
     deckside = deckside.split('\n');
 
-    var mtgoRE   = /^(\d+)x*\s(.+)/;             // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
-    var mtgosbRE = /^SB:\s+(\d+)*\s*(.+)/;       // Sideboard lines begin with SB:
-    var mwsRE    = /^\s*(\d+)\s+\[.*\]\s+(.+)/;       // MWS, what an ugly format
-    var mwssbRE  = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/;  // MWS, what an ugly format
-    var tosbRE   = /^Sideboard/;                 // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
+    var mtgoRE   = /^(\d+)x*\s(.+)/; // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
+    var mtgosbRE = /^SB:\s+(\d+)*\s*(.+)/; // Sideboard lines begin with SB:
+    var mwsRE    = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
+    var mwssbRE  = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
+    var tosbRE   = /^Sideboard/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
 
     // Loop through all the cards in the main deck field
     in_sb = false;
@@ -54,7 +54,7 @@ function parseDecklist() {
             quantity = mtgoRE.exec(deckmain[i])[1];
             card = mtgoRE.exec(deckmain[i])[2];
 
-            if (in_sb) {    // TappedOut style Sideboard listing
+            if (in_sb) { // TappedOut style Sideboard listing
                 recognizeCard(card, quantity, 'side');
             } else {
                 recognizeCard(card, quantity);
