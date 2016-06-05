@@ -1068,7 +1068,7 @@ function statusAndTooltips(valid) {
                 }
             } else if (prop === "format") {
                 if (validationObject["error"] === "toomanypoints") {
-                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points", validType]);
+                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points (You have " + totalHLPoints + ")", validType]);
                 } else if(validationObject["warning"] === "toofewpoints") {
                     notifications.push(prop, ["Most Highlander lists contain 7 points", validType]);
                 } else if (validationObject["error"] === "notlegal") {

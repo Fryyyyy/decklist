@@ -298,3 +298,17 @@ h2 {
 	vertical-align: text-bottom;
 	width: 20px;
 }
+
+.content form select {
+	border: none;
+	background: #FAFAFA;
+	font-size: 1em;
+	color: #444;
+	font-family: 'Lato', 'Helvetica Neue', sans-serif;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 2%;
+	margin: 0;
+	border: 1px solid #EEE;
+}
