@@ -49,6 +49,7 @@ with open("highlander.txt", "r") as hlfh:
 
 # Gotta store these cards in a dictionary
 ocards = {}
+ptcards = {}
 
 # Okay, we need the colors but in a much shorter format
 for card in cards:
@@ -61,6 +62,16 @@ for card in cards:
 
     # Create an entry in the output dictionary
     ocards[ocard] = {}
+    ptcards[ocard] = {}
+
+    ptcards[ocard]['name'] = cards[card].get('name', '')
+    ptcards[ocard]['manaCost'] = cards[card].get('manaCost', '')
+    ptcards[ocard]['text'] = cards[card].get('text', '').replace(u"−", "-")
+    ptcards[ocard]['type'] = cards[card].get('type', '')
+    ptcards[ocard]['power'] = cards[card].get('power', '-999')
+    ptcards[ocard]['toughness'] = cards[card].get('toughness', '-999')
+    ptcards[ocard]['loyalty'] = str(cards[card].get('loyalty', '-999'))
+
 
     # Lands and (noncolored) artifacts are special
     if 'Land' in cards[card]['types']:
@@ -108,7 +119,10 @@ for card in cards:
 
 
 # Print out the full list of cards
-ojsonfh = open("decklist-cards.js", "w")
-ojsonfh.write('cards=')
-json.dump(ocards, ojsonfh)
-ojsonfh.close()
+with open("decklist-cards.js", "w") as ojsonfh:
+    ojsonfh.write('cards=')
+    json.dump(ocards, ojsonfh)
+
+with open('playtest-cards.js', 'w') as f:
+    f.write('cards=')
+    json.dump(ptcards, f)
