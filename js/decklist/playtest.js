@@ -245,16 +245,40 @@ function addCardsToPage(dl) {
         dl.text(c['type'], x+type_x, y+type_y);
 
         // Draw Rules
-        var option = {};
-        for(var s in sizes) {
-            option['fontSize'] = sizes[s];
-            var lines = dl.splitTextToSize(c['text'], card_width-5, option);
-            dl.setFontSize(sizes[s]);
-            if(lines.length <= 7) {
+        // Make basics look good
+        switch (c['name']) {
+            case 'Plains':
+                dl.setFontSize(45);
+                dl.text("{W}", x+rules_x+45, y+rules_y+40);
                 break;
+            case 'Island':
+                dl.setFontSize(45);
+                dl.text("{U}", x+rules_x+45, y+rules_y+40);
+                break;
+            case 'Swamp':
+                dl.setFontSize(45);
+                dl.text("{B}", x+rules_x+45, y+rules_y+40);
+                break;
+            case 'Mountain':
+                dl.setFontSize(45);
+                dl.text("{R}", x+rules_x+45, y+rules_y+40);
+                break;
+            case 'Forest':
+                dl.setFontSize(45);
+                dl.text("{G}", x+rules_x+45, y+rules_y+40);
+                break;
+            default:
+            var option = {};
+            for(var s in sizes) {
+                option['fontSize'] = sizes[s];
+                var lines = dl.splitTextToSize(c['text'], card_width-5, option);
+                dl.setFontSize(sizes[s]);
+                if(lines.length <= 7) {
+                    break;
+                }
             }
+            dl.text(lines, x+rules_x, y+rules_y);
         }
-        dl.text(lines, x+rules_x, y+rules_y);
 
         // Draw power/toughness/loyalty
         dl.setFontSize(13);
