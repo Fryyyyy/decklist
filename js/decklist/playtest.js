@@ -56,9 +56,33 @@ $(document).ready(function() {
     // detect browser PDF support
     detectPDFPreviewSupport();
 
-    generateDecklistPDF();
+    // parse the GET parameters and set them, also generates preview (via event)
+    parseGET();
 
 });
+
+(function($) {
+    $._GET = (function(a) {
+        if (a == '') return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i)
+        {
+            var p=a[i].split('=');
+            if (p.length != 2) continue;
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+        }
+        return b;
+    })(window.location.search.substr(1).split('&'))
+})(jQuery);
+
+// Parse the GET attributes, locking out fields as needed
+function parseGET() {
+    if($._GET['deck'] != undefined) {
+        $('#deck').val( $._GET['deck'] );
+    }
+
+    generatePlaytestPDF();
+}
 
 function cardToDeck() {
     if($("#cardentry").val() == "") {
@@ -83,7 +107,7 @@ function pdfChangeWait() {
 
     // Wait 1500 milliseconds to generate a new PDF
     if (pdfChangeTimer) { clearTimeout(pdfChangeTimer); }
-    pdfChangeTimer = setTimeout(generateDecklistPDF, 1500);
+    pdfChangeTimer = setTimeout(generatePlaytestPDF, 1500);
 }
 
 // Detect if there is PDF support for the autopreview
@@ -112,8 +136,12 @@ function generatePlaytestLayout() {
 
 function addCardsToPage(dl) {
     // Filter out the blanks
+    var goodCardsNames = jQuery.map(goodcards, function(value, index) {
+        return value['name'];
+    });
+
     maindeck = jQuery.grep(maindeck, function(value) {
-        return value[0] != "";
+        return ((value[0] != "") && ($.inArray(value[0], goodCardsNames) != -1));
     });
 
     if(maindeck == []) { return; }
@@ -130,35 +158,32 @@ function addCardsToPage(dl) {
     });
 
     var numPages = 0;
-    var x = 47;
-    var y = 78;
+    var x = 17;
+    var y = 11;
 
-    var card_width = 159;
-    var card_height = 230;
+    var card_width = 172;
+    var card_height = 243;
 
     // Card Coordinates
-    var name_under_line_height = 30;
-    var art_under_line_height = 100;
-    var type_under_line_height = 130;
-    var text_under_line_height = 200;
+    var name_under_line_height = 16;
+    var art_under_line_height = 106;
+    var type_under_line_height = 120;
+    var text_under_line_height = 225;
     var mana_cost_x;
-    var mana_cost_y = 15;
+    var mana_cost_y = 12;
     var name_x = 3;
     var name_y = 60;
     var type_x = 3;
-    var type_y = 115;
+    var type_y = 117;
     var rules_x = 3;
-    var rules_y = 145;
+    var rules_y = 135;
     var lines;
-    var sizes = [13, 11, 8, 6];
+    var sizes = [13, 12.5, 12, 11.5, 11, 10.5, 10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6];
+    var power_tou_loyalty_y = 239;
     var power_x = 120;
     var toughness_x = 140;
-    var power_y = 220;
-    var toughness_y = 220;
     var powtousep_x = 135;
-    var powtousep_y = 220;
     var loyalty_x = 135;
-    var loyalty_y = 220;
 
     dl.setFontStyle('normal');
 
@@ -167,11 +192,11 @@ function addCardsToPage(dl) {
         {
             numPages++;
             dl.addPage();
-            x = 47;
-            y = 78;
+            x = 17;
+            y = 11;
         }
-        if (index == (3 + (numPages * 9))) { x = 47; y = 320; } // jump to the next row
-        if (index == (6 + (numPages * 9))) { x = 47; y = 560; } // jump to the next row
+        if (index == (3 + (numPages * 9))) { x = 17; y = 274; } // jump to the next row
+        if (index == (6 + (numPages * 9))) { x = 17; y = 550; } // jump to the next row
 
         // Draw outer rectangle
         dl.roundedRect(x, y, card_width, card_height, 10, 10);
@@ -188,15 +213,15 @@ function addCardsToPage(dl) {
 
         // Draw mana cost
         // Length = Mana Symbols * 3
-        dl.setFontSize(13);
+        dl.setFontSize(12);
         if(c['manaCost'].length < 12) {
-            mana_cost_x = 140 - (14 * (c['manaCost'].length / 3));
+            mana_cost_x = 160 - (14 * (c['manaCost'].length / 3));
         } else if(c['manaCost'].length > 18) {
             dl.setFontSize(8);
-            mana_cost_x = 40;
+            mana_cost_x = 50;
         } else {
             dl.setFontSize(11);
-            mana_cost_x = 140 - (12 * (c['manaCost'].length / 3));
+            mana_cost_x = 160 - (12 * (c['manaCost'].length / 3));
         }
         dl.text(c['manaCost'], x+mana_cost_x, y+mana_cost_y);
 
@@ -224,9 +249,8 @@ function addCardsToPage(dl) {
         for(var s in sizes) {
             option['fontSize'] = sizes[s];
             var lines = dl.splitTextToSize(c['text'], card_width-5, option);
-            console.log(lines);
             dl.setFontSize(sizes[s]);
-            if(lines.length <= 6) {
+            if(lines.length <= 7) {
                 break;
             }
         }
@@ -236,20 +260,20 @@ function addCardsToPage(dl) {
         dl.setFontSize(13);
         if(c['type'].indexOf('Creature') != -1) {
             if(c['power'].length == 1) { power_x += 5; toughness_x += 5; }
-            dl.text(c['power'], x+power_x, y+power_y);
-            dl.text('/', x+powtousep_x, y+powtousep_y);
-            dl.text(c['toughness'], x+toughness_x, y+toughness_y);
+            dl.text(c['power'], x+power_x, y+power_tou_loyalty_y);
+            dl.text('/', x+powtousep_x, y+power_tou_loyalty_y);
+            dl.text(c['toughness'], x+toughness_x, y+power_tou_loyalty_y);
             if(c['power'].length == 1) { power_x -= 5; toughness_x -= 5; }
         } else if(c['type'].indexOf('Planeswalker') != -1) {
-            dl.text("{" + c['loyalty'] + "}", x+loyalty_x, y+loyalty_y);
+            dl.text("{" + c['loyalty'] + "}", x+loyalty_x, y+power_tou_loyalty_y);
         }
 
-        x = x + 170;
+        x = x + 189;
 
     });
 }
 
-function generateDecklistPDF(outputtype) {
+function generatePlaytestPDF(outputtype) {
     // default type is dataurlstring (live preview)
     // stupid shitty javascript and its lack of default arguments
     outputtype = typeof outputtype !== 'undefined' ? outputtype : 'dataurlstring';
