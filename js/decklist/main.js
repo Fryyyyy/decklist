@@ -19,6 +19,7 @@ $(document).ready(function() {
     $("#download").button();
     $("#downloadcsv").button();
     $('#upload').button();
+    $('#getplaytest').button();
     $("#sortorderfloat").buttonset();
 
     $("#cardtomain").button();
@@ -184,9 +185,9 @@ function parseGET() {
     }
 
     // load the logo
-    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the Auseternal logo
+    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'gaslogo'; } // if logo isn't specified, use the Gas logo
 
-    var logos = ['dcilogo', 'legion', 'gpsanantonio', 'auseternal'];
+    var logos = ['dcilogo', 'auseternal', 'gaslogo'];
 
     for (var i = 0; i < logos.length; i++) {
         if ($._GET['logo'] == logos[i]) {
@@ -222,7 +223,8 @@ function detectPDFPreviewSupport() {
 }
 
 function addHLTemplateToDL(dl) {
-    dl.addImage(logo, 'JPEG', 30, 17, 70, 40);
+    // dl.addImage(logo, 'JPEG', 30, 17, 70, 40); AusEternal
+    dl.addImage(logo, 'JPEG', 30, 17, 60, 40); // Gas
 
     dl.setFontSize(13);
     dl.setFontStyle('bold');
@@ -323,7 +325,8 @@ function addHLTemplateToDL(dl) {
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
 function addTemplateToDL(dl) {
     // Add the logo
-    dl.addImage(logo, 'JPEG', 27, 54, 90, 32);
+    // dl.addImage(logo, 'JPEG', 27, 54, 90, 32); AusEternal
+    dl.addImage(logo, 'JPEG', 35, 34, 60, 60); // Gas
 
     // Create all the rectangles
 
@@ -1190,4 +1193,27 @@ function getLinkToDecklistPDF() {
         }
     }
     $('#deckURL')[0].innerHTML = '<a href=\'' + deckURL + '\'>Copy this link</a>';
+}
+
+function openPlayTestWindow() {
+    var deckURL = '';
+    deckURL += 'playtest.html?';
+    deckURL += 'deck='
+    if (this.deckmain != []) {
+        for (i = 0; i < this.deckmain.length; i++) {
+            if(this.deckmain[i] != '') {
+                var x = encodeURIComponent(this.deckmain[i]);
+                deckURL += x + '%0A';
+            }
+        }
+    }
+    if (this.deckside != []) {
+        deckURL += '%0A';
+        for (i = 0; i < this.deckside.length; i++) {
+            if(this.deckside[i] != '') {
+                deckURL += encodeURIComponent(this.deckside[i]) + '%0A';
+            }
+        }
+    }
+    $('#deckPlayTestURL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';
 }

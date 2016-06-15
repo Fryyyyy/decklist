@@ -8,8 +8,12 @@
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
 
     <!-- jQuery -->
-    <script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
+    <!--<script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui/jquery-ui.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
 
   <!-- List of all cards (thanks, mtgjson!) -->
   <script type="text/javascript" src="js/cards/decklist-cards-min.js" ></script>
@@ -132,7 +136,9 @@
                 <input type="button" id="downloadcsv" value="Download Decklist (CSV)" onclick="generateDecklistPDF('csv');">
                 <input type="button" id="upload" value="Upload Decklist" onclick="uploadDecklistPDF();">
                 <input type="button" id="getlink" value="Get Link To Decklist" onclick="getLinkToDecklistPDF();" class="ui-button ui-widget ui-state-default ui-corner-all">
-                <div id="deckURL"></div>
+                <span><div id="deckURL"></div></span>
+                <input type="button" id="getplaytest" value="Generate Playtest Cards" onclick="openPlayTestWindow();" class="ui-button ui-widget ui-state-default ui-corner-all"></a>
+                <span><div id="deckPlayTestURL"></div></span>
             </form>
             <form id="formupload" enctype="multipart/form-data" method="post">
                 <input type="hidden" id="decklistPDF" name="decklistPDF">
