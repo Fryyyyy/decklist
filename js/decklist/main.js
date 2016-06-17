@@ -159,7 +159,7 @@ String.prototype.capitalize = function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckmain', 'deckside', 'eventformat'];
+    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckname', 'deckdesigner', 'deckmain', 'deckside', 'eventformat'];
 
     // check for event, eventdate, or eventlocation and lock down those input fields
     for (var i = 0; i < params.length; i++) {
@@ -224,24 +224,31 @@ function detectPDFPreviewSupport() {
 
 function addHLTemplateToDL(dl) {
     // dl.addImage(logo, 'JPEG', 30, 17, 70, 40); AusEternal
-    dl.addImage(logo, 'JPEG', 30, 17, 60, 40); // Gas
+    dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
 
     dl.setFontSize(13);
     dl.setFontStyle('bold');
 
     dl.setLineWidth(1);
-    dl.text('Last Name', 115, 30);
-    dl.rect(183, 17, 142, 19);
-    dl.text('First Name', 330, 30);
-    dl.rect(400, 17, 135, 19);
-    dl.text('DCI Number', 540, 30);
-    var x = 620;
+    dl.text('Last Name', 90, 23);
+    dl.rect(163, 10, 140, 19);
+    dl.text('First Name', 310, 23);
+    dl.rect(380, 10, 145, 19);
+    dl.text('DCI Number', 530, 23);
+    var x = 610;
     while (x < 760) {
-        dl.rect(x, 17, 15, 19);  // dci digits
+        dl.rect(x, 10, 15, 19);  // dci digits
         x = x + 15;
     }
     // Event Name, Deck Name, Deck Designer
-    // Date? Event?
+    dl.text('Deck Name', 90, 50);
+    dl.rect(163, 38, 140, 19);
+    dl.text('Deck Designer', 310, 50);
+    dl.rect(402, 38, 123, 19);
+    dl.text('Event', 530, 50);
+    dl.rect(570, 38, 200, 19);
+
+
 
     var i;
     var y;
@@ -478,22 +485,27 @@ function addHLMetadataToDL(dl) {
     dl.setFontStyle('bold');
 
     lastname = $("#lastname").val().capitalize();
-    dl.text(lastname, 188, 30);
+    dl.text(lastname, 165, 23);
 
     firstname = $("#firstname").val().capitalize();
-    dl.text(firstname, 405, 30);
+    dl.text(firstname, 383, 23);
 
     dcinumber = $("#dcinumber").val();
 
     // put the DCI number into the PDF
-    x = 625;
+    x = 614;
     if (dcinumber.length > 0) {
         for (var i = 0; i < dcinumber.length; i++) {
-            dl.text(dcinumber.charAt(i), x, 30);
+            dl.text(dcinumber.charAt(i), x, 23);
             x = x + 15;
         }
     }
+
     dl.setFontStyle('normal');
+
+    dl.text($("#deckname").val().capitalize(), 165, 50);
+    dl.text($("#deckdesigner").val().capitalize(), 404, 50);
+    dl.text($("#event").val().capitalize() + ' (' + $("#eventdate").val() + ')', 572, 50);
 }
 
 function addMetaDataToDL(dl) {
@@ -1174,6 +1186,8 @@ function getLinkToDecklistPDF() {
     deckURL += '&eventdate=' + this.eventdate.value;
     deckURL += '&event=' + $('#event')[0].value;
     deckURL += '&eventlocation=' + this.eventlocation.value;
+    deckURL += '&deckname=' + this.deckname.value;
+    deckURL += '&deckdesigner=' + this.deckdesigner.value;
     deckURL += "&eventformat=" +  $("select[name=eventformat]").val();
     deckURL += '&deckmain='
     if (this.deckmain != []) {
