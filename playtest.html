@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Magic the Gathering Playtest Sheet Generator</title>
+  <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="css/decklist.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui/jquery-ui.min.js"></script>
+
+  <!-- List of all cards (thanks, mtgjson!) -->
+  <script type="text/javascript" src="js/cards/playtest-cards-min.js" ></script>
+
+  <!-- jsPDF and associated libraries -->
+  <script type="text/javascript" src="js/jsPDF-master/jspdf.js"></script>
+  <script type="text/javascript" src="js/jsPDF-master/jspdf.plugin.addimage.js"></script>
+  <script type="text/javascript" src="js/jsPDF-master/jspdf.plugin.standard_fonts_metrics.js"></script>
+  <script type="text/javascript" src="js/jsPDF-master/jspdf.plugin.split_text_to_size.js"></script>
+  <script type="text/javascript" src="js/FileSaver.js-master/FileSaver.js"></script>
+
+    <!-- Code for the website -->
+    <script type="text/javascript" src="js/decklist/playtest.js"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-60118112-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="wrapleft">
+            <div class="left">
+                <form>
+                  <label for="deck">
+                        <span>Deck:</span>
+                        <textarea id="deck">
+1 Island
+1 Swamp
+1 Mountain
+1 Plains
+1 Forest
+                        </textarea>
+                    </label>
+                    <label for="cardentry">
+                        <span>Manual Card Entry:</span>
+                        <input type="text" id="cardentry" style="width: 40%;">
+                        <input type="button" id="cardtodeck" value="↑" class="cardbutton ui-button" role="button" onclick="cardToDeck();">
+                    </label>
+                </form>
+            </div>
+        </div>
+        <div class="right">
+            <h2>
+                Playtest Preview
+            </h2>
+            <div id="playtestpreview">
+                <iframe id="playtest" name="playtest" height="580" width="440"></iframe>
+            </div>
+            <form>
+                <input type="button" id="download" value="Download Playtest Cards" onclick="generatePlaytestPDF('dataurlnewwindow');">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
