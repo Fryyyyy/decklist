@@ -135,7 +135,7 @@ function pdfChangeWait() {
     if (pdfChangeTimer) { clearTimeout(pdfChangeTimer); }
     pdfChangeTimer = setTimeout(generateDecklistPDF, 1500);
 
-    $("#deckURL")[0].innerText = "";
+    $("#URL")[0].innerText = "";
 }
 
 // Good ol' Javascript, not having a capitalize function on string objects
@@ -1188,45 +1188,28 @@ function uploadDecklistPDF() {
     $('#formupload').submit();
 }
 
-function getLinkToDecklistPDF() {
-    var deckURL = '';
-    deckURL += 'http://www.auseternal.com/decklist/index.php?';
-    deckURL += 'firstname=' + this.firstname;
-    deckURL += '&lastname=' + this.lastname;
-    deckURL += '&dcinumber=' + this.dcinumber;
-    deckURL += '&eventdate=' + this.eventdate.value;
-    deckURL += '&event=' + $('#event')[0].value;
-    deckURL += '&eventlocation=' + this.eventlocation.value;
-    deckURL += '&deckname=' + this.deckname.value;
-    deckURL += '&deckdesigner=' + this.deckdesigner.value;
-    deckURL += "&eventformat=" +  $("select[name=eventformat]").val();
-    deckURL += '&deckmain='
-    if (this.deckmain != []) {
-        for (i = 0; i < this.deckmain.length; i++) {
-            if(this.deckmain[i] != '') {
-                var x = encodeURIComponent(this.deckmain[i]);
-                deckURL += x + '%0A';
-            }
-        }
-    }
-    deckURL += '&deckside='
-    if (this.deckside != []) {
-        for (i = 0; i < this.deckside.length; i++) {
-            if(this.deckside[i] != '') {
-                deckURL += encodeURIComponent(this.deckside[i]) + '%0A';
-            }
-        }
-    }
-    $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\'>Copy this link (Deck URL)</a>';
-}
-
 function openDeckWindow(windowType) {
+    maindeck = jQuery.grep(maindeck, function(value) {
+        return value[0] != "";
+    });
+
     var deckURL = '';
     deckURL += windowType + '.html?';
-    deckURL += 'deck=';
+    if(windowType == "index") {
+        deckURL += 'firstname=' + this.firstname;
+        deckURL += '&lastname=' + this.lastname;
+        deckURL += '&dcinumber=' + this.dcinumber;
+        deckURL += '&eventdate=' + this.eventdate.value;
+        deckURL += '&event=' + $('#event')[0].value;
+        deckURL += '&eventlocation=' + this.eventlocation.value;
+        deckURL += '&deckname=' + this.deckname.value;
+        deckURL += '&deckdesigner=' + this.deckdesigner.value;
+        deckURL += "&eventformat=" +  $("select[name=eventformat]").val() + '&';
+    }
+    deckURL += 'deckmain=';
     if (maindeck != []) {
         for (i = 0; i < maindeck.length; i++) {
-            deckURL += encodeURIComponent(maindeck[i][1] + " " + maindeck[i][0]) + '%0A';
+            deckURL += encodeURIComponent(maindeck[i][1] + " " + maindeck[i][0]).replace("'", "%27") + '%0A';
         }
     }
     if (sideboard != []) {
@@ -1235,10 +1218,13 @@ function openDeckWindow(windowType) {
         }
 
         for (i = 0; i < sideboard.length; i++) {
-            deckURL += encodeURIComponent(sideboard[i][1] + " " + sideboard[i][0]) + '%0A';
+            deckURL += encodeURIComponent(sideboard[i][1] + " " + sideboard[i][0]).replace("'", "%27") + '%0A';
         }
     }
-    $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link (' + windowType + ' URL)</a>';
-    // Try and open the window
-    var win = window.open(deckURL, '_blank');
+    $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';
+
+    if(windowType != "index") {
+        // Try and open the window
+        var win = window.open(deckURL, '_blank');
+    }
 }

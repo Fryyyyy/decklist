@@ -36,8 +36,8 @@ function parseGET() {
     var card_name;
     var i;
 
-    if($._GET['deck'] != undefined) {
-        var cards = $._GET['deck'].split("\n");
+    if($._GET['deckmain'] != undefined) {
+        var cards = $._GET['deckmain'].split("\n");
 
         for(i = 0; i < cards.length; i++)
         {

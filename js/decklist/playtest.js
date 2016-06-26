@@ -77,8 +77,8 @@ $(document).ready(function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-    if($._GET['deck'] != undefined) {
-        $('#deck').val( $._GET['deck'] );
+    if($._GET['deckmain'] != undefined) {
+        $('#deck').val( $._GET['deckmain'] );
     }
 
     generatePlaytestPDF();
