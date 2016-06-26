@@ -230,7 +230,7 @@ function detectPDFPreviewSupport() {
 }
 
 function addHLTemplateToDL(dl) {
-    dl.addImage(logo, 'JPEG', 30, 17, 70, 40); // AusEternal
+    dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // AusEternal
     //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
 
     dl.setFontSize(13);
@@ -512,7 +512,11 @@ function addHLMetadataToDL(dl) {
 
     dl.text($("#deckname").val().capitalize(), 165, 50);
     dl.text($("#deckdesigner").val().capitalize(), 404, 50);
-    dl.text($("#event").val().capitalize() + ' (' + $("#eventdate").val() + ')', 572, 50);
+    if($("#eventdate").val() != "") {
+        dl.text($("#event").val().capitalize() + ' (' + $("#eventdate").val() + ')', 572, 50);
+    } else {
+        dl.text($("#event").val().capitalize(), 572, 50);
+    }
 }
 
 function addMetaDataToDL(dl) {
