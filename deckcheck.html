@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Magic the Gathering Playtest Sheet Generator</title>
+  <title>Magic the Gathering Deck Check Helper</title>
   <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="css/decklist.css">
@@ -19,9 +19,7 @@
     <script type="text/javascript" src="js/FileSaver.js-master/FileSaver.js"></script>
 
     <!-- Code for the website -->
-    <script type="text/javascript" src="js/decklist/playtest.js"></script>
-    <!-- List of all cards (thanks, mtgjson!) -->
-    <script type="text/javascript" src="js/cards/playtest-cards-min.js" ></script>
+    <script type="text/javascript" src="js/decklist/deckcheck.js"></script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -36,32 +34,16 @@
 </head>
 
 <body>
+                <form>
+                  <div id="deck"></div>
+                  <div id="sideboard"></div>
+                  <div id="deckcounted"></div>
+                </form>
     <div class="wrapper">
         <div class="wrapleft">
             <div class="left">
-                <form>
-                  <label for="deck">
-                        <span>Deck:</span>
-                        <textarea id="deck"></textarea>
-                    </label>
-                    <label for="cardentry">
-                        <span>Manual Card Entry:</span>
-                        <input type="text" id="cardentry" style="width: 40%;">
-                        <input type="button" id="cardtodeck" value="↑" class="cardbutton ui-button" role="button" onclick="cardToDeck();">
-                    </label>
-                </form>
+
             </div>
-        </div>
-        <div class="right">
-            <h2>
-                Playtest Preview
-            </h2>
-            <div id="playtestpreview">
-                <iframe id="playtest" name="playtest" height="580" width="440"></iframe>
-            </div>
-            <form>
-                <input type="button" id="download" value="Download Playtest Cards" onclick="generatePlaytestPDF('dataurlnewwindow');">
-            </form>
         </div>
     </div>
 </body>

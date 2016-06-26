@@ -352,8 +352,8 @@ function parseDecklist() {
 
     var mtgoRE   = /^(\d+)x*\s(.+)/; // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
 
-    for (i = 0; i < deckmain.length; i++) {
-    if (mtgoRE.exec(deckmain[i]) != null) {
+    for (var i = 0; i < deckmain.length; i++) {
+        if (mtgoRE.exec(deckmain[i]) != null) {
             quantity = mtgoRE.exec(deckmain[i])[1];
             card = mtgoRE.exec(deckmain[i])[2];
 
@@ -402,12 +402,16 @@ function parseDecklist() {
         // Sort the decklist alphabetically, if chosen
         if ( sortorder == 'alphabetically' ) {
             // Add a case insensitive field to sort by
-            for (i = 0; i < deck.length; i++) { deck[i] = [ deck[i][0].toLowerCase(), deck[i][0], deck[i][1] ]; }
+            for (i = 0; i < deck.length; i++) {
+                deck[i] = [ deck[i][0].toLowerCase(), deck[i][0], deck[i][1] ];
+            }
 
             deck.sort();
 
             // After sorting is done, we can remove the lower case index
-            for (i = 0; i < deck.length; i++) { deck[i] = deck[i].splice(1, 2); }
+            for (i = 0; i < deck.length; i++) {
+                deck[i] = deck[i].splice(1, 2);
+            }
         }
         return(deck);
     }

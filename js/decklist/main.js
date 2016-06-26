@@ -20,6 +20,8 @@ $(document).ready(function() {
     $("#downloadcsv").button();
     $('#upload').button();
     $('#getplaytest').button();
+    $('#deckcheck').button();
+    $('#deckcheck').hide();
     $("#sortorderfloat").buttonset();
 
     $("#cardtomain").button();
@@ -185,8 +187,8 @@ function parseGET() {
     }
 
     // load the logo
-    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'gaslogo'; } // if logo isn't specified, use the Gas logo
-
+    //if ($._GET['logo'] == undefined) { $._GET['logo'] = 'gaslogo'; } // if logo isn't specified, use the Gas logo
+    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the Gas logo
     var logos = ['dcilogo', 'auseternal', 'gaslogo'];
 
     for (var i = 0; i < logos.length; i++) {
@@ -203,8 +205,13 @@ function parseGET() {
     }
 
     // make the upload button visible, if uploadURL exists
-    if ($._GET[ "uploadURL" ] != undefined) {
+    if($._GET["uploadURL"] != undefined) {
         $("#upload").css("display", "inline-block");
+    }
+
+    // If the deck is filled in, let's make Deck Check mode available
+    if($._GET["deckmain"] != undefined) {
+        $('#deckcheck').show();
     }
 }
 
@@ -223,8 +230,8 @@ function detectPDFPreviewSupport() {
 }
 
 function addHLTemplateToDL(dl) {
-    // dl.addImage(logo, 'JPEG', 30, 17, 70, 40); AusEternal
-    dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
+    dl.addImage(logo, 'JPEG', 30, 17, 70, 40); // AusEternal
+    //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
 
     dl.setFontSize(13);
     dl.setFontStyle('bold');
@@ -332,8 +339,8 @@ function addHLTemplateToDL(dl) {
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
 function addTemplateToDL(dl) {
     // Add the logo
-    // dl.addImage(logo, 'JPEG', 27, 54, 90, 32); AusEternal
-    dl.addImage(logo, 'JPEG', 35, 34, 60, 60); // Gas
+    dl.addImage(logo, 'JPEG', 27, 54, 90, 32); // AusEternal
+    //dl.addImage(logo, 'JPEG', 35, 34, 60, 60); // Gas
 
     // Create all the rectangles
 
@@ -1206,28 +1213,28 @@ function getLinkToDecklistPDF() {
             }
         }
     }
-    $('#deckURL')[0].innerHTML = '<a href=\'' + deckURL + '\'>Copy this link</a>';
+    $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\'>Copy this link (Deck URL)</a>';
 }
 
-function openPlayTestWindow() {
+function openDeckWindow(windowType) {
     var deckURL = '';
-    deckURL += 'playtest.html?';
-    deckURL += 'deck='
-    if (this.deckmain != []) {
-        for (i = 0; i < this.deckmain.length; i++) {
-            if(this.deckmain[i] != '') {
-                var x = encodeURIComponent(this.deckmain[i]);
-                deckURL += x + '%0A';
-            }
+    deckURL += windowType + '.html?';
+    deckURL += 'deck=';
+    if (maindeck != []) {
+        for (i = 0; i < maindeck.length; i++) {
+            deckURL += encodeURIComponent(maindeck[i][1] + " " + maindeck[i][0]) + '%0A';
         }
     }
-    if (this.deckside != []) {
-        deckURL += '%0A';
-        for (i = 0; i < this.deckside.length; i++) {
-            if(this.deckside[i] != '') {
-                deckURL += encodeURIComponent(this.deckside[i]) + '%0A';
-            }
+    if (sideboard != []) {
+        if(windowType != "playtest") {
+            deckURL += '&deckside='
+        }
+
+        for (i = 0; i < sideboard.length; i++) {
+            deckURL += encodeURIComponent(sideboard[i][1] + " " + sideboard[i][0]) + '%0A';
         }
     }
-    $('#deckPlayTestURL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';
+    $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link (' + windowType + ' URL)</a>';
+    // Try and open the window
+    var win = window.open(deckURL, '_blank');
 }
