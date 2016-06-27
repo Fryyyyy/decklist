@@ -55,7 +55,7 @@ function parseGET() {
                 } else {
                     minusall_textbox = "";
                 }
-                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset_qty(" + j + ", " + card_qty + ");'>";
+                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset_qty(" + j + ", " + card_qty + ", \"deck\");'>";
                 div_ender = "</div>";
 
                 $("#deck").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + card_name + reset_button + div_ender);
@@ -96,9 +96,10 @@ function parseGET() {
                 } else {
                     minusall_textbox = "";
                 }
-                div_ender = card_name + "</div>";
+                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset_qty(" + j + ", " + card_qty + ", \"sideboard\");'>";
+                div_ender = "</div>";
 
-                $("#sideboard").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + div_ender);
+                $("#sideboard").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + card_name + reset_button + div_ender);
 
                 $("#" + j + "div").keyup(function(event) {
                     var div_id = event.target.id.split("div")[0];
@@ -139,6 +140,7 @@ function minusAll(x) {
 
 }
 
-function reset_qty(x, qty) {
+function reset_qty(x, qty, source) {
     $("#" + x + "_box").val(qty);
+    $("#" + x + "div").detach().appendTo("#" + source);
 }
