@@ -55,7 +55,7 @@ function parseGET() {
                 } else {
                     minusall_textbox = "";
                 }
-                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset(" + j + ", " + card_qty + ");'>";
+                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset_qty(" + j + ", " + card_qty + ");'>";
                 div_ender = "</div>";
 
                 $("#deck").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + card_name + reset_button + div_ender);
@@ -139,6 +139,6 @@ function minusAll(x) {
 
 }
 
-function reset(x, qty) {
+function reset_qty(x, qty) {
     $("#" + x + "_box").val(qty);
 }
