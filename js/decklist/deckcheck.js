@@ -55,9 +55,10 @@ function parseGET() {
                 } else {
                     minusall_textbox = "";
                 }
-                div_ender = card_name + "</div>";
+                reset_button = "<input type='button' name='" + j + "_reset' id='" + j + "_reset' value='Reset' onclick='reset(" + j + ", " + card_qty + ");'>";
+                div_ender = "</div>";
 
-                $("#deck").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + div_ender);
+                $("#deck").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + card_name + reset_button + div_ender);
 
                 $("#" + j + "div").keyup(function(event) {
                     var div_id = event.target.id.split("div")[0];
@@ -65,7 +66,12 @@ function parseGET() {
                         minusOne(div_id);
                     } else if(event.keyCode == 50) {
                         minusAll(div_id);
-                        $("#" + (parseInt(div_id) + 1) + "div").focus();
+                        var next_qty_id = (parseInt(div_id) + 1);
+                        while($("#" + next_qty_id + "_box").val() == "0")
+                        {
+                            next_qty_id += 1;
+                        }
+                        $("#" + next_qty_id + "div").focus();
                     }
                 });
                 j++;
@@ -75,7 +81,7 @@ function parseGET() {
     if($._GET['deckside'] != undefined) {
         var cards = $._GET['deckside'].split("\n");
 
-        for(i = 0; i < cards.length; i++ && j++)
+        for(i = 0; i < cards.length; i++)
         {
             if(cards[i] != "") {
                 card_split = proper_split(cards[i], " ", 1);
@@ -93,6 +99,22 @@ function parseGET() {
                 div_ender = card_name + "</div>";
 
                 $("#sideboard").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + div_ender);
+
+                $("#" + j + "div").keyup(function(event) {
+                    var div_id = event.target.id.split("div")[0];
+                    if(event.keyCode == 49) {
+                        minusOne(div_id);
+                    } else if(event.keyCode == 50) {
+                        minusAll(div_id);
+                        var next_qty_id = (parseInt(div_id) + 1);
+                        while($("#" + next_qty_id + "_box").val() == "0")
+                        {
+                            next_qty_id += 1;
+                        }
+                        $("#" + next_qty_id + "div").focus();
+                    }
+                });
+                j++;
             }
         }
     }
@@ -115,4 +137,8 @@ function minusAll(x) {
     $("#" + x + "_box").val(0);
     $("#" + x + "div").detach().appendTo("#deckcounted");
 
+}
+
+function reset(x, qty) {
+    $("#" + x + "_box").val(qty);
 }
