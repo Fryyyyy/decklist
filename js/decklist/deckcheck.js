@@ -49,9 +49,9 @@ function parseGET() {
 
                 div_starter = "<div id='" + j + "div' tabindex='1'>";
                 qty_textbox = "<input type='text' name='" + j + "_box' id='" + j+ "_box' value='" + card_qty + "' disabled size='3'>";
-                minusone_textbox = "<input type='button' name='" + j + "_minusone' id='" + j + "_minusone' value='-1' onclick='minusOne(" + j + ");'>";
+                minusone_textbox = "<input type='button' name='" + j + "_minusone' id='" + j + "_minusone' value='-1' onclick='minusOne(" + j + ", \"deck\");'>";
                 if(card_qty != "1") {
-                    minusall_textbox = "<input type='button' name='" + j + "_minusall' id ='" + j + "_minusall' value='-" + card_qty + "' onclick='minusAll(" + j+ ");'>";
+                    minusall_textbox = "<input type='button' name='" + j + "_minusall' id ='" + j + "_minusall' value='-" + card_qty + "' onclick='minusAll(" + j+ ", \"deck\");'>";
                 } else {
                     minusall_textbox = "";
                 }
@@ -62,10 +62,10 @@ function parseGET() {
 
                 $("#" + j + "div").keyup(function(event) {
                     var div_id = event.target.id.split("div")[0];
-                    if(event.keyCode == 49) {
-                        minusOne(div_id);
-                    } else if(event.keyCode == 50) {
-                        minusAll(div_id);
+                    if(event.keyCode == 49 || event.keyCode == 97) {
+                        minusOne(div_id, 'deck');
+                    } else if(event.keyCode == 50 || event.keyCode == 98) {
+                        minusAll(div_id, 'deck');
                         var next_qty_id = (parseInt(div_id) + 1);
                         while($("#" + next_qty_id + "_box").val() == "0")
                         {
@@ -90,9 +90,9 @@ function parseGET() {
 
                 div_starter = "<div id='" + j+ "div' tabindex='1'>";
                 qty_textbox = "<input type='text' name='" + j + "_box' id='" + j + "_box' value='" + card_qty + "' disabled size='3'>";
-                minusone_textbox = "<input type='button' name='" + j + "_minusone' id='" + j + "_minusone' value='-1' onclick='minusOne(" + j + ");'>";
+                minusone_textbox = "<input type='button' name='" + j + "_minusone' id='" + j + "_minusone' value='-1' onclick='minusOne(" + j + ", \"sideboard\");'>";
                 if(card_qty != "1") {
-                    minusall_textbox = "<input type='button' name='" + j + "_minusall' id ='" + j + "_minusall' value='-" + card_qty + "' onclick='minusAll(" + j + ");'>";
+                    minusall_textbox = "<input type='button' name='" + j + "_minusall' id ='" + j + "_minusall' value='-" + card_qty + "' onclick='minusAll(" + j + ", \"sideboard\");'>";
                 } else {
                     minusall_textbox = "";
                 }
@@ -103,10 +103,10 @@ function parseGET() {
 
                 $("#" + j + "div").keyup(function(event) {
                     var div_id = event.target.id.split("div")[0];
-                    if(event.keyCode == 49) {
-                        minusOne(div_id);
-                    } else if(event.keyCode == 50) {
-                        minusAll(div_id);
+                    if(event.keyCode == 49 || event.keyCode == 97) {
+                        minusOne(div_id, 'sideboard');
+                    } else if(event.keyCode == 50 || event.keyCode == 98) {
+                        minusAll(div_id, 'sideboard');
                         var next_qty_id = (parseInt(div_id) + 1);
                         while($("#" + next_qty_id + "_box").val() == "0")
                         {
@@ -124,23 +124,47 @@ function parseGET() {
     $("#0div").focus();
 }
 
-function minusOne(x) {
+function minusOne(x, source) {
     var value = (parseInt($("#" + x + "_box").val(), 10));
     $("#" + x + "_box").val((value - 1) < 0 ? 0 : (value - 1));
 
     // If no cards left, move to the bottom
     if($("#" + x + "_box").val() == "0") {
-        $("#" + x + "div").detach().appendTo("#deckcounted");
+        $("#" + x + "div").detach().appendTo("#" + source + "counted");
+        // Focus on the next available card
+        var next_qty_id = (parseInt(x) + 1);
+        while($("#" + next_qty_id + "_box").val() == "0")
+        {
+            next_qty_id += 1;
+        }
+        $("#" + next_qty_id + "div").focus();
     }
 }
 
-function minusAll(x) {
+function minusAll(x, source) {
     $("#" + x + "_box").val(0);
-    $("#" + x + "div").detach().appendTo("#deckcounted");
+    $("#" + x + "div").detach().appendTo("#" + source + "counted");
 
 }
 
 function reset_qty(x, qty, source) {
+    if($("#" + x + "_box").val() == qty) { return; }
     $("#" + x + "_box").val(qty);
-    $("#" + x + "div").detach().appendTo("#" + source);
+
+    if(x == 0)
+    {
+        var next_qty_id = 1;
+        while($("#" + next_qty_id + "_box").val() == "0")
+        {
+            next_qty_id += 1;
+        }
+        $("#" + x + "div").detach().insertBefore("#" + next_qty_id + "div");
+    } else {
+        var next_qty_id = (parseInt(x) - 1);
+        while($("#" + next_qty_id + "_box").val() == "0")
+        {
+            next_qty_id -= 1;
+        }
+        $("#" + x + "div").detach().insertAfter("#" + next_qty_id + "div");
+    }
 }
