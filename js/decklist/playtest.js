@@ -1,5 +1,6 @@
 var decklistChangeTimer = null;
 var pdfChangeTimer = null;
+var cardQuantity = 1;
 
 $(document).ready(function() {
     // bind events to all the input fields on the left side, to generate a PDF on change

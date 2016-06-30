@@ -1194,7 +1194,7 @@ function openDeckWindow(windowType) {
     });
 
     var deckURL = '';
-    deckURL += windowType + '.html?';
+    deckURL += windowType + '.php?';
     if(windowType == "index") {
         deckURL += 'firstname=' + this.firstname;
         deckURL += '&lastname=' + this.lastname;

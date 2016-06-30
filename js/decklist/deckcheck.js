@@ -128,8 +128,9 @@ function minusOne(x, source) {
     var value = (parseInt($("#" + x + "_box").val(), 10));
     $("#" + x + "_box").val((value - 1) < 0 ? 0 : (value - 1));
 
-    // If no cards left, move to the bottom
-    if($("#" + x + "_box").val() == "0") {
+    // If no cards left, move to the bottom (if not already there)
+    if(($("#" + x + "_box").val() == "0") && (($("#deckcounted").has($("#" + x + "div")).length == 0) && ($("#sideboardcounted").has($("#" + x + "div")).length == 0)))
+    {
         $("#" + x + "div").detach().appendTo("#" + source + "counted");
         // Focus on the next available card
         var next_qty_id = (parseInt(x) + 1);
@@ -143,7 +144,11 @@ function minusOne(x, source) {
 
 function minusAll(x, source) {
     $("#" + x + "_box").val(0);
-    $("#" + x + "div").detach().appendTo("#" + source + "counted");
+    // Move it to the bottom (if not already there)
+    if(($("#deckcounted").has($("#" + x + "div")).length == 0) && ($("#sideboardcounted").has($("#" + x + "div")).length == 0))
+    {
+        $("#" + x + "div").detach().appendTo("#" + source + "counted");
+    }
 
 }
 
