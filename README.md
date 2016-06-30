@@ -1,4 +1,4 @@
 decklist
 ========
 
-The code behind decklist.org, which generates DCI Registration Sheets.
+The code behind auseternal.com/decklist (forked from decklist.org), which generates DCI Registration Sheets.
