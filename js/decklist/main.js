@@ -1188,6 +1188,10 @@ function uploadDecklistPDF() {
     $('#formupload').submit();
 }
 
+function fixForURL(value) {
+    return encodeURIComponent(value).replace("'", "%27");
+}
+
 function openDeckWindow(windowType) {
     maindeck = jQuery.grep(maindeck, function(value) {
         return value[0] != "";
@@ -1196,20 +1200,20 @@ function openDeckWindow(windowType) {
     var deckURL = '';
     deckURL += windowType + '.php?';
     if(windowType == "index") {
-        deckURL += 'firstname=' + this.firstname;
-        deckURL += '&lastname=' + this.lastname;
-        deckURL += '&dcinumber=' + this.dcinumber;
-        deckURL += '&eventdate=' + this.eventdate.value;
-        deckURL += '&event=' + $('#event')[0].value;
-        deckURL += '&eventlocation=' + this.eventlocation.value;
-        deckURL += '&deckname=' + this.deckname.value;
-        deckURL += '&deckdesigner=' + this.deckdesigner.value;
-        deckURL += "&eventformat=" +  $("select[name=eventformat]").val() + '&';
+        deckURL += 'firstname=' + fixForURL(this.firstname);
+        deckURL += '&lastname=' + fixForURL(this.lastname);
+        deckURL += '&dcinumber=' + fixForURL(this.dcinumber);
+        deckURL += '&eventdate=' + fixForURL(this.eventdate.value);
+        deckURL += '&event=' + fixForURL($('#event')[0].value);
+        deckURL += '&eventlocation=' + fixForURL(this.eventlocation.value);
+        deckURL += '&deckname=' + fixForURL(this.deckname.value);
+        deckURL += '&deckdesigner=' + fixForURL(this.deckdesigner.value);
+        deckURL += "&eventformat=" +  fixForURL($("select[name=eventformat]").val()) + '&';
     }
     deckURL += 'deckmain=';
     if (maindeck != []) {
         for (i = 0; i < maindeck.length; i++) {
-            deckURL += encodeURIComponent(maindeck[i][1] + " " + maindeck[i][0]).replace("'", "%27") + '%0A';
+            deckURL += fixForURL(maindeck[i][1] + " " + maindeck[i][0]) + '%0A';
         }
     }
     if (sideboard != []) {
@@ -1218,7 +1222,7 @@ function openDeckWindow(windowType) {
         }
 
         for (i = 0; i < sideboard.length; i++) {
-            deckURL += encodeURIComponent(sideboard[i][1] + " " + sideboard[i][0]).replace("'", "%27") + '%0A';
+            deckURL += fixForURL(sideboard[i][1] + " " + sideboard[i][0]) + '%0A';
         }
     }
     $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';

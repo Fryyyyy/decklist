@@ -77,7 +77,7 @@ function parseDecklist() {
         // Assume anything else is 1x cardname
         else {
             //addUnparseable(deckmain[i]);
-            if(deckmain[i] != '') {
+            if(deckmain[i].trim() != '') {
                 card = deckmain[i];
                 quantity = '1';
                 recognizeCard(card, quantity);

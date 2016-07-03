@@ -2,6 +2,36 @@ $(document).ready(function() {
     parseGET();
 });
 
+$(document).keydown(function(e) {
+    var id = parseInt($(":focus")[0].id);
+    if(e.which == 38 || e.which == 40) {
+        // If we're in the counted section, don't do anything?
+        // Maybe change this later
+        if($("#" + id + "_box").val() == 0) {
+            return true;
+        }
+        if(e.which == 38) {
+            // Up arrow
+            var next_qty_id = id - 1;
+            while($("#" + next_qty_id + "_box").val() == "0")
+            {
+                next_qty_id -= 1;
+            }
+        } else if(e.which == 40) {
+            // Down arrow
+            var next_qty_id = id + 1;
+            while($("#" + next_qty_id + "_box").val() == "0")
+            {
+                next_qty_id += 1;
+            }
+        }
+        $("#" + next_qty_id + "div").focus();
+        e.preventDefault();
+        e.stopPropagation()
+        return false;
+    }
+});
+
 (function($) {
     $._GET = (function(a) {
         if (a == '') return {};
@@ -101,13 +131,13 @@ function parseGET() {
 
                 $("#sideboard").append(div_starter + qty_textbox + minusone_textbox + minusall_textbox + card_name + reset_button + div_ender);
 
-                $("#" + j + "div").keyup(function(event) {
-                    var div_id = event.target.id.split("div")[0];
-                    if(event.keyCode == 49 || event.keyCode == 97) {
+                $("#" + j + "div").keydown(function(e) {
+                    var div_id = parseInt(e.target.id);
+                    if(e.which == 49 || e.which == 97) {
                         minusOne(div_id, 'sideboard');
-                    } else if(event.keyCode == 50 || event.keyCode == 98) {
+                    } else if(e.which == 50 || e.which == 98) {
                         minusAll(div_id, 'sideboard');
-                        var next_qty_id = (parseInt(div_id) + 1);
+                        var next_qty_id = (div_id + 1);
                         while($("#" + next_qty_id + "_box").val() == "0")
                         {
                             next_qty_id += 1;
@@ -166,10 +196,31 @@ function reset_qty(x, qty, source) {
         $("#" + x + "div").detach().insertBefore("#" + next_qty_id + "div");
     } else {
         var next_qty_id = (parseInt(x) - 1);
-        while($("#" + next_qty_id + "_box").val() == "0")
-        {
-            next_qty_id -= 1;
+        var didIncrement = 0;
+
+        // What if the card is the first card in the sideboard
+        // Find the next card that is in the sideboard, and insert before it
+        // Super ugly :(
+        if(source == "sideboard") {
+            while((($("#deck").has($("#" + next_qty_id + "div")).length != 0) || ($("#deckcounted").has($("#" + next_qty_id + "div")).length != 0) || ($("#sideboardcounted").has($("#" + next_qty_id + "div")).length != 0)) || next_qty_id == parseInt(x)) {
+                    next_qty_id += 1;
+                    didIncrement = 1;
+            }
+
+            if($("#" + next_qty_id + "div").length == 0) {
+                // Did we run off the end?
+                $("#" + x + "div").detach().prependTo("#sideboard");
+            } else if(didIncrement) {
+                $("#" + x + "div").detach().insertBefore("#" + next_qty_id + "div");
+            } else {
+                $("#" + x + "div").detach().insertAfter("#" + next_qty_id + "div");
+            }
+        } else {
+            while(($("#" + next_qty_id + "_box").val() == "0") && (next_qty_id != parseInt(x)))
+            {
+                next_qty_id -= 1;
+            }
+            $("#" + x + "div").detach().insertAfter("#" + next_qty_id + "div");
         }
-        $("#" + x + "div").detach().insertAfter("#" + next_qty_id + "div");
     }
 }
