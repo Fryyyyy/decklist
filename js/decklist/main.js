@@ -229,8 +229,19 @@ function detectPDFPreviewSupport() {
     }
 }
 
+function addLogoToDL(dl) {
+    for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
+        dl.setPage(i);
+        if($("select[name=eventformat]").val() == "Highlander") {
+            dl.addImage(logo, 'JPEG', 30, 17, 50, 40);
+        } else {
+            dl.addImage(logo, 'JPEG', 27, 30, 90, 70);
+        }
+    }
+}
+
 function addHLTemplateToDL(dl) {
-    dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // AusEternal
+    //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // AusEternal
     //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
 
     dl.setFontSize(13);
@@ -339,7 +350,7 @@ function addHLTemplateToDL(dl) {
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
 function addTemplateToDL(dl) {
     // Add the logo
-    dl.addImage(logo, 'JPEG', 27, 54, 90, 32); // AusEternal
+    //dl.addImage(logo, 'JPEG', 27, 54, 90, 32); // AusEternal
     //dl.addImage(logo, 'JPEG', 35, 34, 60, 60); // Gas
 
     // Create all the rectangles
@@ -700,6 +711,27 @@ function addCardsToDL(dl) {
     }
 }
 
+function addQRCodeToPDF(dl) {
+    var qrcode = kjua({
+        render: 'image',
+        crisp: 'true',
+        size: '150',
+        ecLevel: 'L',
+        minVersion: 15,
+        quiet: 0,
+        rounded: 0,
+        text: openDeckWindow('qrcode')
+    });
+    for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
+        dl.setPage(i);
+        if($("select[name=eventformat]").val() == "Highlander") {
+            dl.addImage(qrcode, 'PNG', 30, 10, 52, 52);
+        } else {
+            dl.addImage(qrcode, 'PNG', 30, 17, 90, 90);
+        }
+    }
+}
+
 function generateDecklistPDF(outputtype) {
     // default type is dataurlstring (live preview)
     // stupid shitty javascript and its lack of default arguments
@@ -733,6 +765,8 @@ function generateDecklistPDF(outputtype) {
 
     // Output the dl as a blob to add to the DOM
     if (outputtype == 'dataurlstring') {
+        //addQRCodeToPDF(dl);
+        addLogoToDL(dl);
         domdl = dl.output('dataurlstring');
 
         // Put the DOM into the live preview iframe
@@ -792,6 +826,7 @@ function generateDecklistPDF(outputtype) {
         aLink.dispatchEvent(evt);
     }
     else {
+        addQRCodeToPDF(dl);
         dl.save('decklist.pdf');
     }
 }
@@ -1198,8 +1233,13 @@ function openDeckWindow(windowType) {
     });
 
     var deckURL = '';
-    deckURL += windowType + '.php?';
-    if(windowType == "index") {
+    var pageName = windowType;
+    if(windowType == 'qrcode') {
+        pageName = 'index';
+        deckURL = 'http://www.auseternal.com/decklist/'
+    }
+    deckURL += pageName + '.php?';
+    if(windowType == "index" || windowType == 'qrcode') {
         deckURL += 'firstname=' + fixForURL(this.firstname);
         deckURL += '&lastname=' + fixForURL(this.lastname);
         deckURL += '&dcinumber=' + fixForURL(this.dcinumber);
@@ -1225,6 +1265,11 @@ function openDeckWindow(windowType) {
             deckURL += fixForURL(sideboard[i][1] + " " + sideboard[i][0]) + '%0A';
         }
     }
+
+    if(windowType == 'qrcode') {
+        return deckURL;
+    }
+
     $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';
 
     if(windowType != "index") {
