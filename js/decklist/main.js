@@ -1240,9 +1240,9 @@ function openDeckWindow(windowType) {
     }
     deckURL += pageName + '.php?';
     if(windowType == "index" || windowType == 'qrcode') {
-        deckURL += 'firstname=' + fixForURL(this.firstname);
-        deckURL += '&lastname=' + fixForURL(this.lastname);
-        deckURL += '&dcinumber=' + fixForURL(this.dcinumber);
+        deckURL += 'firstname=' + fixForURL($("#firstname")[0].value);
+        deckURL += '&lastname=' + fixForURL($("#lastname")[0].value);
+        deckURL += '&dcinumber=' + fixForURL($("#dcinumber")[0].value);
         deckURL += '&eventdate=' + fixForURL(this.eventdate.value);
         deckURL += '&event=' + fixForURL($('#event')[0].value);
         deckURL += '&eventlocation=' + fixForURL(this.eventlocation.value);
