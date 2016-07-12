@@ -43,8 +43,13 @@ $(document).ready(function() {
             }
         },
         response: function(event, ui) {
-            ui.content.sort(function(a, b){
-                return ((a.label < b.label) ? -1 : ((a.label > b.label) ? 1 : 0));
+            ui.content.sort(function(a, b) {
+                var n1 = cards[(a.label).toLowerCase()]['n'];
+                var n2 = cards[(b.label).toLowerCase()]['n'];
+                var t1 = cards[(a.label).toLowerCase()]['t'];
+                var t2 = cards[(b.label).toLowerCase()]['t'];
+                return (t1 > t2 ? -1 : t1 < t2 ? 1 :
+                        n1 < n2 ? -1 : n1 > n2 ? 1 : 0);
             });
         }
     }).data('ui-autocomplete')._renderItem = function( ul, item ) {

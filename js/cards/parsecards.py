@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
-import sys
+import json, ast
 
 # Just FYI!
 # b (banned) = [smlv] (standard, modern, legacy, vintage)
@@ -10,6 +9,7 @@ import sys
 # m (CMC) = N  (Split = 98, Land = 99)
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
 # r (restricted) = [v] (vintage)
+# t (tally) = number of times printed
 
 FORMATS = ('Standard', 'Modern', 'Legacy', 'Vintage')
 
@@ -58,7 +58,8 @@ for card in cards:
     ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8').lower()
 
     # Skip tokens
-    if cards[card]['layout'] == 'token': continue
+    if cards[card]['layout'] == 'token':
+        continue
 
     # Create an entry in the output dictionary
     ocards[ocard] = {}
@@ -76,20 +77,28 @@ for card in cards:
     # Lands and (noncolored) artifacts are special
     if 'Land' in cards[card]['types']:
         ocards[ocard]['c'] = 'Z' # Sort lands last
-    elif (('Artifact' in cards[card]['types']) and ('colors' not in cards[card])):
+    elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
         ocards[ocard]['c'] = 'G'
 
     # Make the colors shorter
-    if ('colors' not in cards[card]): pass
-    elif len(cards[card]['colors']) > 1:      ocards[ocard]['c'] = 'F'    # gold
-    elif cards[card]['colors'] == ['White']:  ocards[ocard]['c'] = 'A'
-    elif cards[card]['colors'] == ['Blue']:   ocards[ocard]['c'] = 'B'
-    elif cards[card]['colors'] == ['Black']:  ocards[ocard]['c'] = 'C'
-    elif cards[card]['colors'] == ['Red']:    ocards[ocard]['c'] = 'D'
-    elif cards[card]['colors'] == ['Green']:  ocards[ocard]['c'] = 'E'
+    if 'colors' not in cards[card]:
+        pass
+    elif len(cards[card]['colors']) > 1:
+        ocards[ocard]['c'] = 'F'    # gold
+    elif cards[card]['colors'] == ['White']:
+        ocards[ocard]['c'] = 'A'
+    elif cards[card]['colors'] == ['Blue']:
+        ocards[ocard]['c'] = 'B'
+    elif cards[card]['colors'] == ['Black']:
+        ocards[ocard]['c'] = 'C'
+    elif cards[card]['colors'] == ['Red']:
+        ocards[ocard]['c'] = 'D'
+    elif cards[card]['colors'] == ['Green']:
+        ocards[ocard]['c'] = 'E'
 
     # Now try to deal with CMC
-    if 'cmc' not in cards[card]: ocards[ocard]['m'] = 99
+    if 'cmc' not in cards[card]:
+        ocards[ocard]['m'] = 99
     else: ocards[ocard]['m'] = cards[card]['cmc']
 
     # Add it into the file if the banned list isn't empty
@@ -104,6 +113,10 @@ for card in cards:
     # Check highlander points
     ocards[ocard]['p'] = hlcards.get(card, 0)
 
+    # Set tally
+    printings = ast.literal_eval(str(cards[card].get("printings", [])))
+    ocards[ocard]['t'] = len(printings)
+
     # Now to handle split cards (ugh)
     if 'names' in cards[card]:
         name = " // ".join(cards[card]['names'])
@@ -113,9 +126,11 @@ for card in cards:
         ocards[ocard]['c'] = 'S'
         ocards[ocard]['m'] = 98
         ocards[ocard]['n'] = name
+        ocards[ocard]['t'] = 0
 
         legality = getLegalities(card, cards)
-        if legality != "": ocards[ocard]['b'] = legality
+        if legality != "":
+            ocards[ocard]['b'] = legality
 
 
 # Print out the full list of cards

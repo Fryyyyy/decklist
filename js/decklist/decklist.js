@@ -33,6 +33,7 @@ function parseDecklist() {
     // Loop through all the cards in the main deck field
     in_sb = false;
     for (i = 0; i < deckmain.length; i++) {
+        deckmain[i] = deckmain[i].replace("\"", "");
         // Parse for Magic Workstation style deck
         if (mwsRE.exec(deckmain[i]) != null) {
             quantity = mwsRE.exec(deckmain[i])[1];
@@ -87,6 +88,7 @@ function parseDecklist() {
 
     // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO style entries
     for (i = 0; i < deckside.length; i++) {
+        deckside[i] = deckside[i].replace("\"", "");
         // Parse for MTGO/TappedOut style decks
         if (mtgoRE.exec(deckside[i]) != null) {
             quantity = mtgoRE.exec(deckside[i])[1];
