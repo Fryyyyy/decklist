@@ -254,6 +254,11 @@ function sortDecklist(deck, sortorder) {
       if (lcard in cards) { cmc = cards[ lcard ]['m']; }
       else { cmc = 100; } // Unknown
 
+      // Break out no-mana-cost cards that aren't lands
+      if(cmc == 99 && cards[lcard]['c'] != 'Z') {
+        cmc -= 1;
+      }
+
       // Convert the CMC to a string, and pad zeroes (grr Javascript)
       cmc = cmc.toString();
       if ( cmc.length == 1 ) { cmc = '00' + cmc; }
