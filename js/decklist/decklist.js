@@ -123,6 +123,10 @@ function parseDecklist() {
         maindeck = sortDecklist(maindeck, 'numerically');
         sideboard = sortDecklist(sideboard, 'alphabetically');
     }
+    else if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder6' ) { // type
+        maindeck = sortDecklist(maindeck, 'type');
+        sideboard = sortDecklist(sideboard, 'alphabetically');
+    }
 
     // Check the card name against the card database. If it exists, add it to the
     // appropriate list (main or side), otherwise add it to the unrecognized map.
@@ -256,7 +260,7 @@ function sortDecklist(deck, sortorder) {
 
       // Break out no-mana-cost cards that aren't lands
       if(cmc == 99 && cards[lcard]['c'] != 'Z') {
-        cmc -= 1;
+        cmc = -1;
       }
 
       // Convert the CMC to a string, and pad zeroes (grr Javascript)
@@ -290,7 +294,7 @@ function sortDecklist(deck, sortorder) {
 
       cmc = cmc_to_cards_keys[i];
 
-      cmc_to_cards[ cmc ].sort();   // cmc_to_cards[3]
+      cmc_to_cards[ cmc ].sort();
 
       for (j = 0; j < cmc_to_cards[cmc].length; j++) {
         card = cmc_to_cards[cmc][j][1];
@@ -320,6 +324,64 @@ function sortDecklist(deck, sortorder) {
 
     // After sorting is done, we can remove the lower case index
     for (i = 0; i < deck.length; i++) { deck[i] = [ deck[i][2], deck[i][0] ] }
+  }
+
+  // Sort the decklist by type, if chosen
+  // Basically the same as color
+  else if ( sortorder == 'type' ) {
+    var type_to_cards = {};
+
+    for (i = 0; i < deck.length; i++) {
+
+      // We're going to search by lower case
+      var lcard = deck[i][0].toLowerCase();
+
+      // Grab the card's color
+      if (lcard in cards) { type = cards[ lcard ]['y']; }
+      else { type = 'X'; } // Unknown
+
+      // Create the color subarray
+      if ( !(type in type_to_cards ) ) { type_to_cards[type] = []; }
+
+      // Fix the Aetherling issue until the PDF things supports it
+      lcard = lcard.replace('\u00c6', 'Ae').replace('\u00e6', 'ae');
+      deck[i][0] = deck[i][0].replace('\u00c6', 'Ae').replace('\u00e6', 'ae');
+
+      // Add the card to that array, including lower-case (only used for sorting)
+      type_to_cards[type].push( [ lcard, deck[i][0], deck[i][1] ] );
+
+    }
+
+    // Get the list of colors in the deck
+    type_to_cards_keys = Object.keys(type_to_cards).sort();
+
+    // Sort each subcolor, then append them to the final array
+    deck = []
+    for (i = 0; i < type_to_cards_keys.length; i++) {
+      // Push a blank entry onto deck (to separate types)
+      // unless the deck is empty
+      if (deck.length !== 0) {
+        deck.push(['', 0]);
+      }
+
+      type = type_to_cards_keys[i];
+
+      type_to_cards[ type ].sort();
+
+      for (j = 0; j < type_to_cards[type].length; j++) {
+        card = type_to_cards[type][j][1];
+        quantity = type_to_cards[type][j][2];
+
+        deck.push([card, quantity]);
+      }
+    }
+
+    // We must clear out the 32nd entry, if it's blank, as it's at the top of the 2nd column
+    if (deck.length > 31) {
+      if (deck[31][1] == 0) {
+        deck.splice(31, 1);
+      }
+    }
   }
 
   // Get the card's true English name (ignoring any particular capitalization that someone may have done)

@@ -10,6 +10,7 @@ import json, ast
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
 # r (restricted) = [v] (vintage)
 # t (tally) = number of times printed
+# y (types) = a(rtifact or enchantment) / c(reature) / i(nstant or sorcery) / p(laneswalker) / z (land)
 
 FORMATS = ('Standard', 'Modern', 'Legacy', 'Vintage')
 
@@ -79,6 +80,18 @@ for card in cards:
         ocards[ocard]['c'] = 'Z' # Sort lands last
     elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
         ocards[ocard]['c'] = 'G'
+
+    # Types for sorting
+    if 'Land' in cards[card]['types']:
+        ocards[ocard]['y'] = 'z'
+    elif 'Creature' in cards[card]['types']:
+        ocards[ocard]['y'] = 'c'
+    elif 'Artifact' in cards[card]['types'] or 'Enchant' in cards[card]['types']:
+        ocards[ocard]['y'] = 'a'
+    elif 'Instant' in cards[card]['types'] or 'Sorcery' in cards[card]['types']:
+        ocards[ocard]['y'] = 's'
+    elif 'Planeswalker' in cards[card]['types']:
+        ocards[ocard]['y'] = 'p'
 
     # Make the colors shorter
     if 'colors' not in cards[card]:
