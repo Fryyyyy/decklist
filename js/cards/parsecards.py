@@ -55,6 +55,9 @@ ptcards = {}
 # Okay, we need the colors but in a much shorter format
 for card in cards:
 
+    if (cards[card].get('layout', '') ==  "meld" or cards[card].get('layout', '') == "double-faced") and cards[card].get('manaCost', '') == '':
+        continue
+
     # We're going to store them in lowercase
     ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8').lower()
 
@@ -132,18 +135,19 @@ for card in cards:
 
     # Now to handle split cards (ugh)
     if 'names' in cards[card]:
-        name = " // ".join(cards[card]['names'])
-        ocard = name.lower().replace(u'\xc6', u'\xe6')   # Just like a real card
+        if cards[card]['layout'] == "split":
+            name = " // ".join(cards[card]['names'])
+            ocard = name.lower().replace(u'\xc6', u'\xe6')   # Just like a real card
 
-        ocards[ocard] = {}
-        ocards[ocard]['c'] = 'S'
-        ocards[ocard]['m'] = 98
-        ocards[ocard]['n'] = name
-        ocards[ocard]['t'] = 0
+            ocards[ocard] = {}
+            ocards[ocard]['c'] = 'S'
+            ocards[ocard]['m'] = 98
+            ocards[ocard]['n'] = name
+            ocards[ocard]['t'] = 0
 
-        legality = getLegalities(card, cards)
-        if legality != "":
-            ocards[ocard]['b'] = legality
+            legality = getLegalities(card, cards)
+            if legality != "":
+                ocards[ocard]['b'] = legality
 
 
 # Print out the full list of cards
