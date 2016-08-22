@@ -23,6 +23,8 @@ Strip Mine 2
 Tolarian Academy 2
 Balance 1
 Birthing Pod 1
+Crop Rotation 1
+Dark Petition 1
 Dig Through Time 1
 Enlightened Tutor 1
 Fastbond 1
@@ -32,12 +34,13 @@ Gifts Ungiven 1
 Green Sun's Zenith 1
 Hermit Druid 1
 Intuition 1
+Jace, the Mind Sculptor 1
 Karakas 1
 Lim-Dul's Vault 1
 Mana Drain 1
 Mana Vault 1
-Jace, the Mind Sculptor 1
 Muddle the Mixture 1
+Natural Order 1
 Oath of Druids 1
 Memory Jar 1
 Merchant Scroll 1

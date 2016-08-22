@@ -33,7 +33,7 @@ $(document).ready(function() {
 
     $("#cardentry").autocomplete({
         autoFocus: true,
-        delay: 100,
+        delay: 500,
         source: cardNames,
         search: function(event, ui) {
             if(numberRegExp.test(event.target.value)) {
@@ -48,6 +48,16 @@ $(document).ready(function() {
                 var n2 = cards[(b.label).toLowerCase()]['n'];
                 var t1 = cards[(a.label).toLowerCase()]['t'];
                 var t2 = cards[(b.label).toLowerCase()]['t'];
+
+                // Float cards legal in the format to the top
+                var formatInitial = $("select[name=eventformat]").val().charAt(0).toLowerCase();
+                if(cards[(a.label).toLowerCase()]['b'].indexOf(formatInitial) != -1) {
+                    t1 -= 100;
+                }
+                if(cards[(b.label).toLowerCase()]['b'].indexOf(formatInitial) != -1) {
+                    t2 -= 100;
+                }
+
                 return (t1 > t2 ? -1 : t1 < t2 ? 1 :
                         n1 < n2 ? -1 : n1 > n2 ? 1 : 0);
             });
@@ -826,13 +836,15 @@ function generateDecklistPDF(outputtype) {
         var aLink = document.createElement('a');
         var evt = document.createEvent("HTMLEvents");
         evt.initEvent("click");
-        aLink.download = 'decklist.csv';
+        //aLink.download = 'decklist.csv';
+        aLink.download = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.csv';
         aLink.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
         aLink.dispatchEvent(evt);
     }
     else {
         addQRCodeToPDF(dl);
-        dl.save('decklist.pdf');
+        filename = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.pdf';
+        dl.save(filename);
     }
 }
 

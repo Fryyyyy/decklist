@@ -10,7 +10,7 @@ import json, ast
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
 # r (restricted) = [v] (vintage)
 # t (tally) = number of times printed
-# y (types) = a(rtifact or enchantment) / c(reature) / i(nstant or sorcery) / p(laneswalker) / z (land)
+# y (types) = a(rtifact or enchantment) / c(reature) / s(orcery or instant) / p(laneswalker) / z (land)
 
 FORMATS = ('Standard', 'Modern', 'Legacy', 'Vintage')
 
@@ -55,8 +55,10 @@ ptcards = {}
 # Okay, we need the colors but in a much shorter format
 for card in cards:
 
-    if (cards[card].get('layout', '') ==  "meld" or cards[card].get('layout', '') == "double-faced") and cards[card].get('manaCost', '') == '':
-        continue
+    if (cards[card].get('layout', '') ==  "meld" or cards[card].get('layout', '') == "double-faced"):
+        if type(cards[card].get('names', '')) is list:
+             if (cards[card].get('names'))[0] != cards[card].get('name', ''):
+                continue
 
     # We're going to store them in lowercase
     ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8').lower()
