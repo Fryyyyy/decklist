@@ -193,7 +193,11 @@ function reset_qty(x, qty, source) {
         {
             next_qty_id += 1;
         }
-        $("#" + x + "div").detach().insertBefore("#" + next_qty_id + "div");
+        if((source == "deck") && ($("#deck").has($("#" + next_qty_id + "div")).length == 0)) {
+            $("#" + x + "div").detach().appendTo($("#deck"));
+        } else {
+            $("#" + x + "div").detach().insertBefore("#" + next_qty_id + "div");
+        }
     } else {
         var next_qty_id = (parseInt(x) - 1);
         var didIncrement = 0;
