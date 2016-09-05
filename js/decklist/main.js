@@ -5,6 +5,7 @@
 var decklistChangeTimer = null;
 var pdfChangeTimer = null;
 var cardQuantity = 1;
+var newDeckURL = '';
 
 // When the page loads, generate a blank deck list preview
 $(document).ready(function() {
@@ -726,7 +727,7 @@ function addCardsToDL(dl) {
     }
 }
 
-function addQRCodeToPDF(dl) {
+function addQRCodeToPDF(dl, bitlyURL) {
     var qrcode = kjua({
         render: 'image',
         crisp: 'true',
@@ -735,7 +736,7 @@ function addQRCodeToPDF(dl) {
         minVersion: 15,
         quiet: 0,
         rounded: 0,
-        text: openDeckWindow('qrcode')
+        text: bitlyURL
     });
     for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
         dl.setPage(i);
@@ -842,10 +843,20 @@ function generateDecklistPDF(outputtype) {
         aLink.dispatchEvent(evt);
     }
     else {
-        addQRCodeToPDF(dl);
         filename = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.pdf';
-        dl.save(filename);
+        savePDF(dl, filename);
     }
+}
+
+function savePDF(dl, filename) {
+    deckURL = openDeckWindow('qrcode');
+    getBitlyURL(deckURL, function(returndata) {
+        if(returndata.status_code == 200) {
+            newDeckURL = returndata.data.url;
+            addQRCodeToPDF(dl, newDeckURL);
+            dl.save(filename);
+        }
+    });
 }
 
 // performs a number of checks against the values filled out in the fields
@@ -1244,6 +1255,15 @@ function fixForURL(value) {
     return encodeURIComponent(value).replace("'", "%27");
 }
 
+function getBitlyURL(deckURL, callback) {
+    $.getJSON('shorten.php?',
+    {
+         deckurl: deckURL
+    }, function(returndata) {
+        callback(returndata);
+    });
+}
+
 function openDeckWindow(windowType) {
     maindeck = jQuery.grep(maindeck, function(value) {
         return value[0] != "";
@@ -1257,20 +1277,20 @@ function openDeckWindow(windowType) {
     }
     deckURL += pageName + '.php?';
     if(windowType == "index" || windowType == 'qrcode') {
-        deckURL += 'firstname=' + fixForURL($("#firstname")[0].value);
-        deckURL += '&lastname=' + fixForURL($("#lastname")[0].value);
-        deckURL += '&dcinumber=' + fixForURL($("#dcinumber")[0].value);
-        deckURL += '&eventdate=' + fixForURL(this.eventdate.value);
-        deckURL += '&event=' + fixForURL($('#event')[0].value);
-        deckURL += '&eventlocation=' + fixForURL(this.eventlocation.value);
-        deckURL += '&deckname=' + fixForURL(this.deckname.value);
-        deckURL += '&deckdesigner=' + fixForURL(this.deckdesigner.value);
-        deckURL += "&eventformat=" +  fixForURL($("select[name=eventformat]").val()) + '&';
+        deckURL += 'firstname=' + $("#firstname")[0].value;
+        deckURL += '&lastname=' + $("#lastname")[0].value;
+        deckURL += '&dcinumber=' + $("#dcinumber")[0].value;
+        deckURL += '&eventdate=' + this.eventdate.value;
+        deckURL += '&event=' + $('#event')[0].value;
+        deckURL += '&eventlocation=' + this.eventlocation.value;
+        deckURL += '&deckname=' + this.deckname.value;
+        deckURL += '&deckdesigner=' + this.deckdesigner.value;
+        deckURL += "&eventformat=" +  $("select[name=eventformat]").val() + '&';
     }
     deckURL += 'deckmain=';
     if (maindeck != []) {
         for (i = 0; i < maindeck.length; i++) {
-            deckURL += fixForURL(maindeck[i][1] + " " + maindeck[i][0]) + '%0A';
+            deckURL += maindeck[i][1] + " " + maindeck[i][0] + '\n';
         }
     }
     if (sideboard != []) {
@@ -1279,13 +1299,15 @@ function openDeckWindow(windowType) {
         }
 
         for (i = 0; i < sideboard.length; i++) {
-            deckURL += fixForURL(sideboard[i][1] + " " + sideboard[i][0]) + '%0A';
+            deckURL += sideboard[i][1] + " " + sideboard[i][0] + '\n';
         }
     }
 
     if(windowType == 'qrcode') {
-        return deckURL;
+        return btoa(deckURL.replace(/\n/g, "%0A").replace(/'/g, "%27"));
     }
+
+    deckURL = deckURL.replace(/\n/g, "%0A").replace(/'/g, "%27");
 
     $('#URL')[0].innerHTML = '<a href=\'' + deckURL + '\' target=\'_blank\' >Click this link</a>';
 
