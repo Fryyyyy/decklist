@@ -79,13 +79,6 @@ for card in cards:
     ptcards[ocard]['toughness'] = cards[card].get('toughness', '-999')
     ptcards[ocard]['loyalty'] = str(cards[card].get('loyalty', '-999'))
 
-
-    # Lands and (noncolored) artifacts are special
-    if 'Land' in cards[card]['types']:
-        ocards[ocard]['c'] = 'Z' # Sort lands last
-    elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
-        ocards[ocard]['c'] = 'G'
-
     # Types for sorting
     if 'Land' in cards[card]['types']:
         ocards[ocard]['y'] = 'z'
@@ -113,6 +106,12 @@ for card in cards:
         ocards[ocard]['c'] = 'D'
     elif cards[card]['colors'] == ['Green']:
         ocards[ocard]['c'] = 'E'
+        
+    # Lands and (noncolored) artifacts are special
+    if 'Land' in cards[card]['types']:
+        ocards[ocard]['c'] = 'Z' # Sort lands last
+    elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
+        ocards[ocard]['c'] = 'G'
 
     # Now try to deal with CMC
     if 'cmc' not in cards[card]:
