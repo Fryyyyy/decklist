@@ -56,7 +56,12 @@ iframe{
 }
 
 h2 {
-
+	font-size: 20px;
+	padding: 0px 0px 10px 10px;
+	display: block;
+	border-bottom: 1px solid #e4e4e4;
+	color: #777;
+	margin-right: 10%;
 	font-weight:normal;
 	font-style:normal;
 	font-size:100%;

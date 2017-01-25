@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json, ast
+import json, ast, codecs
 
 # Just FYI!
 # b (banned) = [smlv] (standard, modern, legacy, vintage)
@@ -43,7 +43,7 @@ cards = json.load(jsonfh)
 
 # Open and read the Highlander points file
 hlcards = {}
-with open("highlander.txt", "r") as hlfh:
+with codecs.open("highlander.txt", "r", "utf-8") as hlfh:
     for line in hlfh:
         (card, points) = line.strip().rsplit(" ", 1)
         hlcards[card] = int(points)
@@ -106,7 +106,7 @@ for card in cards:
         ocards[ocard]['c'] = 'D'
     elif cards[card]['colors'] == ['Green']:
         ocards[ocard]['c'] = 'E'
-        
+
     # Lands and (noncolored) artifacts are special
     if 'Land' in cards[card]['types']:
         ocards[ocard]['c'] = 'Z' # Sort lands last
