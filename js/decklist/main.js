@@ -23,7 +23,9 @@ $(document).ready(function() {
     $('#getplaytest').button();
     $('#deckcheck').button();
     $('#deckcheck').hide();
-    $("#sortorderfloat").buttonset();
+    $('input[type=radio]').checkboxradio({
+        icon: false
+    });
 
     $("#cardtomain").button();
     $("#cardtoside").button();
