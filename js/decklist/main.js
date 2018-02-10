@@ -18,7 +18,8 @@ $(document).ready(function() {
     // also skin the upload and download button
     $("#eventdate").datepicker({ dateFormat: "yy-mm-dd" }); // ISO-8601, woohoo
     $("#download").button();
-    $("#downloadcsv").button();
+    $("#downloadtxt").button();
+    $("#downloaddec").button();
     $('#upload').button();
     $('#getplaytest').button();
     $('#deckcheck').button();
@@ -798,10 +799,10 @@ function generateDecklistPDF(outputtype) {
         rawPDF = dl.output();
         return(rawPDF);
     }
-    else if (outputtype == 'csv') {
-        var data = $("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#dcinumber").val() + '\r\n';
-        data += $("#eventdate").val() + ' ' + $("#eventlocation").val().capitalize() + ' ' + $("#event").val().capitalize() + '\r\n';
-        data += "Main Deck\r\n";
+    else if (outputtype == 'txt' || outputtype == 'dec') {
+        var data = ($("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#dcinumber").val() + '\r\n').trim();
+        data += ($("#eventdate").val() + ' ' + $("#eventlocation").val().capitalize() + ' ' + $("#event").val().capitalize() + '\r\n').trim();
+        // data += "Main Deck\r\n";
         for (i = 0; i < maindeck.length; i++) {
             if (maindeck[i][1] != 0) {
                 data += maindeck[i][1] + ' ';
@@ -821,8 +822,13 @@ function generateDecklistPDF(outputtype) {
             }
         }
         if (sideboard != []) {
-            data += "\r\nSideboard\r\n";
+            if (outputtype == 'txt') {
+                data += "\r\nSideboard\r\n";
+            }
             for (i = 0; i < sideboard.length; i++) {
+                if (outputtype == 'dec') {
+                    data += "SB: ";
+                }
                 data += sideboard[i][1] + ' ';
                 if($("select[name=eventformat]").val() == "Highlander") {
                     cardtext = sideboard[i][0];
@@ -844,11 +850,11 @@ function generateDecklistPDF(outputtype) {
         var evt = document.createEvent("HTMLEvents");
         evt.initEvent("click");
         //aLink.download = 'decklist.csv';
-        aLink.download = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.csv';
-        aLink.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
-        aLink.dispatchEvent(evt);
-    }
-    else {
+        aLink.download = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.' + outputtype;
+        aLink.href = 'data:attachment/csv;charset=UTF-8,' + encodeURIComponent(data);
+        aLink.click();
+        //aLink.dispatchEvent(evt);
+    } else {
         filename = ($.grep([$("#firstname").val().capitalize(), $("#lastname").val().capitalize(), $("#event").val().capitalize(), "decklist"], Boolean).join(" ")) + '.pdf';
         savePDF(dl, filename);
     }

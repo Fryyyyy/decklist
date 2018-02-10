@@ -131,7 +131,8 @@
                     </div>
                     <form>
                         <input type="button" id="download" value="Download Decklist (PDF)" onclick="generateDecklistPDF('dataurlnewwindow');"/>
-                        <input type="button" id="downloadcsv" value="Download Decklist (CSV)" onclick="generateDecklistPDF('csv');"/>
+                        <input type="button" id="downloadtxt" value="Download Decklist (Txt/MTGO)" onclick="generateDecklistPDF('txt');"/>
+                        <input type="button" id="downloaddec" value="Download Decklist (DEC)" onclick="generateDecklistPDF('dec');"/>
                         <input type="button" id="upload" value="Upload Decklist" onclick="uploadDecklistPDF();"/>
                         <input type="button" id="getlink" value="Get Link To Decklist" onclick="openDeckWindow('index');" class="ui-button ui-widget ui-state-default ui-corner-all"/>
                         <input type="button" id="getplaytest" value="Generate Playtest Cards" onclick="openDeckWindow('playtest');" class="ui-button ui-widget ui-state-default ui-corner-all"/>

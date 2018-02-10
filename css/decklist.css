@@ -166,7 +166,7 @@ h2 {
 	/*padding: 10px 25px;*/
 }
 
-#download, #downloadcsv, #upload, #getlink, #getplaytest, #deckcheck, #URL {
+#download, #downloadtxt, #downloaddec, #upload, #getlink, #getplaytest, #deckcheck, #URL {
 	display: block;
 	text-align: center;
 	padding: 10px 25px;
