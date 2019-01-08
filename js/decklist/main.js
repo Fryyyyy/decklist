@@ -1282,7 +1282,7 @@ function fixForURL(value) {
 }
 
 function getBitlyURL(deckURL, callback) {
-    $.getJSON('shorten.php?',
+    $.getJSON('http://www.auseternal.com/decklist/shorten.php?',
     {
          deckurl: deckURL
     }, function(returndata) {
@@ -1299,9 +1299,9 @@ function openDeckWindow(windowType) {
     var pageName = windowType;
     if(windowType == 'qrcode') {
         pageName = 'index';
-        deckURL = 'http://www.auseternal.com/decklist/'
+        deckURL = 'http://decklist.mtgpairings.info/'
     }
-    deckURL += pageName + '.php?';
+    deckURL += pageName + '.html?';
     if(windowType == "index" || windowType == 'qrcode') {
         deckURL += 'firstname=' + $("#firstname")[0].value;
         deckURL += '&lastname=' + $("#lastname")[0].value;
