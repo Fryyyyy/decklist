@@ -861,17 +861,16 @@ function generateDecklistPDF(outputtype) {
 }
 
 function savePDF(dl, filename) {
-    deckURL = openDeckWindow('qrcode');
-    getBitlyURL(deckURL, function(returndata) {
-        if(returndata.status_code == 200) {
-            newDeckURL = returndata.data.url;
-            addQRCodeToPDF(dl, newDeckURL);
-            dl.save(filename);
-        } else {
-            addLogoToDL(dl);
-            dl.save(filename);
-        }
-    });
+    // deckURL = openDeckWindow('qrcode');
+    addLogoToDL(dl);
+    dl.save(filename);
+    //getBitlyURL(deckURL, function(returndata) {
+    //    if(returndata.status_code == 200) {
+    //        newDeckURL = returndata.data.url;
+    //        addQRCodeToPDF(dl, newDeckURL);
+    //        dl.save(filename);
+    //    }
+    //});
 }
 
 // performs a number of checks against the values filled out in the fields
