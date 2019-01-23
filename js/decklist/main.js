@@ -867,6 +867,9 @@ function savePDF(dl, filename) {
             newDeckURL = returndata.data.url;
             addQRCodeToPDF(dl, newDeckURL);
             dl.save(filename);
+        } else {
+            addLogoToDL(dl);
+            dl.save(filename);
         }
     });
 }
