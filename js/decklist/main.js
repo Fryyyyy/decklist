@@ -802,6 +802,7 @@ function generateDecklistPDF(outputtype) {
     else if (outputtype == 'txt' || outputtype == 'dec') {
         var data = ($("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#dcinumber").val() + '\r\n').trim();
         data += ($("#eventdate").val() + ' ' + $("#eventlocation").val().capitalize() + ' ' + $("#event").val().capitalize() + '\r\n').trim();
+        data += "\r\n";
         // data += "Main Deck\r\n";
         for (i = 0; i < maindeck.length; i++) {
             if (maindeck[i][1] != 0) {
