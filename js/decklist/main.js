@@ -33,7 +33,7 @@ $(document).ready(function() {
 
     var cardNames = [];
     var numberRegExp = /^([0-9]+) (.*)$/;
-    $.each(cards, function(key, value) { cardNames.push(cards[key]["n"]) })
+    $.each(cards, function(key, value) { cardNames.push(cards[key]["n"]); });
 
     $("#cardentry").autocomplete({
         autoFocus: true,
@@ -175,7 +175,7 @@ String.prototype.capitalize = function() {
             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
         }
         return b;
-    })(window.location.search.substr(1).split('&'))
+    })(window.location.search.substr(1).split('&'));
 })(jQuery);
 
 // Parse the GET attributes, locking out fields as needed
@@ -210,7 +210,7 @@ function parseGET() {
     if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the Gas logo
     var logos = ['dcilogo', 'auseternal', 'gaslogo'];
 
-    for (var i = 0; i < logos.length; i++) {
+    for (i = 0; i < logos.length; i++) {
         if ($._GET['logo'] == logos[i]) {
             var element = document.createElement("script");
 
@@ -290,7 +290,6 @@ function addHLTemplateToDL(dl) {
     var i;
     var y;
     var ymax;
-    var x;
 
     // Quantity Columns
     // Last one 533, 403
@@ -391,7 +390,7 @@ function addTemplateToDL(dl) {
     dl.rect(320, 722, 260, 48); // judge box
 
 
-    dl.setLineWidth(.5);
+    dl.setLineWidth(0.5);
     dl.rect(135, 54, 54, 48);   // date + location
     dl.rect(355, 54, 54, 72);   // event + deck name + deck designer
     dl.rect(320, 722, 130, 48); // official use + dc round + status + judge
@@ -445,7 +444,7 @@ function addTemplateToDL(dl) {
     dl.text('Last Name:', 41, 760, 90);
 
     dl.setFontStyle('italic');
-    dl.text('DCI #:', 41, 404, 90)    // dci # is rotated and italic
+    dl.text('DCI #:', 41, 404, 90) ;   // dci # is rotated and italic
 
     dl.setFontSize(6);
     dl.setFontStyle('normal');
@@ -586,7 +585,7 @@ function addMetaDataToDL(dl) {
             case 'M': offset = -1; break;
             case 'Q': offset = -1; break;
             case 'X': offset = 1; break;
-            case 'Y': offset = .5; break;
+            case 'Y': offset = 0.5; break;
             case 'W': offset = -2; break;
             case 'Z': offset = 1; break;
         }
@@ -656,8 +655,8 @@ function addHLCardsToDL(dl) {
     }
 
     // Add the sideboard to the decklist
-    var x = 47;
-    var y = 508;
+    x = 47;
+    y = 508;
     if (sideboard != []) {
         for (i = 0; i < sideboard.length; i++) {
             if (i == 5) { x = 300; y = 508; } // jump to the next row
@@ -715,8 +714,8 @@ function addCardsToDL(dl) {
     }
 
     // Add the sideboard to the decklist
-    var x = 356;
-    var y = 434;
+    x = 356;
+    y = 434;
     if (sideboard != []) {
         for (i = 0; i < sideboard.length; i++) {
             dl.text(sideboard[i][1], x, y);
@@ -993,6 +992,12 @@ function validateInput() {
                 illegalCards.push(element.n);
             }
         });
+    } else if($("select[name=eventformat]").val() == "Pioneer") {
+        goodcards.forEach(function(element, index, array) {
+            if((element.b).indexOf('p') != -1) {
+                illegalCards.push(element.n);
+            }
+        });
     } else if($("select[name=eventformat]").val() == "Modern") {
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('m') != -1) {
@@ -1093,14 +1098,14 @@ function statusAndTooltips(valid) {
         } else {
             this[key].push(array);
         }
-    }
+    };
 
     // 0x000 is valid, 0x001 is empty, 0x010 is warning, 0x100 is error
     // default error level to 'valid'
     errorLevel = 0;
 
     // check for validation objects in every category (firstname, lastname, etc.)
-    for (prop in valid) {
+    for (var prop in valid) {
         // check each instance of a warning/error per field
         proplength = valid[prop].length;
         for (i=0; i < proplength; i++) {
@@ -1214,7 +1219,7 @@ function statusAndTooltips(valid) {
 
     // compose new notifications HTML fragment, set new tooltips, and set input field classes
     statusBoxHtml = '';
-    for (key in notifications) {
+    for (var key in notifications) {
         // exclude any functions of the object
         if (typeof notifications[key] !== 'function') {
             newTitle = '';
@@ -1302,7 +1307,7 @@ function openDeckWindow(windowType) {
     var pageName = windowType;
     if(windowType == 'qrcode') {
         pageName = 'index';
-        deckURL = 'http://decklist.mtgpairings.info/'
+        deckURL = 'http://decklist.mtgpairings.info/';
     }
     deckURL += pageName + '.html?';
     if(windowType == "index" || windowType == 'qrcode') {
@@ -1324,7 +1329,7 @@ function openDeckWindow(windowType) {
     }
     if (sideboard != []) {
         if(windowType != "playtest") {
-            deckURL += '&deckside='
+            deckURL += '&deckside=';
         }
 
         for (i = 0; i < sideboard.length; i++) {

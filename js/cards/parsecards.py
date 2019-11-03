@@ -12,31 +12,39 @@ import json, ast, codecs
 # t (tally) = number of times printed
 # y (types) = a(rtifact or enchantment) / c(reature) / s(orcery or instant) / p(laneswalker) / z (land)
 
-FORMATS = ('Standard', 'Modern', 'Legacy', 'Vintage')
+FORMATS = ('standard', 'pioneer', 'modern', 'legacy', 'vintage')
+
 
 def getLegalities(card, cards):
     # Let's figure out legalities
-    banned = 'smlv'
+    banned = 'spmlv'
 
-    for legality in cards[card].get('legalities', []):
-        if legality.get('format') in FORMATS and legality.get('legality') != 'Banned':
-            banned = banned.replace(legality.get('format')[0].lower(), '')
+    for fmt, legality in (cards[card].get('legalities', {})).items():
+        if fmt in FORMATS and legality != 'Banned':
+            banned = banned.replace(fmt[0], '')
+
+    cp = cards[card].get('printings', [])
+    if 'ELD' in cp:
+        print card
+        banned = ''
 
     return banned
+
 
 # Yes it's stupid checking restrictions in non-Vintage formats
 # But you never know :P
 def getRestrictions(card, cards):
     restricted = ''
 
-    for legality in cards[card].get('legalities', []):
-        if legality.get('format') in FORMATS and legality.get('legality') == 'Restricted':
-            restricted += legality.get('format')[0].lower()
+    for fmt, legality in (cards[card].get('legalities', {})).items():
+        if fmt in FORMATS and legality == 'Restricted':
+            restricted += fmt[0]
 
     return restricted
 
+
 # Open the JSON file
-jsonfh = open("AllCards-x.json", "r")
+jsonfh = open("AllCards.json", "r")
 
 # Load all the cards into a giant dictionary
 cards = json.load(jsonfh)
@@ -53,15 +61,15 @@ ocards = {}
 ptcards = {}
 
 # Okay, we need the colors but in a much shorter format
-for card in cards:
+for card in cards.keys():
 
-    if (cards[card].get('layout', '') ==  "meld" or cards[card].get('layout', '') == "double-faced"):
-        if type(cards[card].get('names', '')) is list:
-             if (cards[card].get('names'))[0] != cards[card].get('name', ''):
+    if cards[card].get('layout', '') == "meld" or cards[card].get('layout', '') == "double-faced":
+        if isinstance(cards[card].get('names', ''), list):
+            if (cards[card].get('names'))[0] != cards[card].get('name', ''):
                 continue
 
     # We're going to store them in lowercase
-    ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8').lower()
+    ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").encode('utf-8').lower()
 
     # Skip tokens
     if cards[card]['layout'] == 'token':
@@ -71,7 +79,7 @@ for card in cards:
     ocards[ocard] = {}
     ptcards[ocard] = {}
 
-    ptcards[ocard]['name'] = cards[card].get('name', '')
+    ptcards[ocard]['name'] = cards[card].get('name', '').replace(" (a)", "").replace(" (b)", "")
     ptcards[ocard]['manaCost'] = cards[card].get('manaCost', '')
     ptcards[ocard]['text'] = cards[card].get('text', '').replace(u"−", "-")
     ptcards[ocard]['type'] = cards[card].get('type', '')
@@ -109,14 +117,15 @@ for card in cards:
 
     # Lands and (noncolored) artifacts are special
     if 'Land' in cards[card]['types']:
-        ocards[ocard]['c'] = 'Z' # Sort lands last
+        ocards[ocard]['c'] = 'Z'  # Sort lands last
     elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
         ocards[ocard]['c'] = 'G'
 
     # Now try to deal with CMC
     if 'cmc' not in cards[card]:
         ocards[ocard]['m'] = 99
-    else: ocards[ocard]['m'] = cards[card]['cmc']
+    else:
+        ocards[ocard]['m'] = cards[card]['cmc']
 
     # Add it into the file if the banned list isn't empty
     legality = getLegalities(card, cards)
@@ -125,7 +134,7 @@ for card in cards:
     ocards[ocard]['r'] = restrictions
 
     # And put the true name in there as well
-    ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").encode('utf-8')
+    ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").encode('utf-8')
 
     # Check highlander points
     ocards[ocard]['p'] = hlcards.get(card, 0)
@@ -147,8 +156,8 @@ for card in cards:
             ocards[ocard]['t'] = 0
 
             legality = getLegalities(card, cards)
-            if legality != "":
-                ocards[ocard]['b'] = legality
+            # if legality != "":
+            ocards[ocard]['b'] = legality
 
 
 # Print out the full list of cards
