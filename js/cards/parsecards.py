@@ -104,15 +104,15 @@ for card in cards.keys():
         pass
     elif len(cards[card]['colors']) > 1:
         ocards[ocard]['c'] = 'F'    # gold
-    elif cards[card]['colors'] == ['White']:
+    elif cards[card]['colors'] == ['W']:
         ocards[ocard]['c'] = 'A'
-    elif cards[card]['colors'] == ['Blue']:
+    elif cards[card]['colors'] == ['U']:
         ocards[ocard]['c'] = 'B'
-    elif cards[card]['colors'] == ['Black']:
+    elif cards[card]['colors'] == ['B']:
         ocards[ocard]['c'] = 'C'
-    elif cards[card]['colors'] == ['Red']:
+    elif cards[card]['colors'] == ['R']:
         ocards[ocard]['c'] = 'D'
-    elif cards[card]['colors'] == ['Green']:
+    elif cards[card]['colors'] == ['G']:
         ocards[ocard]['c'] = 'E'
 
     # Lands and (noncolored) artifacts are special
@@ -122,10 +122,10 @@ for card in cards.keys():
         ocards[ocard]['c'] = 'G'
 
     # Now try to deal with CMC
-    if 'cmc' not in cards[card]:
+    if 'convertedManaCost' not in cards[card]:
         ocards[ocard]['m'] = 99
     else:
-        ocards[ocard]['m'] = cards[card]['cmc']
+        ocards[ocard]['m'] = cards[card]['convertedManaCost']
 
     # Add it into the file if the banned list isn't empty
     legality = getLegalities(card, cards)
