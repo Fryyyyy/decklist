@@ -520,7 +520,7 @@ function generateHLDecklistLayout() {
 function addHLMetadataToDL(dl) {
     dl.setFontStyle('bold');
 
-    lastname = $("#lastname").val().capitalize();
+    lastname = $("#lastname").val(); //.capitalize();
     dl.text(lastname, 165, 23);
 
     firstname = $("#firstname").val().capitalize();
