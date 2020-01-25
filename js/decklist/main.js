@@ -567,7 +567,7 @@ function addMetaDataToDL(dl) {
     dl.text(firstname, 43, 544, 90);
 
     // put the last name into the PDF
-    lastname = $("#lastname").val().capitalize();  // the side bar
+    lastname = $("#lastname").val(); //.capitalize();  // the side bar
     if (lastname.length > 0) {
         // lastname = capitalize(lastname);
         dl.text(lastname, 43, 724, 90);
