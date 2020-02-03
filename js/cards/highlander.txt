@@ -10,7 +10,7 @@ Dig Through Time 2
 Doomsday 1
 Enlightened Tutor 1
 Fastbond 1
-Flash 1
+Flash 2
 Force of Will 1
 Green Sun's Zenith 1
 Hermit Druid 1
@@ -18,7 +18,7 @@ Imperial Seal 3
 Intuition 1
 Jace, the Mind Sculptor 1
 Karakas 1
-Library of Alexandria 2
+Library of Alexandria 1
 Life from the Loam 1
 Lim-Dul's Vault 1
 Lim-Dûl's Vault 1
@@ -36,28 +36,29 @@ Mox Sapphire 3
 Mystical Tutor 2
 Natural Order 1
 Oath of Druids 1
+Oko, Thief of Crowns 1
 Personal Tutor 1
 Protean Hulk 2
-Scheming Symmetry 1
 Sensei's Divining Top 1
 Skullclamp 1
 Snapcaster Mage 1
 Sol Ring 3
-Stoneforge Mystic 1
 Strip Mine 2
 Survival of the Fittest 1
 Tainted Pact 1
-Tendrils of Agony 1
 Time Spiral 1
 Time Vault 4
-Time Walk 3
+Time Walk 4
 Timetwister 1
 Tinker 2
+Thassa's Oracle 2
 Tolarian Academy 2
 Treasure Cruise 2
 True-Name Nemesis 2
 Umezawa's Jitte 1
+Underworld Breach 1
 Vampiric Tutor 3
 Wasteland 1
+Wishclaw Talisman 1
 Yawgmoth's Bargain 1
 Yawgmoth's Will 1
