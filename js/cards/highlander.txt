@@ -1,64 +1,63 @@
 Ancestral Recall 4
+Black Lotus 4
+Demonic Tutor 3
+Imperial Seal 3
+Mox Emerald 2
+Mox Jet 2
+Mox Pearl 2
+Mox Ruby 2
+Mox Sapphire 2
+Sol Ring 3
+Time Vault 3
+Time Walk 3
+Tinker 3
+Vampiric Tutor 3
+Yawgmoth's Will 3
+Channel 2
+Dig Through Time 2
+Library of Alexandria 2
+Mana Crypt 2
+Mystical Tutor 2
+Skullclamp 2
+Strip Mine 2
+Tolarian Academy 2
 Balance 1
 Birthing Pod 1
-Black Lotus 4
-Channel 2
 Crop Rotation 1
 Dark Petition 1
-Demonic Tutor 3
-Dig Through Time 2
-Doomsday 1
 Enlightened Tutor 1
 Fastbond 1
-Flash 2
+Flash 1
 Force of Will 1
+Gifts Ungiven 1
 Green Sun's Zenith 1
 Hermit Druid 1
-Imperial Seal 3
 Intuition 1
 Jace, the Mind Sculptor 1
 Karakas 1
-Library of Alexandria 1
-Life from the Loam 1
-Lim-Dul's Vault 1
 Lim-Dûl's Vault 1
-Mana Crypt 2
+Lutri, the Spellchaser 1
 Mana Drain 1
 Mana Vault 1
-Merchant Scroll 1
-Mind Twist 2
-Mishra's Workshop 1
-Mox Emerald 3
-Mox Jet 3
-Mox Pearl 3
-Mox Ruby 3
-Mox Sapphire 3
-Mystical Tutor 2
+Mind Twist 1
+Muddle the Mixture 1
 Natural Order 1
 Oath of Druids 1
-Oko, Thief of Crowns 1
+Memory Jar 1
+Merchant Scroll 1
 Personal Tutor 1
-Protean Hulk 2
-Sensei's Divining Top 1
-Skullclamp 1
+Protean Hulk 1
 Snapcaster Mage 1
-Sol Ring 3
-Strip Mine 2
+Steelshaper's Gift 1
+Stoneforge Mystic 1
 Survival of the Fittest 1
 Tainted Pact 1
 Time Spiral 1
-Time Vault 4
-Time Walk 4
 Timetwister 1
-Tinker 2
-Thassa's Oracle 2
-Tolarian Academy 2
-Treasure Cruise 2
-True-Name Nemesis 2
+Treasure Cruise 1
+True-Name Nemesis 1
 Umezawa's Jitte 1
-Underworld Breach 1
-Vampiric Tutor 3
-Wasteland 1
-Wishclaw Talisman 1
 Yawgmoth's Bargain 1
-Yawgmoth's Will 1
+Wasteland 1
+Wheel of Fortune 1
+Worldly Tutor 1
