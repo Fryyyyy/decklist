@@ -1012,7 +1012,7 @@ function validateInput() {
         if (totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
         if (totalHLPoints < 7) { validate.format.push({"warning": "toofewpoints"}); }
         goodcards.forEach(function(element, index, array) {
-            if((element.b).indexOf('v') != -1) {
+            if((element.b).indexOf('h') != -1) {
                 illegalCards.push(element.n);
             }
         });

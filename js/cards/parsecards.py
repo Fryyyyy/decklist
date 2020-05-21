@@ -4,7 +4,7 @@
 import json, ast, codecs
 
 # Just FYI!
-# b (banned) = [smlv] (standard, modern, legacy, vintage)
+# b (banned) = [smlvh] (standard, modern, legacy, vintage, highlander)
 # c (color) = White = A, Blue = B, Black = C, Red = D, Green = E, Gold = F, Artifact = G , Split = S, Unknown = X, Land = Z
 # m (CMC) = N  (Split = 98, Land = 99)
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
@@ -13,6 +13,7 @@ import json, ast, codecs
 # y (types) = a(rtifact or enchantment) / c(reature) / s(orcery or instant) / p(laneswalker) / z (land)
 
 FORMATS = ('standard', 'pioneer', 'modern', 'legacy', 'vintage')
+HIGHLANDER_LEGAL = ["Lurrus of the Dream-Den"]
 
 
 def getLegalities(card, cards):
@@ -23,8 +24,12 @@ def getLegalities(card, cards):
         if fmt in FORMATS and legality != 'Banned':
             banned = banned.replace(fmt[0], '')
 
+        # Check highlander bannings separately
+        if fmt == "vintage" and legality == 'Banned' and card not in HIGHLANDER_LEGAL:
+            banned = banned + 'h'
+
     cp = cards[card].get('printings', [])
-    if 'ELD' in cp:
+    if 'IKO' in cp:
         print card
         banned = ''
 
