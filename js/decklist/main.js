@@ -206,9 +206,8 @@ function parseGET() {
     }
 
     // load the logo
-    //if ($._GET['logo'] == undefined) { $._GET['logo'] = 'gaslogo'; } // if logo isn't specified, use the Gas logo
-    if ($._GET['logo'] == undefined) { $._GET['logo'] = 'auseternal'; } // if logo isn't specified, use the Gas logo
-    var logos = ['dcilogo', 'auseternal', 'gaslogo'];
+    if ($._GET['logo'] == undefined) { $._GET['logo'] = '7ph'; } // if logo isn't specified, use the 7ph logo
+    var logos = ['dcilogo', '7ph', 'gaslogo'];
 
     for (i = 0; i < logos.length; i++) {
         if ($._GET['logo'] == logos[i]) {
@@ -252,17 +251,14 @@ function addLogoToDL(dl) {
     for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
         dl.setPage(i);
         if($("select[name=eventformat]").val() == "Highlander") {
-            dl.addImage(logo, 'JPEG', 30, 17, 50, 40);
+            dl.addImage(logo, 'JPEG', 33, 12, 45, 45);
         } else {
-            dl.addImage(logo, 'JPEG', 27, 30, 90, 70);
+            dl.addImage(logo, 'JPEG', 30, 30, 70, 70);
         }
     }
 }
 
 function addHLTemplateToDL(dl) {
-    //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // AusEternal
-    //dl.addImage(logo, 'JPEG', 30, 17, 50, 40); // Gas
-
     dl.setFontSize(13);
     dl.setFontStyle('bold');
 
@@ -367,10 +363,6 @@ function addHLTemplateToDL(dl) {
 
 // Generates the part of the PDF that never changes (lines, boxes, etc.)
 function addTemplateToDL(dl) {
-    // Add the logo
-    //dl.addImage(logo, 'JPEG', 27, 54, 90, 32); // AusEternal
-    //dl.addImage(logo, 'JPEG', 35, 34, 60, 60); // Gas
-
     // Create all the rectangles
 
     // Start with the top box, for deck designer, name, etc.
