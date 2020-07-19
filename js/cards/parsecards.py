@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json, ast, codecs
+import sys
 
 # Just FYI!
 # b (banned) = [smlvh] (standard, modern, legacy, vintage, highlander)
@@ -16,32 +17,32 @@ FORMATS = ('standard', 'pioneer', 'modern', 'legacy', 'vintage')
 HIGHLANDER_LEGAL = ["Lurrus of the Dream-Den"]
 
 
-def getLegalities(card, cards):
+def getLegalities(c):
     # Let's figure out legalities
     banned = 'spmlv'
 
-    for fmt, legality in (cards[card].get('legalities', {})).items():
+    for fmt, legality in (c.get('legalities', {})).items():
         if fmt in FORMATS and legality != 'Banned':
             banned = banned.replace(fmt[0], '')
 
         # Check highlander bannings separately
-        if fmt == "vintage" and legality == 'Banned' and card not in HIGHLANDER_LEGAL:
+        if fmt == "vintage" and legality == 'Banned' and c.get('name') not in HIGHLANDER_LEGAL:
             banned = banned + 'h'
 
-    cp = cards[card].get('printings', [])
-    if 'IKO' in cp:
-        print card
-        banned = ''
+    cp = c.get('printings', [])
+    # if 'M21' in cp:
+    #    print(c.get('name'))
+    #    banned = ''
 
     return banned
 
 
 # Yes it's stupid checking restrictions in non-Vintage formats
 # But you never know :P
-def getRestrictions(card, cards):
+def getRestrictions(c):
     restricted = ''
 
-    for fmt, legality in (cards[card].get('legalities', {})).items():
+    for fmt, legality in (c.get('legalities', {})).items():
         if fmt in FORMATS and legality == 'Restricted':
             restricted += fmt[0]
 
@@ -49,10 +50,15 @@ def getRestrictions(card, cards):
 
 
 # Open the JSON file
-jsonfh = open("AllCards.json", "r")
+jsonfh = open("AtomicCards.json", "r")
 
 # Load all the cards into a giant dictionary
 cards = json.load(jsonfh)
+cards = cards.get('data', {})
+print "{} cards parsed".format(len(cards))
+if len(cards) == 0:
+    print "No cards parsed, giving up."
+    sys.exit(0)
 
 # Open and read the Highlander points file
 hlcards = {}
@@ -67,75 +73,71 @@ ptcards = {}
 
 # Okay, we need the colors but in a much shorter format
 for card in cards.keys():
-
-    if cards[card].get('layout', '') == "meld" or cards[card].get('layout', '') == "double-faced":
-        if isinstance(cards[card].get('names', ''), list):
-            if (cards[card].get('names'))[0] != cards[card].get('name', ''):
-                continue
+    c = cards[card][0]
 
     # We're going to store them in lowercase
     ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").encode('utf-8').lower()
 
     # Skip tokens
-    if cards[card]['layout'] == 'token':
+    if c['layout'] == 'token':
         continue
 
     # Create an entry in the output dictionary
     ocards[ocard] = {}
     ptcards[ocard] = {}
 
-    ptcards[ocard]['name'] = cards[card].get('name', '').replace(" (a)", "").replace(" (b)", "")
-    ptcards[ocard]['manaCost'] = cards[card].get('manaCost', '')
-    ptcards[ocard]['text'] = cards[card].get('text', '').replace(u"−", "-")
-    ptcards[ocard]['type'] = cards[card].get('type', '')
-    ptcards[ocard]['power'] = cards[card].get('power', '-999')
-    ptcards[ocard]['toughness'] = cards[card].get('toughness', '-999')
-    ptcards[ocard]['loyalty'] = str(cards[card].get('loyalty', '-999'))
+    ptcards[ocard]['name'] = c.get('name', '').replace(" (a)", "").replace(" (b)", "")
+    ptcards[ocard]['manaCost'] = c.get('manaCost', '')
+    ptcards[ocard]['text'] = c.get('text', '').replace(u"−", "-")
+    ptcards[ocard]['type'] = c.get('type', '')
+    ptcards[ocard]['power'] = c.get('power', '-999')
+    ptcards[ocard]['toughness'] = c.get('toughness', '-999')
+    ptcards[ocard]['loyalty'] = str(c.get('loyalty', '-999'))
 
     # Types for sorting
-    if 'Land' in cards[card]['types']:
+    if 'Land' in c['types']:
         ocards[ocard]['y'] = 'z'
-    elif 'Creature' in cards[card]['types']:
+    elif 'Creature' in c['types']:
         ocards[ocard]['y'] = 'c'
-    elif 'Artifact' in cards[card]['types'] or 'Enchant' in cards[card]['types']:
+    elif 'Artifact' in c['types'] or 'Enchant' in c['types']:
         ocards[ocard]['y'] = 'a'
-    elif 'Instant' in cards[card]['types'] or 'Sorcery' in cards[card]['types']:
+    elif 'Instant' in c['types'] or 'Sorcery' in c['types']:
         ocards[ocard]['y'] = 's'
-    elif 'Planeswalker' in cards[card]['types']:
+    elif 'Planeswalker' in c['types']:
         ocards[ocard]['y'] = 'p'
 
     # Make the colors shorter
-    if 'colors' not in cards[card]:
+    if 'colors' not in c:
         pass
-    elif len(cards[card]['colors']) > 1:
+    elif len(c['colors']) > 1:
         ocards[ocard]['c'] = 'F'    # gold
-    elif cards[card]['colors'] == ['W']:
+    elif c['colors'] == ['W']:
         ocards[ocard]['c'] = 'A'
-    elif cards[card]['colors'] == ['U']:
+    elif c['colors'] == ['U']:
         ocards[ocard]['c'] = 'B'
-    elif cards[card]['colors'] == ['B']:
+    elif c['colors'] == ['B']:
         ocards[ocard]['c'] = 'C'
-    elif cards[card]['colors'] == ['R']:
+    elif c['colors'] == ['R']:
         ocards[ocard]['c'] = 'D'
-    elif cards[card]['colors'] == ['G']:
+    elif c['colors'] == ['G']:
         ocards[ocard]['c'] = 'E'
 
     # Lands and (noncolored) artifacts are special
-    if 'Land' in cards[card]['types']:
+    if 'Land' in c['types']:
         ocards[ocard]['c'] = 'Z'  # Sort lands last
-    elif ('Artifact' in cards[card]['types']) and ('colors' not in cards[card]):
+    elif ('Artifact' in c['types']) and ('colors' not in c):
         ocards[ocard]['c'] = 'G'
 
     # Now try to deal with CMC
-    if 'convertedManaCost' not in cards[card]:
+    if 'convertedManaCost' not in c:
         ocards[ocard]['m'] = 99
     else:
-        ocards[ocard]['m'] = cards[card]['convertedManaCost']
+        ocards[ocard]['m'] = c['convertedManaCost']
 
     # Add it into the file if the banned list isn't empty
-    legality = getLegalities(card, cards)
+    legality = getLegalities(c)
     ocards[ocard]['b'] = legality
-    restrictions = getRestrictions(card, cards)
+    restrictions = getRestrictions(c)
     ocards[ocard]['r'] = restrictions
 
     # And put the true name in there as well
@@ -145,24 +147,26 @@ for card in cards.keys():
     ocards[ocard]['p'] = hlcards.get(card, 0)
 
     # Set tally
-    printings = ast.literal_eval(str(cards[card].get("printings", [])))
+    printings = ast.literal_eval(str(c.get("printings", [])))
     ocards[ocard]['t'] = len(printings)
 
     # Now to handle split cards (ugh)
-    if 'names' in cards[card]:
-        if cards[card]['layout'] == "split":
-            name = " // ".join(cards[card]['names'])
-            ocard = name.lower().replace(u'\xc6', u'\xe6')   # Just like a real card
+    if len(cards[card]) > 1:
+        # if c['layout'] == "split":
+        name = card
+        ocard = name.lower().replace(u'\xc6', u'\xe6')   # Just like a real card
 
-            ocards[ocard] = {}
-            ocards[ocard]['c'] = 'S'
-            ocards[ocard]['m'] = 98
-            ocards[ocard]['n'] = name
-            ocards[ocard]['t'] = 0
+        ocards[ocard] = {}
+        ocards[ocard]['c'] = 'S'
+        ocards[ocard]['m'] = 98
+        ocards[ocard]['n'] = name
+        ocards[ocard]['t'] = 0
 
-            legality = getLegalities(card, cards)
-            # if legality != "":
-            ocards[ocard]['b'] = legality
+        legality = getLegalities(c)
+        ocards[ocard]['b'] = legality
+
+        restrictions = getRestrictions(c)
+        ocards[ocard]['r'] = restrictions
 
 
 # Print out the full list of cards
