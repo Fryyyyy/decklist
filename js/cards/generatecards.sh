@@ -3,11 +3,11 @@
 # Clean up a bit
 rm -f *.js *.zip
 
-curl "https://www.mtgjson.com/files/AllCards.json.zip" > AllCards.json.zip
-unzip AllCards.json.zip
+curl "https://mtgjson.com/api/v5/AtomicCards.json.zip" > AtomicCards.json.zip
+unzip AtomicCards.json.zip
 
 # Parse out the giant JSON and make a much smaller one
-python parsecards.py
+python2 parsecards.py
 
 # Minify
 java -jar ../../tools/yuicompressor-2.4.8.jar -o '.js$:-min.js' *.js
