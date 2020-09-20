@@ -19,7 +19,7 @@ Mind Twist 2
 Mystical Tutor 2
 Protean Hulk 2
 Strip Mine 2
-Thassa's Oracle 2
+Thassa's Oracle 3
 Tinker 2
 Tolarian Academy 2
 Treasure Cruise 2
@@ -45,6 +45,7 @@ Mana Drain 1
 Mana Vault 1
 Merchant Scroll 1
 Mishra's Workshop 1
+Mystic Sanctuary 1
 Natural Order 1
 Oath of Druids 1
 Oko, Thief of Crowns 1
@@ -60,5 +61,6 @@ Umezawa’s Jitte 1
 Underworld Breach 1
 Wasteland 1
 Wishclaw Talisman 1
+Wrenn and Six 1
 Yawgmoth's Bargain 1
 Yawgmoth's Will 1
