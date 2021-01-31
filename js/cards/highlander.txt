@@ -1,7 +1,7 @@
-Ancestral Recall 4
+Ancestral Recall 5
+Time Walk 5
 Black Lotus 4
 Time Vault 4
-Time Walk 4
 Demonic Tutor 3
 Imperial Seal 3
 Mox Emerald 3
@@ -17,11 +17,11 @@ Flash 2
 Mana Crypt 2
 Mind Twist 2
 Mystical Tutor 2
+Oko, Thief of Crowns 2
 Protean Hulk 2
 Strip Mine 2
 Thassa's Oracle 3
 Tinker 2
-Tolarian Academy 2
 Treasure Cruise 2
 True-Name Nemesis 2
 Balance 1
@@ -48,7 +48,6 @@ Mishra's Workshop 1
 Mystic Sanctuary 1
 Natural Order 1
 Oath of Druids 1
-Oko, Thief of Crowns 1
 Personal Tutor 1
 Sensei's Divining Top 1
 Skullclamp 1
@@ -57,10 +56,10 @@ Survival of the Fittest 1
 Tainted Pact 1
 Time Spiral 1
 Timetwister 1
+Tolarian Academy 1
 Umezawa’s Jitte 1
 Underworld Breach 1
 Wasteland 1
 Wishclaw Talisman 1
 Wrenn and Six 1
-Yawgmoth's Bargain 1
 Yawgmoth's Will 1
