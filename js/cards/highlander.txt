@@ -2,6 +2,7 @@ Ancestral Recall 5
 Time Walk 5
 Black Lotus 4
 Time Vault 4
+Thassa's Oracle 4
 Demonic Tutor 3
 Mana Crypt 3
 Mox Emerald 3
@@ -10,7 +11,6 @@ Mox Pearl 3
 Mox Ruby 3
 Mox Sapphire 3
 Sol Ring 3
-Thassa's Oracle 3
 Underworld Breach 3
 Vampiric Tutor 3
 Channel 2
@@ -42,6 +42,7 @@ Karakas 1
 Library of Alexandria 1
 Life from the Loam 1
 Lim-Dul's Vault 1
+Lurrus of the Dream-Den 1
 Lutri, the Spellchaser 1
 Mana Drain 1
 Mana Vault 1
@@ -51,6 +52,7 @@ Mystic Sanctuary 1
 Natural Order 1
 Oath of Druids 1
 Personal Tutor 1
+Profane Tutor 1
 Sensei's Divining Top 1
 Skullclamp 1
 Snapcaster Mage 1
@@ -61,6 +63,7 @@ Timetwister 1
 Tolarian Academy 1
 Umezawa's Jitte 1
 Uro, Titan of Nature's Wrath 1
+Urza's Saga 1
 Wasteland 1
 Wishclaw Talisman 1
 Wrenn and Six 1
