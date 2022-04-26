@@ -17,8 +17,8 @@ Channel 2
 Dig Through Time 2
 Flash 2
 Imperial Seal 2
+Lurrus of the Dream-Den 2
 Lutri, the Spellchaser 2
-Mind Twist 2
 Mystical Tutor 2
 Oko, Thief of Crowns 2
 Protean Hulk 2
@@ -40,10 +40,10 @@ Intuition 1
 Karakas 1
 Library of Alexandria 1
 Lim-Dul's Vault 1
-Lurrus of the Dream-Den 1
 Mana Drain 1
 Mana Vault 1
 Merchant Scroll 1
+Mind Twist 1
 Mishra's Workshop 1
 Mystic Sanctuary 1
 Natural Order 1
