@@ -7,6 +7,7 @@ import sys
 # Just FYI!
 # b (banned) = [smlvh] (standard, modern, legacy, vintage, highlander)
 # c (color) = White = A, Blue = B, Black = C, Red = D, Green = E, Gold = F, Artifact = G , Split = S, Unknown = X, Land = Z
+# l (reserved list) = Y/N
 # m (CMC) = N  (Split = 98, Land = 99)
 # n (actual name) = 'true name nemesis' to 'True Name Nemesis'
 # r (restricted) = [v] (vintage)
@@ -93,7 +94,7 @@ for card in cards.keys():
     ptcards[ocard]['power'] = c.get('power', '-999')
     ptcards[ocard]['toughness'] = c.get('toughness', '-999')
     ptcards[ocard]['loyalty'] = str(c.get('loyalty', '-999'))
-
+    
     # Types for sorting
     if 'Land' in c['types']:
         ocards[ocard]['y'] = 'z'
@@ -145,6 +146,9 @@ for card in cards.keys():
 
     # Check highlander points
     ocards[ocard]['p'] = hlcards.get(card, 0)
+
+    # RL
+    ocards[ocard]['l'] = str(c.get('isReserved', 'F')).replace("True", "T")
 
     # Set tally
     printings = ast.literal_eval(str(c.get("printings", [])))

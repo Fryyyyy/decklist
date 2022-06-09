@@ -28,7 +28,7 @@ function parseDecklist() {
     var mtgosbRE = /^SB:\s+(\d+)*\s*(.+)/; // Sideboard lines begin with SB:
     var mwsRE    = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
     var mwssbRE  = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
-    var tosbRE   = /^Sideboard/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
+    var tosbRE   = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
 
     // Loop through all the cards in the main deck field
     in_sb = false;
@@ -136,7 +136,7 @@ function parseDecklist() {
 
         //if (card.slice(0,2).toLowerCase() === 'ae') { recognized = objectHasPropertyCI(cards, '\u00e6'+card.slice(2)); }
         //else { recognized = objectHasPropertyCI(cards, card); }
-        card = card.replace("’", "'");
+        card = card.replace("’", "'").replace(" / ", " // ");
         recognized = objectHasPropertyCI(cards, card);
 
         // Always add the card to the list, regardless of if the card is recognized

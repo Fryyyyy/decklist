@@ -998,10 +998,15 @@ function validateInput() {
         });
     } else if($("select[name=eventformat]").val() == "Highlander") {
         totalHLPoints = 0;
+        totalRLCards = 0;
         goodcards.forEach(function(element, index, array) {
+            if(element.l == "t") {
+                totalRLCards += 1;
+            }
             totalHLPoints += element.p;
         });
-        if (totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
+        if (totalRLCards > 0 && totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
+        if (totalRLCards == 0 && totalHLPoints > 8) { validate.format.push({"error": "toomanypoints"}); }
         if (totalHLPoints < 7) { validate.format.push({"warning": "toofewpoints"}); }
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('h') != -1) {
@@ -1183,7 +1188,7 @@ function statusAndTooltips(valid) {
                 }
             } else if (prop === "format") {
                 if (validationObject["error"] === "toomanypoints") {
-                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points (You have " + totalHLPoints + ")", validType]);
+                    notifications.push(prop, ["Highlander lists may contain a maximum of 7 points (8 if no RL cards) (You have " + totalHLPoints + ")", validType]);
                 } else if(validationObject["warning"] === "toofewpoints") {
                     notifications.push(prop, ["Most Highlander lists contain 7 points", validType]);
                 } else if (validationObject["error"] === "notlegal") {
