@@ -1000,7 +1000,7 @@ function validateInput() {
         totalHLPoints = 0;
         totalRLCards = 0;
         goodcards.forEach(function(element, index, array) {
-            if(element.l == "t") {
+            if(element.l == "T") {
                 totalRLCards += 1;
             }
             totalHLPoints += element.p;
