@@ -165,6 +165,8 @@ for card in cards.keys():
         ocards[ocard]['m'] = 98
         ocards[ocard]['n'] = name
         ocards[ocard]['t'] = 0
+        ocards[ocard]['p'] = 0
+        ocards[ocard]['l'] = 'F'
 
         legality = getLegalities(c)
         ocards[ocard]['b'] = legality
