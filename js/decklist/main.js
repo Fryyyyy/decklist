@@ -1281,7 +1281,7 @@ function openDeckWindow(windowType) {
     deckURL += 'deckmain=';
     if (maindeck != []) {
         for (i = 0; i < maindeck.length; i++) {
-            deckURL += maindeck[i][1] + " " + maindeck[i][0] + '\n';
+            deckURL += maindeck[i][1] + " " + maindeck[i][0].replace(/&/g, "%26") + '\n';
         }
     }
     if (sideboard != []) {
@@ -1290,7 +1290,7 @@ function openDeckWindow(windowType) {
         }
 
         for (i = 0; i < sideboard.length; i++) {
-            deckURL += sideboard[i][1] + " " + sideboard[i][0] + '\n';
+            deckURL += sideboard[i][1] + " " + sideboard[i][0].replace(/&/g, "%26") + '\n';
         }
     }
 
