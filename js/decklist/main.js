@@ -180,7 +180,7 @@ String.prototype.capitalize = function() {
 
 // Parse the GET attributes, locking out fields as needed
 function parseGET() {
-    var params = ['firstname', 'lastname', 'dcinumber', 'event', 'eventdate', 'eventlocation', 'deckname', 'deckdesigner', 'deckmain', 'deckside', 'eventformat'];
+    var params = ['firstname', 'lastname', 'wizacct', 'event', 'eventdate', 'eventlocation', 'deckname', 'deckdesigner', 'deckmain', 'deckside', 'eventformat'];
 
     // check for event, eventdate, or eventlocation and lock down those input fields
     for (var i = 0; i < params.length; i++) {
@@ -267,12 +267,9 @@ function addHLTemplateToDL(dl) {
     dl.rect(163, 10, 140, 19);
     dl.text('First Name', 310, 23);
     dl.rect(380, 10, 145, 19);
-    dl.text('DCI Number', 530, 23);
-    var x = 610;
-    while (x < 760) {
-        dl.rect(x, 10, 15, 19);  // dci digits
-        x = x + 15;
-    }
+    dl.text('Wizard Acct', 530, 23);
+    dl.rect(610, 10, 157, 23)
+    
     // Event Name, Deck Name, Deck Designer
     dl.text('Deck Name', 90, 50);
     dl.rect(163, 38, 140, 19);
@@ -390,11 +387,11 @@ function addTemplateToDL(dl) {
     dl.rect(320, 734, 260, 12); // dc round + dc round
     dl.rect(320, 746, 260, 12); // status + status
 
-    var y = 140;
-    while (y < 380) {
-        dl.rect(27, y, 24, 24);  // dci digits
-        y = y + 24;
-    }
+    //var y = 140;
+    //while (y < 380) {
+    //    dl.rect(27, y, 24, 24);  // dci digits
+    //    y = y + 24;
+    //}
 
     // Get all the various notes down on the page
     // There are a ton of them, so this will be exciting
@@ -436,7 +433,7 @@ function addTemplateToDL(dl) {
     dl.text('Last Name:', 41, 760, 90);
 
     dl.setFontStyle('italic');
-    dl.text('DCI #:', 41, 404, 90) ;   // dci # is rotated and italic
+    dl.text('Wizard Acct:', 41, 404, 90) ;   // dci # is rotated and italic
 
     dl.setFontSize(6);
     dl.setFontStyle('normal');
@@ -518,17 +515,12 @@ function addHLMetadataToDL(dl) {
     firstname = $("#firstname").val().capitalize();
     dl.text(firstname, 383, 23);
 
-    dcinumber = $("#dcinumber").val();
+    // put the Wizard Acct into the PDF
+    wizacct = $("#wizacct").val();
+    dl.setFontSize(11);
+    dl.text(wizacct, 614, 23);
 
-    // put the DCI number into the PDF
-    x = 614;
-    if (dcinumber.length > 0) {
-        for (var i = 0; i < dcinumber.length; i++) {
-            dl.text(dcinumber.charAt(i), x, 23);
-            x = x + 15;
-        }
-    }
-
+    dl.setFontSize(13);
     dl.setFontStyle('normal');
 
     dl.text($("#deckname").val().capitalize(), 165, 50);
@@ -586,19 +578,10 @@ function addMetaDataToDL(dl) {
         dl.setFontSize(12);
     }
 
-    dcinumber = $("#dcinumber").val();
-    if (dcinumber) { // only if there is a dci number
-        dcinumber = DCI.getTenIfValid(dcinumber);
-        dcinumber = dcinumber.toString(); //convert to string (function returns an int)
-    }
-
-    // put the DCI number into the PDF
-    y = 372;
-    if (dcinumber.length > 0) {
-        for (var i = 0; i < dcinumber.length; i++) {
-            dl.text(dcinumber.charAt(i), 43, y, 90);
-            y = y - 24;
-        }
+    wizacct = $("#wizacct").val();
+    if (wizacct) { 
+        // put the Wizard Account into the PDF
+        dl.text(wizacct, 43, 365, 90);
     }
     dl.setFontStyle('normal');
 }
@@ -791,7 +774,7 @@ function generateDecklistPDF(outputtype) {
         return(rawPDF);
     }
     else if (outputtype == 'txt' || outputtype == 'dec') {
-        var data = ($("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#dcinumber").val() + '\r\n').trim();
+        var data = ($("#firstname").val().capitalize() + ' ' + $("#lastname").val().capitalize() + ' ' + $("#wizacct").val() + '\r\n').trim();
         data += ($("#eventdate").val() + ' ' + $("#eventlocation").val().capitalize() + ' ' + $("#event").val().capitalize() + '\r\n').trim();
         data += "\r\n";
         // data += "Main Deck\r\n";
@@ -878,7 +861,7 @@ function validateInput() {
     validate = {
         'firstname': [],
         'lastname': [],
-        'dcinumber': [],
+        'wizacct': [],
         'event': [],
         'eventdate': [],
         'eventlocation': [],
@@ -901,22 +884,9 @@ function validateInput() {
         validate.lastname.push({'error': 'toolarge'});
     }
 
-    // check DCI number (non-blank, numeric, < 11 digits, valid, has check digit, was changed)
-    if ($('#dcinumber').val() === '') { 
-        validate.dcinumber.push({'warning': 'blank'});  
-    } else if (!$('#dcinumber').val().match(/^[\d]+$/)) {
-        validate.dcinumber.push({'error': 'nonnum'});
-    } else if ($('#dcinumber').val().length >= 11) {
-        validate.dcinumber.push({'error': 'toolarge'});
-    } else if (!DCI.isValid($('#dcinumber').val())) {
-        validate.dcinumber.push({'error': 'invalid'});
-    } else {
-        if (DCI.isValid($('#dcinumber').val()) == -1){
-            validate.dcinumber.push({'warning': 'nocheck'});
-        }
-        if (DCI.wasChanged($('#dcinumber').val())) {
-            validate.dcinumber.push({'warning': 'changed'});
-        }
+    // check Wiz acct
+    if ($('#wizacct').val() === '') { 
+        validate.wizacct.push({'warning': 'blank'});  
     }
 
     // check event name (non-blank)
@@ -1130,19 +1100,9 @@ function statusAndTooltips(valid) {
                 } else if (validationObject['error'] === 'toolarge') {
                     notifications.push(prop, ['Last name too long', validType]);
                 }
-            } else if (prop === 'dcinumber') {
+            } else if (prop === 'wizacct') {
                 if (validationObject['warning'] === 'blank') {
-                notifications.push(prop, ['Missing DCI number', validType]);
-                } else if (validationObject['error'] === 'nonnum') {
-                notifications.push(prop, ['DCI number must contain only numbers', validType]);
-                } else if (validationObject['error'] === 'toolarge') {
-                notifications.push(prop, ['DCI numbers must be 10 digits or less', validType]);
-                } else if (validationObject['error'] === 'invalid') {
-                notifications.push(prop, ['DCI number is invalid', validType]);
-                } else if (validationObject['warning'] === 'nocheck') {
-                notifications.push(prop, ['We cannot verify that your DCI number is valid as it is in an old format. Please double-check it.', validType]);
-                } else if (validationObject['warning'] === 'changed') {
-                notifications.push(prop, ['Your DCI number was expanded to the newer 10 digit system', validType]);
+                notifications.push(prop, ['Missing Wizard Account', validType]);
                 }
             } else if (prop === 'event') {
                 if (validationObject['warning'] === 'blank') {
@@ -1310,7 +1270,7 @@ function openDeckWindow(windowType) {
     if(windowType == "index" || windowType == 'qrcode') {
         deckURL += 'firstname=' + $("#firstname")[0].value;
         deckURL += '&lastname=' + $("#lastname")[0].value;
-        deckURL += '&dcinumber=' + $("#dcinumber")[0].value;
+        deckURL += '&wizacct=' + $("#wizacct")[0].value;
         deckURL += '&eventdate=' + this.eventdate.value;
         deckURL += '&event=' + $('#event')[0].value;
         deckURL += '&eventlocation=' + this.eventlocation.value;

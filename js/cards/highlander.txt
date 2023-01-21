@@ -4,6 +4,7 @@ Black Lotus 4
 Time Vault 4
 Thassa's Oracle 4
 Demonic Tutor 3
+Lurrus of the Dream-Den 3
 Mana Crypt 3
 Mox Emerald 3
 Mox Jet 3
@@ -17,15 +18,14 @@ Channel 2
 Dig Through Time 2
 Flash 2
 Imperial Seal 2
-Lurrus of the Dream-Den 2
 Lutri, the Spellchaser 2
 Mystical Tutor 2
 Oko, Thief of Crowns 2
-Protean Hulk 2
 Strip Mine 2
 Tinker 2
 Treasure Cruise 2
 True-Name Nemesis 2
+Uro, Titan of Nature's Wrath 2
 Balance 1
 Crop Rotation 1
 Deathrite Shaman 1
@@ -40,26 +40,25 @@ Intuition 1
 Karakas 1
 Library of Alexandria 1
 Lim-Dul's Vault 1
-Mana Drain 1
 Mana Vault 1
 Merchant Scroll 1
 Mind Twist 1
 Mishra's Workshop 1
+Murktide Regent 1
 Mystic Sanctuary 1
 Natural Order 1
 Oath of Druids 1
 Profane Tutor 1
+Protean Hulk 1
 Ragavan, Nimble Pilferer 1
 Sensei's Divining Top 1
 Skullclamp 1
 Snapcaster Mage 1
 Survival of the Fittest 1
 Tainted Pact 1
-Time Spiral 1
 Timetwister 1
 Tolarian Academy 1
 Umezawa's Jitte 1
-Uro, Titan of Nature's Wrath 1
 Urza's Saga 1
 Wasteland 1
 Wishclaw Talisman 1

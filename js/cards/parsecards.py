@@ -31,9 +31,6 @@ def getLegalities(c):
             banned = banned + 'h'
 
     cp = c.get('printings', [])
-    # if 'M21' in cp:
-    #    print(c.get('name'))
-    #    banned = ''
 
     return banned
 
@@ -51,14 +48,14 @@ def getRestrictions(c):
 
 
 # Open the JSON file
-jsonfh = open("AtomicCards.json", "r")
+jsonfh = open("AtomicCards.json", "r", encoding="utf-8")
 
 # Load all the cards into a giant dictionary
 cards = json.load(jsonfh)
 cards = cards.get('data', {})
-print "{} cards parsed".format(len(cards))
+print("{} cards parsed".format(len(cards)))
 if len(cards) == 0:
-    print "No cards parsed, giving up."
+    print("No cards parsed, giving up.")
     sys.exit(0)
 
 # Open and read the Highlander points file
@@ -77,7 +74,7 @@ for card in cards.keys():
     c = cards[card][0]
 
     # We're going to store them in lowercase
-    ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").encode('utf-8').lower()
+    ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").lower()
 
     # Skip tokens
     if c['layout'] == 'token':
@@ -142,7 +139,7 @@ for card in cards.keys():
     ocards[ocard]['r'] = restrictions
 
     # And put the true name in there as well
-    ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").encode('utf-8')
+    ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "")
 
     # Check highlander points
     ocards[ocard]['p'] = hlcards.get(card, 0)
