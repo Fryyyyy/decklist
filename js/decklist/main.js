@@ -488,8 +488,10 @@ function generateDecklistLayout() {
     addTemplateToDL(dl);
 
     // Set iFrame W/H
-    $("#decklist")[0].height = "580";
-    $("#decklist")[0].width = "440";
+    if($("#decklist").length > 0) {
+        $("#decklist")[0].height = "580";
+        $("#decklist")[0].width = "440";
+    }
 
     return(dl);
 }
@@ -500,8 +502,10 @@ function generateHLDecklistLayout() {
     addHLTemplateToDL(dl);
 
     // Set iFrame W/H
-    $("#decklist")[0].height = "370";
-    $("#decklist")[0].width = "470";
+    if($("#decklist").length > 0) {
+        $("#decklist")[0].height = "370";
+        $("#decklist")[0].width = "470";
+    }
 
     return(dl);
 }
