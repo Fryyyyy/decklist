@@ -1,11 +1,11 @@
 Ancestral Recall 5
 Time Walk 5
 Black Lotus 4
+Mana Crypt 4
 Time Vault 4
 Thassa's Oracle 4
 Demonic Tutor 3
 Lurrus of the Dream-Den 3
-Mana Crypt 3
 Mox Emerald 3
 Mox Jet 3
 Mox Pearl 3
@@ -26,7 +26,9 @@ Tinker 2
 Treasure Cruise 2
 True-Name Nemesis 2
 Uro, Titan of Nature's Wrath 2
+Ancient Tomb 1
 Balance 1
+Comet, Stellar Pup 1
 Crop Rotation 1
 Deathrite Shaman 1
 Dreadhorde Arcanist 1
@@ -43,6 +45,7 @@ Lim-Dul's Vault 1
 Mana Vault 1
 Merchant Scroll 1
 Mind Twist 1
+Minsc & Boo, Timeless Heroes 1
 Mishra's Workshop 1
 Murktide Regent 1
 Mystic Sanctuary 1
@@ -61,6 +64,6 @@ Tolarian Academy 1
 Umezawa's Jitte 1
 Urza's Saga 1
 Wasteland 1
+White Plume Adventurer 1
 Wishclaw Talisman 1
 Wrenn and Six 1
-Yawgmoth's Will 1
