@@ -5,6 +5,7 @@ Mana Crypt 4
 Time Vault 4
 Thassa's Oracle 4
 Demonic Tutor 3
+Flash 3
 Lurrus of the Dream-Den 3
 Mox Emerald 3
 Mox Jet 3
@@ -16,7 +17,6 @@ Underworld Breach 3
 Vampiric Tutor 3
 Channel 2
 Dig Through Time 2
-Flash 2
 Imperial Seal 2
 Lutri, the Spellchaser 2
 Mystical Tutor 2
@@ -52,12 +52,10 @@ Mystic Sanctuary 1
 Natural Order 1
 Oath of Druids 1
 Profane Tutor 1
-Protean Hulk 1
 Ragavan, Nimble Pilferer 1
 Sensei's Divining Top 1
 Skullclamp 1
 Snapcaster Mage 1
-Survival of the Fittest 1
 Tainted Pact 1
 Timetwister 1
 Tolarian Academy 1
