@@ -19,8 +19,8 @@ Channel 2
 Dig Through Time 2
 Imperial Seal 2
 Lutri, the Spellchaser 2
-Mystical Tutor 2
-Oko, Thief of Crowns 2
+Minsc & Boo, Timeless Heroes 2
+Ragavan, Nimble Pilferer 2
 Strip Mine 2
 Tinker 2
 Treasure Cruise 2
@@ -41,22 +41,22 @@ Gush 1
 Intuition 1
 Karakas 1
 Library of Alexandria 1
-Lim-Dul's Vault 1
+Mana Drain 1
 Mana Vault 1
 Merchant Scroll 1
 Mind Twist 1
-Minsc & Boo, Timeless Heroes 1
 Mishra's Workshop 1
 Murktide Regent 1
-Mystic Sanctuary 1
+Mystical Tutor 1
 Natural Order 1
 Oath of Druids 1
 Profane Tutor 1
-Ragavan, Nimble Pilferer 1
+Seasoned Dungeoneer 1
 Sensei's Divining Top 1
 Skullclamp 1
 Snapcaster Mage 1
 Tainted Pact 1
+The One Ring 1
 Timetwister 1
 Tolarian Academy 1
 Umezawa's Jitte 1
