@@ -1,7 +1,7 @@
 Ancestral Recall 5
+Mana Crypt 5
 Time Walk 5
 Black Lotus 4
-Mana Crypt 4
 Time Vault 4
 Thassa's Oracle 4
 Demonic Tutor 3
@@ -29,6 +29,7 @@ True-Name Nemesis 2
 Uro, Titan of Nature's Wrath 2
 Ancient Tomb 1
 Balance 1
+Caves of Chaos Adventurer 1
 Comet, Stellar Pup 1
 Crop Rotation 1
 Deathrite Shaman 1
@@ -36,8 +37,10 @@ Dreadhorde Arcanist 1
 Enlightened Tutor 1
 Fastbond 1
 Force of Will 1
+Forth Eorlingas! 1
 Gamble 1
 Gifts Ungiven 1
+Goblin Recruiter 1
 Gush 1
 Intuition 1
 Karakas 1
@@ -51,9 +54,11 @@ Murktide Regent 1
 Mystical Tutor 1
 Natural Order 1
 Oath of Druids 1
+Orcish Bowmasters 1
 Profane Tutor 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
+Spellseeker 1
 Skullclamp 1
 Snapcaster Mage 1
 Tainted Pact 1
@@ -65,4 +70,4 @@ Urza's Saga 1
 Wasteland 1
 White Plume Adventurer 1
 Wishclaw Talisman 1
-Wrenn and Six 1
+Wrenn and Six 2
