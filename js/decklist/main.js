@@ -603,6 +603,7 @@ function addHLCardsToDL(dl) {
     var numPages = 0;
     dl.setFontStyle('normal');
     if (maindeck != []) {
+        var cardIndex = 0;
         for (i = 0; i < maindeck.length; i++) {
             if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
             {
@@ -617,19 +618,30 @@ function addHLCardsToDL(dl) {
             else if (i == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next row
 
             // Ignore zero quantity entries (blank)
-            if(maindeck[i][1] != 0) {
-                dl.text(maindeck[i][1], x, y);
-                cardtext = maindeck[i][0];
+            if(maindeck[cardIndex][1] != 0) {
+                dl.text(maindeck[cardIndex][1], x, y);
+                cardname = maindeck[cardIndex][0];
                 goodcards.forEach(function(element, index, array) {
-                    if(element.n == cardtext) {
+                    if(element.n == cardname) {
                         if (typeof element.p === 'undefined') { element.p = 0; }
-                        cardtext = cardtext + " " + Array(element.p+1).join("*");
+                        cardname = cardname + " " + Array(element.p+1).join("*");
                     }
                 });
-                dl.text(cardtext, x + 38, y);
+                if(cardname.length >= 35) {
+                    var both_halves = cardname.split(' // ');
+                    if (both_halves.length == 2){
+                        dl.text(both_halves[0] + ' // ', x + 38, y);
+                        y = y + 20;
+                        dl.text(both_halves[1], x + 42, y);
+                        i++;
+                    }
+                } else {
+                    dl.text(cardname, x + 38, y);
+                }
 
             }
             y = y + 20;  // move to the next row
+            cardIndex++;
         }
     }
 
@@ -670,6 +682,7 @@ function addCardsToDL(dl) {
     var numPages = 0;
     dl.setFontStyle('normal');
     if (maindeck != []) {
+        var cardIndex = 0;
         for (i = 0; i < maindeck.length; i++) {
             if(i > 0 && ((i % 44 == 0) && maindeck.length > (44 * (numPages+1))))
             {
@@ -683,12 +696,24 @@ function addCardsToDL(dl) {
             if (i == (32 + (numPages * 44))) { x = 356; y = 182; } // jump to the next row
 
             // Ignore zero quantity entries (blank)
-            if (maindeck[i][1] != 0) {
-                dl.text(maindeck[i][1], x, y);
-                dl.text(maindeck[i][0], x + 38, y);
+            if (maindeck[cardIndex][1] != 0) {
+                var cardname = maindeck[cardIndex][0];
+                dl.text(maindeck[cardIndex][1], x, y);
+                if(cardname.length >= 35) {
+                    var both_halves = cardname.split(' // ');
+                    if (both_halves.length == 2){
+                        dl.text(both_halves[0] + ' // ', x + 38, y);
+                        y = y + 18;
+                        dl.text(both_halves[1], x + 42, y);
+                        i++;
+                    }
+                } else {
+                    dl.text(maindeck[cardIndex][0], x + 38, y);
+                }
             }
 
             y = y + 18;  // move to the next row
+            cardIndex++;
         }
     }
 

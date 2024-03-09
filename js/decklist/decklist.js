@@ -33,6 +33,7 @@ function parseDecklist() {
     // Loop through all the cards in the main deck field
     in_sb = false;
     for (i = 0; i < deckmain.length; i++) {
+        deckmain[i] = deckmain[i].trim()
         deckmain[i] = deckmain[i].replace("\"", "");
         // Parse for Magic Workstation style deck
         if (mwsRE.exec(deckmain[i]) != null) {
