@@ -56,7 +56,11 @@ function parseDecklist() {
           quantity = moxfieldRE.exec(deckmain[i])[1];
           card = moxfieldRE.exec(deckmain[i])[2];
 
-          recognizeCard(card, quantity);
+          if (in_sb) {
+            recognizeCard(card, quantity, 'side');
+          } else {
+            recognizeCard(card, quantity);
+          }
         }
 
 
