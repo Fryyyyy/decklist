@@ -604,7 +604,8 @@ function addHLCardsToDL(dl) {
     dl.setFontStyle('normal');
     if (maindeck != []) {
         var cardIndex = 0;
-        for (i = 0; i < maindeck.length; i++) {
+        var loopEnd = maindeck.length;
+        for (i = 0; i < loopEnd; i++) {
             if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
             {
                 numPages++;
@@ -619,6 +620,7 @@ function addHLCardsToDL(dl) {
 
             // Ignore zero quantity entries (blank)
             if(maindeck[cardIndex][1] != 0) {
+                console.log(maindeck[cardIndex][1]);
                 dl.text(maindeck[cardIndex][1], x, y);
                 cardname = maindeck[cardIndex][0];
                 goodcards.forEach(function(element, index, array) {
@@ -634,6 +636,7 @@ function addHLCardsToDL(dl) {
                         y = y + 20;
                         dl.text(both_halves[1], x + 42, y);
                         i++;
+                        loopEnd++;
                     }
                 } else {
                     dl.text(cardname, x + 38, y);
@@ -683,7 +686,8 @@ function addCardsToDL(dl) {
     dl.setFontStyle('normal');
     if (maindeck != []) {
         var cardIndex = 0;
-        for (i = 0; i < maindeck.length; i++) {
+        var loopEnd = maindeck.length;
+        for (i = 0; i < loopEnd; i++) {
             if(i > 0 && ((i % 44 == 0) && maindeck.length > (44 * (numPages+1))))
             {
                 numPages++;
@@ -706,6 +710,7 @@ function addCardsToDL(dl) {
                         y = y + 18;
                         dl.text(both_halves[1], x + 42, y);
                         i++;
+                        loopEnd++;
                     }
                 } else {
                     dl.text(maindeck[cardIndex][0], x + 38, y);
