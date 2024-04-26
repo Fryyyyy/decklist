@@ -614,8 +614,8 @@ function addHLCardsToDL(dl) {
                 x = 47;
                 y = 78;
             }
-            if (i == (21 + (numPages * 60))) { x = 300; y = 78; } // jump to the next row
-            else if (i == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next row
+            if (i == (21 + (numPages * 60))) { x = 300; y = 78; } // jump to the next column
+            else if (i == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next column
 
             // Ignore zero quantity entries (blank)
             if(maindeck[cardIndex][1] != 0) {
