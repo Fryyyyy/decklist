@@ -630,13 +630,17 @@ function addHLCardsToDL(dl) {
                     }
                 });
                 if(cardname.length >= 35) {
-                    var both_halves = cardname.split(' // ');
-                    if (both_halves.length == 2){
-                        dl.text(both_halves[0] + ' // ', x + 38, y);
-                        y = y + 20;
-                        dl.text(both_halves[1], x + 42, y);
-                        i++;
-                        loopEnd++;
+                    if (maindeck.length == 60) {
+                        dl.text(cardname.substring(0, 30) + "...", x + 38, y)
+                    } else {
+                        var both_halves = cardname.split(' // ');
+                        if (both_halves.length == 2){
+                            dl.text(both_halves[0] + ' // ', x + 38, y);
+                            y = y + 20;
+                            dl.text(both_halves[1], x + 42, y);
+                            i++;
+                            loopEnd++;
+                        }
                     }
                 } else {
                     dl.text(cardname, x + 38, y);

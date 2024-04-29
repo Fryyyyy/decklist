@@ -36,6 +36,7 @@ function parseDecklist() {
     for (i = 0; i < deckmain.length; i++) {
         deckmain[i] = deckmain[i].trim()
         deckmain[i] = deckmain[i].replace("\"", "");
+        deckmain[i] = deckmain[i].replace(/\*+/, "");
         // Parse for Magic Workstation style deck
         if (mwsRE.exec(deckmain[i]) != null) {
             quantity = mwsRE.exec(deckmain[i])[1];
