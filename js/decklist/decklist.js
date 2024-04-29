@@ -29,7 +29,7 @@ function parseDecklist() {
     var mwsRE      = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
     var mwssbRE    = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
     var tosbRE     = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
-    var moxfieldRE = /^(\d+) (.*)? \(\w+\) (\w+-?)+$/ // Moxfield: 1 Collector Ouphe (PLST) MH1-158
+    var moxfieldRE = /^(\d+) (.*)? \(\w+\) (\w+-?)+( \*F\*)?$/ // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
 
     // Loop through all the cards in the main deck field
     in_sb = false;
@@ -422,7 +422,9 @@ function list_add(type, card, quantity) {
     } else {
       maindeck.push([card, quantity]);
     }
+    console.log(parseInt(quantity));
     maindeck_count += parseInt(quantity);
+    console.log(maindeck_count);
   } else if (type === 'side') {
     cardIndex = listContainsCard(sideboard,card);
     if (cardIndex !== -1) {
