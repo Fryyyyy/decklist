@@ -1,0 +1,4 @@
+js/cards/*.zip
+js/cards/*.json
+js/cards/*.js
+!js/cards/*-min.js
