@@ -29,7 +29,7 @@ function parseDecklist() {
     var mwsRE      = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
     var mwssbRE    = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
     var tosbRE     = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
-    var moxfieldRE = /^(\d+) (.*)? \(\w+\) (\S+-?)+( \*?F\*)?$/ // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
+    var moxfieldRE = /^(\d+) (.*)? \(\w+\) (\S+-?)+( \*?F\*?)?$/ // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
 
     // Loop through all the cards in the main deck field
     in_sb = false;
