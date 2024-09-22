@@ -22,7 +22,6 @@ Lutri, the Spellchaser 2
 Minsc & Boo, Timeless Heroes 2
 Oko, Thief of Crowns 2
 Ragavan, Nimble Pilferer 2
-Strip Mine 2
 Treasure Cruise 2
 True-Name Nemesis 2
 Uro, Titan of Nature's Wrath 2
@@ -60,6 +59,7 @@ Sensei's Divining Top 1
 Spellseeker 1
 Skullclamp 1
 Snapcaster Mage 1
+Strip Mine 1
 Tainted Pact 1
 The One Ring 1
 Timetwister 1
