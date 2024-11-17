@@ -15,16 +15,18 @@ Mox Sapphire 3
 Sol Ring 3
 Underworld Breach 3
 Vampiric Tutor 3
+White Plume Adventurer 3
 Channel 2
 Dig Through Time 2
 Demonic Tutor 2
+Gush 2
 Imperial Seal 2
 Minsc & Boo, Timeless Heroes 2
 Oko, Thief of Crowns 2
 Ragavan, Nimble Pilferer 2
+Tolarian Academy 2
 Treasure Cruise 2
 Uro, Titan of Nature's Wrath 2
-White Plume Adventurer 2
 Wrenn and Six 2
 Ancient Tomb 1
 Balance 1
@@ -35,12 +37,12 @@ Crop Rotation 1
 Deathrite Shaman 1
 Dreadhorde Arcanist 1
 Enlightened Tutor 1
+Fable of the Mirror-Breaker 1
 Force of Will 1
 Forth Eorlingas! 1
 Gamble 1
 Gifts Ungiven 1
 Goblin Recruiter 1
-Gush 1
 Intuition 1
 Karakas 1
 Mana Drain 1
@@ -54,7 +56,9 @@ Nadu, Winged Wisdom 1
 Natural Order 1
 Oath of Druids 1
 Orcish Bowmasters 1
+Phlage, Titan of Fire's Fury 1
 Profane Tutor 1
+Psychic Frog 1
 Reanimate 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
@@ -66,7 +70,6 @@ Tainted Pact 1
 The One Ring 1
 Timetwister 1
 Tinker 1
-Tolarian Academy 1
 True-Name Nemesis 1
 Undermountain Adventurer 1
 Urza's Saga 1
