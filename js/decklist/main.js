@@ -746,27 +746,6 @@ function addCardsToDL(dl) {
     }
 }
 
-function addQRCodeToPDF(dl, bitlyURL) {
-    var qrcode = kjua({
-        render: 'image',
-        crisp: 'true',
-        size: '150',
-        ecLevel: 'L',
-        minVersion: 15,
-        quiet: 0,
-        rounded: 0,
-        text: bitlyURL
-    });
-    for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
-        dl.setPage(i);
-        if($("select[name=eventformat]").val() == "Highlander") {
-            dl.addImage(qrcode, 'PNG', 30, 10, 52, 52);
-        } else {
-            dl.addImage(qrcode, 'PNG', 30, 17, 90, 90);
-        }
-    }
-}
-
 function generateDecklistPDF(outputtype) {
     // default type is dataurlstring (live preview)
     // stupid shitty javascript and its lack of default arguments
@@ -800,7 +779,6 @@ function generateDecklistPDF(outputtype) {
 
     // Output the dl as a blob to add to the DOM
     if (outputtype == 'dataurlstring') {
-        //addQRCodeToPDF(dl);
         addLogoToDL(dl);
         domdl = dl.output('dataurlstring');
 
@@ -874,16 +852,8 @@ function generateDecklistPDF(outputtype) {
 }
 
 function savePDF(dl, filename) {
-    // deckURL = openDeckWindow('qrcode');
     addLogoToDL(dl);
     dl.save(filename);
-    //getBitlyURL(deckURL, function(returndata) {
-    //    if(returndata.status_code == 200) {
-    //        newDeckURL = returndata.data.url;
-    //        addQRCodeToPDF(dl, newDeckURL);
-    //        dl.save(filename);
-    //    }
-    //});
 }
 
 // performs a number of checks against the values filled out in the fields

@@ -10,8 +10,9 @@ unzip AtomicCards.json.zip
 python3 parsecards.py
 
 # Minify
-java -jar ../../tools/yuicompressor-2.4.8.jar -o '.js$:-min.js' *.js
+terser decklist-cards.js -o decklist-cards-min.js
 
 # Clean up a bit
-#rm AllCards*
-#rm decklist-cards.js
+rm AtomicCards*
+rm decklist-cards.js
+rm playlist-cards.js
