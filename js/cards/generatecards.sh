@@ -11,8 +11,9 @@ python3 parsecards.py
 
 # Minify
 terser decklist-cards.js -o decklist-cards-min.js
+terser playtest-cards.js -o playtest-cards-min.js
 
 # Clean up a bit
 rm AtomicCards*
 rm decklist-cards.js
-rm playlist-cards.js
+rm playtest-cards.js
