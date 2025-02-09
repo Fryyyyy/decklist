@@ -12,6 +12,7 @@ Mox Jet 3
 Mox Pearl 3
 Mox Ruby 3
 Mox Sapphire 3
+Nadu, Winged Wisdom 2
 Sol Ring 3
 Underworld Breach 3
 Vampiric Tutor 3
@@ -28,6 +29,7 @@ Tolarian Academy 2
 Treasure Cruise 2
 Uro, Titan of Nature's Wrath 2
 Wrenn and Six 2
+Abhorrent Oculus 1
 Ancient Tomb 1
 Balance 1
 Broadside Bombardiers 1
@@ -35,6 +37,7 @@ Caves of Chaos Adventurer 1
 Comet, Stellar Pup 1
 Crop Rotation 1
 Deathrite Shaman 1
+Demonic Counsel 1
 Dreadhorde Arcanist 1
 Enlightened Tutor 1
 Fable of the Mirror-Breaker // Reflection of Kiki-Jiki 1
@@ -52,7 +55,6 @@ Mind Twist 1
 Mishra's Workshop 1
 Murktide Regent 1
 Mystical Tutor 1
-Nadu, Winged Wisdom 1
 Natural Order 1
 Oath of Druids 1
 Orcish Bowmasters 1
