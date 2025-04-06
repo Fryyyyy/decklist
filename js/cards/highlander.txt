@@ -18,13 +18,10 @@ Underworld Breach 3
 Vampiric Tutor 3
 White Plume Adventurer 3
 Channel 2
-Dig Through Time 2
 Demonic Tutor 2
 Gush 2
 Imperial Seal 2
 Minsc & Boo, Timeless Heroes 2
-Oko, Thief of Crowns 2
-Ragavan, Nimble Pilferer 2
 Tolarian Academy 2
 Treasure Cruise 2
 Uro, Titan of Nature's Wrath 2
@@ -38,6 +35,7 @@ Comet, Stellar Pup 1
 Crop Rotation 1
 Deathrite Shaman 1
 Demonic Counsel 1
+Dig Through Time 1
 Dreadhorde Arcanist 1
 Enlightened Tutor 1
 Fable of the Mirror-Breaker // Reflection of Kiki-Jiki 1
@@ -56,12 +54,15 @@ Mind Twist 1
 Mishra's Workshop 1
 Murktide Regent 1
 Mystical Tutor 1
-Natural Order 1
+Nethergoyf 1
 Oath of Druids 1
+Oko, Thief of Crowns 1
 Orcish Bowmasters 1
 Phlage, Titan of Fire's Fury 1
+Planar Nexus 1
 Profane Tutor 1
 Psychic Frog 1
+Ragavan, Nimble Pilferer 1
 Reanimate 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
@@ -70,6 +71,7 @@ Skullclamp 1
 Snapcaster Mage 1
 Strip Mine 1
 Tainted Pact 1
+Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 1
 The One Ring 1
 Timetwister 1
 Tinker 1
