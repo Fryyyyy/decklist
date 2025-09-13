@@ -184,6 +184,16 @@ function parseDecklist() {
                 return obj[p];
             }
         }
+        // If we got to the end and didn't find a card, check:
+        // Is it exactly the first half of a DFC?
+        // Don't want this in the main loop just in case.
+        for (var p in obj) {
+            if (p.includes(" // ")) {
+              if (val.toLowerCase() === p.split(" // ")[0].toLowerCase()) {
+                return obj[p];
+              }
+            }
+        }
         return false;
     }
 }
@@ -423,9 +433,7 @@ function list_add(type, card, quantity) {
     } else {
       maindeck.push([card, quantity]);
     }
-    console.log(parseInt(quantity));
     maindeck_count += parseInt(quantity);
-    console.log(maindeck_count);
   } else if (type === 'side') {
     cardIndex = listContainsCard(sideboard,card);
     if (cardIndex !== -1) {
