@@ -12,7 +12,6 @@ Mox Jet 3
 Mox Pearl 3
 Mox Ruby 3
 Mox Sapphire 3
-Nadu, Winged Wisdom 2
 Sol Ring 3
 Underworld Breach 3
 Vampiric Tutor 3
@@ -22,9 +21,13 @@ Demonic Tutor 2
 Gush 2
 Imperial Seal 2
 Minsc & Boo, Timeless Heroes 2
+Nadu, Winged Wisdom 2
+Reanimate 2
 Tolarian Academy 2
 Treasure Cruise 2
 Uro, Titan of Nature's Wrath 2
+Psychic Frog 2
+Tinker 2
 Wrenn and Six 2
 Abhorrent Oculus 1
 Ancient Tomb 1
@@ -62,9 +65,7 @@ Orcish Bowmasters 1
 Phlage, Titan of Fire's Fury 1
 Planar Nexus 1
 Profane Tutor 1
-Psychic Frog 1
 Ragavan, Nimble Pilferer 1
-Reanimate 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
 Spellseeker 1
@@ -75,7 +76,6 @@ Tainted Pact 1
 Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 1
 The One Ring 1
 Timetwister 1
-Tinker 1
 True-Name Nemesis 1
 Undermountain Adventurer 1
 Urza's Saga 1
