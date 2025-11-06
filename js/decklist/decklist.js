@@ -459,3 +459,105 @@ function list_add(type, card, quantity) {
 function htmlEncode(string) {
   return string.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+
+$(document).ready(function() {
+    $('#import-csv-button').on('click', function(event) {
+        importCSV(event);
+    });
+});
+
+function importCSV(event) {
+    let file = $('#csv-file-input').prop('files')[0];
+    if (!file) {
+        alert("Please select a file!");
+        return;
+    }
+
+    Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            let firstDeck = true;
+            let dl;
+
+            results.data.forEach(function(data, i) {
+                if (data.DecklistName) {
+                    $('#deckname').val(data.DecklistName);
+                }
+                if (data.FormatName) {
+                    $('#eventformat').val(data.FormatName);
+                }
+                if (data.OwnerFirstName) {
+                    $('#firstname').val(data.OwnerFirstName);
+                }
+                if (data.OwnerLastName) {
+                    $('#lastname').val(data.OwnerLastName);
+                }
+
+                if (data.Records && data.Records !== '[]') {
+                    try {
+                        let records = JSON.parse(data.Records.replace(/""/g, '"'));
+                        let mainDeckText = '';
+                        let sideBoardText = '';
+                        let mainDeckCount = 0;
+                        let isHighlander = true;
+                        const basicLands = ["Mountain", "Island", "Swamp", "Plains", "Forest", "Wastes"];
+
+                        records.forEach(function(card) {
+                            if (card.c === 99) { // 99 indicates sideboard
+                                sideBoardText += card.q + ' ' + card.n + '\n';
+                            } else {
+                                mainDeckText += card.q + ' ' + card.n + '\n';
+                                mainDeckCount += card.q;
+                                if (card.q > 1 && !basicLands.includes(card.n)) {
+                                    isHighlander = false;
+                                }
+                            }
+                        });
+
+                        $('#deckmain').val(mainDeckText);
+                        $('#deckside').val(sideBoardText);
+
+                        if (mainDeckCount === 60 && isHighlander) {
+                            $("select[name=eventformat]").val("Highlander");
+                        }
+
+                        parseDecklist();
+
+                        if (firstDeck) {
+                            if ($("select[name=eventformat]").val() == "Highlander") {
+                                dl = generateHLDecklistLayout();
+                            } else {
+                                dl = generateDecklistLayout();
+                            }
+                            firstDeck = false;
+                        } else {
+                            dl.addPage();
+                        }
+
+                        if ($("select[name=eventformat]").val() == "Highlander") {
+                            addHLTemplateToDL(dl);
+                            addHLMetadataToDL(dl);
+                            addHLCardsToDL(dl);
+                        } else {
+                            addTemplateToDL(dl);
+                            addMetaDataToDL(dl);
+                            addCardsToDL(dl);
+                        }
+                    } catch (e) {
+                        alert('Error processing row ' + (i + 2) + ': ' + e);
+                    }
+                }
+            });
+
+            if (dl) {
+                let filename = "decklists.pdf";
+                savePDF(dl, filename);
+                
+                addLogoToDL(dl);
+                let domdl = dl.output('dataurlstring');
+                $('iframe').attr('src', domdl);
+            }
+        }
+    });
+}

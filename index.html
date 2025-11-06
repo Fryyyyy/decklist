@@ -24,6 +24,9 @@
     <script type="text/javascript" src="js/jsPDF/plugins/standard_fonts_metrics.js"></script>
     <script type="text/javascript" src="js/FileSaver/FileSaver-1.3.3.min.js"></script>
 
+    <!-- PapaParse for CSV parsing -->
+    <script type="text/javascript" src="js/papaparse.min.js"></script>
+
     <!-- Code for the website -->
     <script type="text/javascript" src="js/decklist/decklist.js"></script>
     <script type="text/javascript" src="js/decklist/main.js"></script>
@@ -72,6 +75,7 @@
                             <label for="deckdesigner">
                                 <input type="text" id="deckdesigner" placeholder="Deck Designer">
                             </label><br>
+
                             <h2>Deck Format</h2><br/>
                             <label for="eventformat">
                                 <div class="form"><select name="eventformat" placeholder="Event Format">
@@ -105,6 +109,14 @@
                             <input type="radio" id="sortorder5" name="sortorder"><label for="sortorder5">Original</label>
                         </div>
                     </div> <!-- sortorderwrapper -->
+                    <br>
+                    <div class="left"></div>
+                            <h2>Import Decklist</h2><br/>
+                            <label for="csv-file-input">
+                                <div class="form"><input type="file" id="csv-file-input" accept=".csv"></div>
+                            </label>
+                            <input type="button" id="import-csv-button" value="Import from Melee.gg CSV" class="ui-button ui-widget ui-state-default ui-corner-all">
+                    </div>
                 </div> <!-- wrapleft -->
                 <div class="right">
                     <h2>

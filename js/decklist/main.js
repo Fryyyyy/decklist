@@ -17,12 +17,14 @@ $(document).ready(function() {
     // bind a date picker to the event date (thanks, jQuery UI)
     // also skin the upload and download button
     $("#eventdate").datepicker({ dateFormat: "yy-mm-dd" }); // ISO-8601, woohoo
-    $("#download").button();
-    $("#downloadtxt").button();
-    $("#downloaddec").button();
-    $('#upload').button();
-    $('#getplaytest').button();
-    $('#deckcheck').button();
+    $("#download").button().on("click", function() { generateDecklistPDF('dataurlnewwindow'); });
+    $("#downloadtxt").button().on("click", function() { generateDecklistPDF('txt'); });
+    $("#downloaddec").button().on("click", function() { generateDecklistPDF('dec'); });
+    $('#upload').button().on("click", function() { uploadDecklistPDF(); });
+    $('#getlink').button().on("click", function() { openDeckWindow('index'); });
+    $('#getplaytest').button().on("click", function() { openDeckWindow('playtest'); });
+    $('#deckcheck').button().on("click", function() { openDeckWindow('deckcheck'); });
+    $('#import-csv-button').button().on("click", function() { handleCSVImport(); });
     $('#deckcheck').hide();
     $('input[type=radio]').checkboxradio({
         icon: false
