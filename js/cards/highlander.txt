@@ -1,7 +1,7 @@
 Ancestral Recall 5
+Black Lotus 5
 Mana Crypt 5
 Time Walk 5
-Black Lotus 4
 Time Vault 4
 Thassa's Oracle 4
 Flash 3
@@ -20,9 +20,12 @@ Channel 2
 Demonic Tutor 2
 Gush 2
 Imperial Seal 2
+Mana Vault 2
 Minsc & Boo, Timeless Heroes 2
 Nadu, Winged Wisdom 2
+Ragavan, Nimble Pilferer 2
 Reanimate 2
+Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 2
 Tolarian Academy 2
 Treasure Cruise 2
 Uro, Titan of Nature's Wrath 2
@@ -32,10 +35,12 @@ Wrenn and Six 2
 Abhorrent Oculus 1
 Ancient Tomb 1
 Balance 1
+Barrowgoyf 1
 Broadside Bombardiers 1
 Caves of Chaos Adventurer 1
 Comet, Stellar Pup 1
 Crop Rotation 1
+Deadpool, Trading Card 1
 Deathrite Shaman 1
 Demonic Counsel 1
 Dig Through Time 1
@@ -51,7 +56,6 @@ Intuition 1
 Karakas 1
 Library of Alexandria 1
 Mana Drain 1
-Mana Vault 1
 Mental Misstep 1
 Merchant Scroll 1
 Mind Twist 1
@@ -65,7 +69,6 @@ Orcish Bowmasters 1
 Phlage, Titan of Fire's Fury 1
 Planar Nexus 1
 Profane Tutor 1
-Ragavan, Nimble Pilferer 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
 Spellseeker 1
@@ -73,7 +76,7 @@ Skullclamp 1
 Snapcaster Mage 1
 Strip Mine 1
 Tainted Pact 1
-Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 1
+Tezzeret, Cruel Captain 1
 The One Ring 1
 Timetwister 1
 True-Name Nemesis 1
