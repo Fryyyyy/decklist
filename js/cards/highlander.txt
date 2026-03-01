@@ -28,7 +28,6 @@ Reanimate 2
 Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 2
 Tolarian Academy 2
 Treasure Cruise 2
-Uro, Titan of Nature's Wrath 2
 Psychic Frog 2
 Tinker 2
 Wrenn and Six 2
@@ -36,6 +35,7 @@ Abhorrent Oculus 1
 Ancient Tomb 1
 Balance 1
 Barrowgoyf 1
+Bolas's Citadel 1
 Broadside Bombardiers 1
 Caves of Chaos Adventurer 1
 Comet, Stellar Pup 1
@@ -45,7 +45,6 @@ Deathrite Shaman 1
 Demonic Counsel 1
 Dig Through Time 1
 Dreadhorde Arcanist 1
-Enlightened Tutor 1
 Fable of the Mirror-Breaker // Reflection of Kiki-Jiki 1
 Force of Will 1
 Forth Eorlingas! 1
@@ -81,6 +80,7 @@ The One Ring 1
 Timetwister 1
 True-Name Nemesis 1
 Undermountain Adventurer 1
+Uro, Titan of Nature's Wrath 1
 Urza's Saga 1
 Wasteland 1
 Wishclaw Talisman 1
