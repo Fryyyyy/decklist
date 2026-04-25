@@ -101,14 +101,16 @@ function parseDecklist() {
         }
     }
 
-    // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO style entries
+    // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO and Moxfield style entries
     for (i = 0; i < deckside.length; i++) {
         deckside[i] = deckside[i].replace("\"", "");
-        // Parse for MTGO/TappedOut style decks
-        if (mtgoRE.exec(deckside[i]) != null) {
+        if (moxfieldRE.exec(deckside[i]) != null) {
+          quantity = moxfieldRE.exec(deckside[i])[1];
+          card = moxfieldRE.exec(deckside[i])[2];
+          recognizeCard(card, quantity, 'side');
+        } else if (mtgoRE.exec(deckside[i]) != null) {
             quantity = mtgoRE.exec(deckside[i])[1];
             card = mtgoRE.exec(deckside[i])[2];
-
             recognizeCard(card, quantity, 'side');
         } else {
             // Could not be parsed, store in appropriate array

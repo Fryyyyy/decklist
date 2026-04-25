@@ -626,7 +626,6 @@ function addHLCardsToDL(dl) {
 
 
         for (i = 0; cardIndex < maindeck.length; i++) {
-            console.log("Start: " + i);
             if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
             {
                 numPages++;
