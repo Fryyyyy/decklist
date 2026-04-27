@@ -123,7 +123,7 @@ for card in cards.keys():
     # Lands and (noncolored) artifacts are special
     if 'Land' in c['types']:
         ocards[ocard]['c'] = 'Z'  # Sort lands last
-    elif ('Artifact' in c['types']) and ('colors' not in c):
+    elif ('Artifact' in c['types']) and (('colors' not in c) or (len(c['colors']) == 0)):
         ocards[ocard]['c'] = 'G'
 
     # Now try to deal with CMC

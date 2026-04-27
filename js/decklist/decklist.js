@@ -163,7 +163,7 @@ function parseDecklist() {
             list_add(list, recognized.n, quantity);
             goodcards.push(recognized);
         } else {
-            list_add(list, card, quantity);
+            list_add(list, "?? "+card, quantity);
             unrecognized[htmlEncode(card)] = 1;
         }
     }

@@ -706,6 +706,13 @@ function addHLCardsToDL(dl) {
     }
 }
 
+function addWarningsToDL(dl, val) {
+    dl.setFontSize(7);
+    dl.text(val, 540, 435);
+    //dl.rect(533, 423, 237, 20, 'FD'); // Line that says "Total"
+    //dl.text('Total', 680, 438);
+}
+
 function addCardsToDL(dl) {
     // Add the deck to the decklist
     var x = 82;
@@ -788,13 +795,14 @@ function generateDecklistPDF(outputtype) {
     parseDecklist();
 
     // Validate the input
-    validateInput();
+    val = validateInput();
 
     // start with the blank PDF
     if($("select[name=eventformat]").val() == "Highlander") {
         dl = generateHLDecklistLayout();
         addHLMetadataToDL(dl);
         addHLCardsToDL(dl);
+        addWarningsToDL(dl, val);
     } else {
         dl = generateDecklistLayout();
         addMetaDataToDL(dl);
@@ -884,6 +892,7 @@ function savePDF(dl, filename) {
 // and stores any warnings or errors found during these checks within a
 // validation object which is used to generate tooltip and status box text
 function validateInput() {
+    var ret = "";
     // validation object
     // key = HTML form object (input or textarea) ID
     // value = array of error objects: {error_level: error_type}
@@ -948,8 +957,14 @@ function validateInput() {
     }
 
     // check sideboard (size)
-    if (sideboard_count > 15) { validate.deckside.push({'error': 'toolarge'}); }
-    if (sideboard_count < 15) { validate.deckside.push({'warning': 'toosmall'}); }
+    if (sideboard_count > 15) {
+        validate.deckside.push({'error': 'toolarge'}); 
+        ret += "S=" + sideboard_count + ";";
+    }
+    if (sideboard_count < 15) {
+        validate.deckside.push({'warning': 'toosmall'}); 
+        ret += "S=" + sideboard_count + ";";
+    }
 
     // check combined main/sb (quantity of each unique card, unrecognized cards)
     mainPlusSide = mainAndSide();
@@ -976,7 +991,10 @@ function validateInput() {
             if (!allowed) { excessCards.push(mainPlusSide[i][0]); }
         }
     }
-    if (excessCards.length) { validate.deckmain.push({'error': 'quantity'}); }
+    if (excessCards.length) {
+        validate.deckmain.push({'error': 'quantity'}); 
+        ret += "E=" + excessCards.length + ";";
+    }
 
     illegalCards = [];
 
@@ -1007,9 +1025,18 @@ function validateInput() {
             }
             totalHLPoints += element.p;
         });
-        if (totalRLCards > 0 && totalHLPoints > 7) { validate.format.push({"error": "toomanypoints"}); }
-        if (totalRLCards == 0 && totalHLPoints > 8) { validate.format.push({"error": "toomanypoints"}); }
-        if (totalHLPoints < 7) { validate.format.push({"warning": "toofewpoints"}); }
+        if (totalRLCards > 0 && totalHLPoints > 7) {
+            validate.format.push({"error": "toomanypoints"}); 
+            ret += "P=" + totalHLPoints + ";";
+        }
+        if (totalRLCards == 0 && totalHLPoints > 8) {
+            validate.format.push({"error": "toomanypoints"}); 
+            ret += "P=" + totalHLPoints + ";";
+        }
+        if (totalHLPoints < 7) {
+            validate.format.push({"warning": "toofewpoints"}); 
+            ret += "P=" + totalHLPoints + ";";
+        }
         goodcards.forEach(function(element, index, array) {
             if((element.b).indexOf('h') != -1) {
                 illegalCards.push(element.n);
@@ -1029,21 +1056,28 @@ function validateInput() {
         });
     }
 
-    if (illegalCards.length) { validate.format.push({'error': 'notlegal'}); }
+    if (illegalCards.length) {
+        validate.format.push({'error': 'notlegal'}); 
+        ret += "I=" + illegalCards.length + ";";
+    }
 
     unrecognizedCards = {};
     unparseableCards = [];
     if (Object.getOwnPropertyNames(unrecognized).length !== 0) {
         unrecognizedCards = unrecognized;
         validate.deckmain.push({'warning': 'unrecognized'});
+        ret += "U=" + Object.getOwnPropertyNames(unrecognized).length + ";";
     }
     if (unparseable.length !== 0) {
         unparseableCards = unparseable;
         validate.deckmain.push({'warning': 'unparseable'});
+        ret += "P=" + unparseable.length + ";";
     }
 
     // pass validation data to output status/tooltip information
     statusAndTooltips(validate);
+
+    return ret
 }
 
 // returns an array that is a combination of the main and sideboards
