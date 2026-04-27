@@ -592,7 +592,7 @@ function addMetaDataToDL(dl) {
     dl.setFontStyle('normal');
 }
 
-function addHLCardsToDL(dl) {
+function addHLCardsToDL(dl, val) {
     // Strip the empty lines sorting gives us, since we can fit exactly 60 on one page
     // Maybe we can get a little bit smarter and leave as many in as possible in case basic lands free up some individual lines
     maindeck = jQuery.grep(maindeck, function(value) {
@@ -628,6 +628,17 @@ function addHLCardsToDL(dl) {
         for (i = 0; cardIndex < maindeck.length; i++) {
             if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
             {
+                // Add the maindeck count and sideboard count to the front page too
+                dl.setFontSize(20);
+                if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
+                if (sideboard_count != 0) {
+                    if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
+                    else { dl.text(String(sideboard_count), 709, 480); }
+                }
+                dl.setFontSize(7);
+                dl.text(val, 540, 435);
+                dl.setFontStyle('normal');
+
                 numPages++;
                 dl.addPage();
                 addHLTemplateToDL(dl);
@@ -645,7 +656,7 @@ function addHLCardsToDL(dl) {
                 goodcards.forEach(function(element, index, array) {
                     if(element.n == cardname) {
                         if (typeof element.p === 'undefined') { element.p = 0; }
-                        cardname = cardname + " " + Array(element.p+1).join("*");
+                        cardname = Array(element.p+1).join("*") + " " + cardname;
                     }
                 });
                 if(cardname.length >= 35) {
@@ -689,7 +700,7 @@ function addHLCardsToDL(dl) {
             goodcards.forEach(function(element, index, array) {
                 if(element.n == cardtext) {
                     if (typeof element.p === 'undefined') { element.p = 0; }
-                    cardtext = cardtext + " " + Array(element.p+1).join("*");
+                    cardtext = Array(element.p+1).join("*") + " " + cardtext;
                 }
             });
             dl.text(cardtext, x + 38, y);
@@ -704,13 +715,12 @@ function addHLCardsToDL(dl) {
         if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
         else { dl.text(String(sideboard_count), 709, 480); }
     }
-}
 
-function addWarningsToDL(dl, val) {
+    // Add validation warnings
     dl.setFontSize(7);
     dl.text(val, 540, 435);
-    //dl.rect(533, 423, 237, 20, 'FD'); // Line that says "Total"
-    //dl.text('Total', 680, 438);
+    dl.setFontStyle('normal');
+    
 }
 
 function addCardsToDL(dl) {
@@ -801,8 +811,7 @@ function generateDecklistPDF(outputtype) {
     if($("select[name=eventformat]").val() == "Highlander") {
         dl = generateHLDecklistLayout();
         addHLMetadataToDL(dl);
-        addHLCardsToDL(dl);
-        addWarningsToDL(dl, val);
+        addHLCardsToDL(dl, val);
     } else {
         dl = generateDecklistLayout();
         addMetaDataToDL(dl);
@@ -834,7 +843,7 @@ function generateDecklistPDF(outputtype) {
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
                             if (typeof element.p === 'undefined') { element.p = 0; }
-                            cardtext = cardtext + " " + Array(element.p+1).join("*");
+                            cardtext = Array(element.p+1).join("*") + " " + cardtext;
                         }
                     });
                     data += cardtext;
@@ -858,7 +867,7 @@ function generateDecklistPDF(outputtype) {
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
                             if (typeof element.p === 'undefined') { element.p = 0; }
-                            cardtext = cardtext + " " + Array(element.p+1).join("*");
+                            cardtext = Array(element.p+1).join("*") + " " + cardtext;
                         }
                     });
                     data += cardtext;
