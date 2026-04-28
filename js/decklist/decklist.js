@@ -42,7 +42,7 @@ function parseDecklist() {
             quantity = mwsRE.exec(deckmain[i])[1];
             card = mwsRE.exec(deckmain[i])[2];
 
-            recognizeCard(card, quantity);
+            card = recognizeCard(card, quantity);
         }
 
         // Parse for Magic Workstation sideboards
@@ -50,7 +50,7 @@ function parseDecklist() {
             quantity = mwssbRE.exec(deckmain[i])[1];
             card = mwssbRE.exec(deckmain[i])[2];
 
-            recognizeCard(card, quantity, 'side');
+            card = recognizeCard(card, quantity, 'side');
         }
 
         else if (moxfieldRE.exec(deckmain[i]) != null) {
@@ -58,9 +58,9 @@ function parseDecklist() {
           card = moxfieldRE.exec(deckmain[i])[2];
 
           if (in_sb) {
-            recognizeCard(card, quantity, 'side');
+            card = recognizeCard(card, quantity, 'side');
           } else {
-            recognizeCard(card, quantity);
+            card = recognizeCard(card, quantity);
           }
         }
 
@@ -71,9 +71,9 @@ function parseDecklist() {
             card = mtgoRE.exec(deckmain[i])[2];
 
             if (in_sb) { // TappedOut style Sideboard listing
-                recognizeCard(card, quantity, 'side');
+                card = recognizeCard(card, quantity, 'side');
             } else {
-                recognizeCard(card, quantity);
+                card = recognizeCard(card, quantity);
             }
         }
 
@@ -84,7 +84,7 @@ function parseDecklist() {
 
             if(quantity == undefined) { quantity = "1"; }
 
-            recognizeCard(card, quantity, 'side');
+            card = recognizeCard(card, quantity, 'side');
         }
 
         // If we see "Sideboard:", then we're in the TappedOut style sideboard entries from now on
@@ -96,7 +96,7 @@ function parseDecklist() {
             if(deckmain[i].trim() != '') {
                 card = deckmain[i];
                 quantity = '1';
-                recognizeCard(card, quantity);
+                card = recognizeCard(card, quantity);
             }
         }
     }
@@ -107,18 +107,18 @@ function parseDecklist() {
         if (moxfieldRE.exec(deckside[i]) != null) {
           quantity = moxfieldRE.exec(deckside[i])[1];
           card = moxfieldRE.exec(deckside[i])[2];
-          recognizeCard(card, quantity, 'side');
+          card = recognizeCard(card, quantity, 'side');
         } else if (mtgoRE.exec(deckside[i]) != null) {
             quantity = mtgoRE.exec(deckside[i])[1];
             card = mtgoRE.exec(deckside[i])[2];
-            recognizeCard(card, quantity, 'side');
+            card = recognizeCard(card, quantity, 'side');
         } else {
             // Could not be parsed, store in appropriate array
             //addUnparseable(deckside[i]);
             if(deckside[i] != '') {
                 card = deckside[i];
                 quantity = '1';
-                recognizeCard(card, quantity, 'side');
+                card = recognizeCard(card, quantity, 'side');
             }
         }
     }
@@ -160,12 +160,16 @@ function parseDecklist() {
         // Still, if not recognized, add it to its special dictionary (unrecognized)
 
         if (recognized) {
+            if (recognized.f) {
+              return recognizeCard(recognized.f, quantity, list);
+            }
             list_add(list, recognized.n, quantity);
             goodcards.push(recognized);
         } else {
             list_add(list, "?? "+card, quantity);
             unrecognized[htmlEncode(card)] = 1;
         }
+        return card;
     }
 
     // add the passed string to the unparseable array if it isn't empty or entirely whitespace

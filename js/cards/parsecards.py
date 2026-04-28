@@ -3,6 +3,7 @@
 
 import json, ast, codecs
 import sys
+import zipfile
 
 # Just FYI!
 # b (banned) = [smlvh] (standard, modern, legacy, vintage, highlander)
@@ -46,17 +47,18 @@ def getRestrictions(c):
 
     return restricted
 
+cards = {}
 
 # Open the JSON file
-jsonfh = open("AtomicCards.json", "r", encoding="utf-8")
-
-# Load all the cards into a giant dictionary
-cards = json.load(jsonfh)
-cards = cards.get('data', {})
-print("{} cards parsed".format(len(cards)))
-if len(cards) == 0:
-    print("No cards parsed, giving up.")
-    sys.exit(0)
+with zipfile.ZipFile('AllIdentifiers.json.zip', 'r') as zf:
+    with zf.open('AllIdentifiers.json') as f:
+        cards = json.load(f)
+        # Load all the cards into a giant dictionary
+        cards = cards.get('data', {})
+        print("{} cards parsed".format(len(cards)))
+        if len(cards) == 0:
+            print("No cards parsed, giving up.")
+            sys.exit(0)
 
 # Open and read the Highlander points file
 hlcards = {}
@@ -70,11 +72,17 @@ ocards = {}
 ptcards = {}
 
 # Okay, we need the colors but in a much shorter format
-for card in cards.keys():
-    c = cards[card][0]
-
+for card_uuid, c in cards.items():
     # We're going to store them in lowercase
-    ocard = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").lower()
+    ocard = c.get('name', '').replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").lower()
+    if ocard == '':
+        print("Skipping card with no name: {}".format(c))
+        continue
+
+    # Skip dupes unless we have a new flavour name
+    flavour_name = c.get('flavorName', '')
+    if ocard in ocards and flavour_name == '':
+        continue
 
     # Skip tokens
     if c['layout'] == 'token':
@@ -139,10 +147,10 @@ for card in cards.keys():
     ocards[ocard]['r'] = restrictions
 
     # And put the true name in there as well
-    ocards[ocard]['n'] = card.replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "")
+    ocards[ocard]['n'] = c.get('name', '').replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "")
 
     # Check highlander points
-    ocards[ocard]['p'] = hlcards.get(card, 0)
+    ocards[ocard]['p'] = hlcards.get(ocards[ocard]['n'], 0)
 
     # RL
     ocards[ocard]['l'] = str(c.get('isReserved', 'F')).replace("True", "T")
@@ -151,8 +159,13 @@ for card in cards.keys():
     printings = ast.literal_eval(str(c.get("printings", [])))
     ocards[ocard]['t'] = len(printings)
 
+    # Universes Beyond (add a redirect)
+    if flavour_name != '':
+        ocards[flavour_name] = {'f': ocard}
+
     # Now to handle split cards (ugh)
-    if len(cards[card]) > 1:
+    # if len(cards[card_uuid]) > 1:
+    if "//" in card:
         # if c['layout'] == "split":
         name = card
         ocard = name.lower().replace(u'\xc6', u'\xe6')   # Just like a real card
@@ -170,7 +183,6 @@ for card in cards.keys():
 
         restrictions = getRestrictions(c)
         ocards[ocard]['r'] = restrictions
-
 
 # Print out the full list of cards
 with open("decklist-cards.js", "w") as ojsonfh:
