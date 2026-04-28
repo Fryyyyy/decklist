@@ -4,7 +4,6 @@
 rm -f *.js *.zip
 
 curl "https://mtgjson.com/api/v5/AllIdentifiers.json.zip" > AllIdentifiers.json.zip
-# unzip AllPrintings.json.zip
 
 # Parse out the giant JSON and make a much smaller one
 python3 parsecards.py
