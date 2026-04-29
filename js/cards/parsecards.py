@@ -19,30 +19,29 @@ FORMATS = ('standard', 'pioneer', 'modern', 'legacy', 'vintage')
 HIGHLANDER_LEGAL = ["Lurrus of the Dream-Den"]
 
 
-def getLegalities(c):
+def getLegalities(input_card):
     # Let's figure out legalities
     banned = 'spmlv'
 
-    for fmt, legality in (c.get('legalities', {})).items():
-        if fmt in FORMATS and legality != 'Banned':
+    for fmt, l in (input_card.get('legalities', {})).items():
+        if fmt in FORMATS and l != 'Banned':
             banned = banned.replace(fmt[0], '')
 
         # Check highlander bannings separately
-        if fmt == "vintage" and legality == 'Banned' and c.get('name') not in HIGHLANDER_LEGAL:
+        if fmt == "vintage" and l == 'Banned' and input_card.get(
+                'name') not in HIGHLANDER_LEGAL:
             banned = banned + 'h'
-
-    cp = c.get('printings', [])
 
     return banned
 
 
 # Yes it's stupid checking restrictions in non-Vintage formats
 # But you never know :P
-def getRestrictions(c):
+def getRestrictions(input_card):
     restricted = ''
 
-    for fmt, legality in (c.get('legalities', {})).items():
-        if fmt in FORMATS and legality == 'Restricted':
+    for fmt, l in (input_card.get('legalities', {})).items():
+        if fmt in FORMATS and l == 'Restricted':
             restricted += fmt[0]
 
     return restricted
@@ -68,15 +67,20 @@ with codecs.open("highlander.txt", "r", "utf-8") as hlfh:
         hlcards[card] = int(points)
 
 # Gotta store these cards in a dictionary
-ocards = {}
-ptcards = {}
+ocards: dict[str, dict] = {}
+ptcards: dict[str, dict] = {}
 
 # Okay, we need the colors but in a much shorter format
 for card_uuid, c in cards.items():
     # We're going to store them in lowercase
-    ocard = c.get('name', '').replace(u"Æ", "Ae").replace(u"à", "a").replace(" (a)", "").replace(" (b)", "").lower()
+    ocard = c.get('name', '').replace(u"Æ", "Ae").replace(u"à", "a").replace(
+        " (a)", "").replace(" (b)", "").lower()
     if ocard == '':
         print("Skipping card with no name: {}".format(c))
+        continue
+
+    # Skip Alchemy
+    if ocard.startswith("a-"):
         continue
 
     # Skip dupes unless we have a new flavour name
@@ -99,7 +103,7 @@ for card_uuid, c in cards.items():
     ptcards[ocard]['power'] = c.get('power', '-999')
     ptcards[ocard]['toughness'] = c.get('toughness', '-999')
     ptcards[ocard]['loyalty'] = str(c.get('loyalty', '-999'))
-    
+
     # Types for sorting
     if 'Land' in c['types']:
         ocards[ocard]['y'] = 'z'

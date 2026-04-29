@@ -35,7 +35,11 @@ $(document).ready(function() {
 
     var cardNames = [];
     var numberRegExp = /^([0-9]+) (.*)$/;
-    $.each(cards, function(key, value) { cardNames.push(cards[key]["n"]); });
+    $.each(cards, function(key, value) {
+        if (cards[key]["n"] != undefined) {
+            cardNames.push(cards[key]["n"]); 
+        }
+    });
 
     $("#cardentry").autocomplete({
         autoFocus: true,
