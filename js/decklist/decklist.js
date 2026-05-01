@@ -24,6 +24,7 @@ function parseDecklist() {
     // And let's store their counts for future reference
     maindeck_count = 0;
     sideboard_count = 0;
+    sideboard_counts = [];
 
     // Track unrecognized cards and lines that can't be parsed.
     // (encoded to prevent XSS)
@@ -42,8 +43,9 @@ function parseDecklist() {
     const tosbRE     = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
     const moxfieldRE = /^(\d+) (.*)? \(\w+\) (\S+-?)+( \*?(?:F|E)\*?)?$/; // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
 
-    function parseDeckLines(lines, deck) {
+    function parseDeckLines(lines, deck, deckIndex) {
         let in_sb = false;
+        let local_sideboard_count = 0;
         for (let i = 0; i < lines.length; i++) {
             let line = (lines[i] || '').trim();
             line = line.replace(/"/g, '');
@@ -56,36 +58,36 @@ function parseDecklist() {
             if (mwsRE.exec(line) != null) {
                 quantity = mwsRE.exec(line)[1];
                 card = mwsRE.exec(line)[2];
-                card = recognizeCard(card, quantity, 'main', deck);
+                card = recognizeCard(card, quantity, 'main', deck, local_sideboard_count);
             }
             else if (mwssbRE.exec(line) != null) {
                 quantity = mwssbRE.exec(line)[1];
                 card = mwssbRE.exec(line)[2];
-                card = recognizeCard(card, quantity, 'side');
+                card = recognizeCard(card, quantity, 'side', null, local_sideboard_count);
             }
             else if (moxfieldRE.exec(line) != null) {
                 quantity = moxfieldRE.exec(line)[1];
                 card = moxfieldRE.exec(line)[2];
                 if (in_sb) {
-                    card = recognizeCard(card, quantity, 'side');
+                    card = recognizeCard(card, quantity, 'side', null, local_sideboard_count);
                 } else {
-                    card = recognizeCard(card, quantity, 'main', deck);
+                    card = recognizeCard(card, quantity, 'main', deck, local_sideboard_count);
                 }
             }
             else if (mtgoRE.exec(line) != null) {
                 quantity = mtgoRE.exec(line)[1];
                 card = mtgoRE.exec(line)[2];
                 if (in_sb) {
-                    card = recognizeCard(card, quantity, 'side');
+                    card = recognizeCard(card, quantity, 'side', null, local_sideboard_count);
                 } else {
-                    card = recognizeCard(card, quantity, 'main', deck);
+                    card = recognizeCard(card, quantity, 'main', deck, local_sideboard_count);
                 }
             }
             else if (mtgosbRE.exec(line) != null) {
                 quantity = mtgosbRE.exec(line)[1];
                 card = mtgosbRE.exec(line)[2];
                 if (quantity == undefined) { quantity = '1'; }
-                card = recognizeCard(card, quantity, 'side');
+                card = recognizeCard(card, quantity, 'side', null, local_sideboard_count);
             }
             else if (tosbRE.test(line)) {
                 in_sb = true;
@@ -93,9 +95,10 @@ function parseDecklist() {
             else {
                 card = line;
                 quantity = '1';
-                card = recognizeCard(card, quantity, 'main', deck);
+                card = recognizeCard(card, quantity, 'main', deck, local_sideboard_count);
             }
         }
+        sideboard_counts[deckIndex] = local_sideboard_count;
     }
 
     const deckSources = [
@@ -107,8 +110,8 @@ function parseDecklist() {
     if (deckmain3_val) {
         deckSources.push({ lines: deckmain3_val.split('\n'), deck: maindeck3 });
     }
-    deckSources.forEach(function(source) {
-        parseDeckLines(source.lines, source.deck);
+    deckSources.forEach(function(source, index) {
+        parseDeckLines(source.lines, source.deck, index);
     });
 
     // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO and Moxfield style entries
@@ -157,7 +160,7 @@ function parseDecklist() {
 
     // Check the card name against the card database. If it exists, add it to the
     // appropriate list (main or side), otherwise add it to the unrecognized map.
-    function recognizeCard(card, quantity, list, deck) {
+    function recognizeCard(card, quantity, list, deck, local_sideboard_count) {
         list = list || 'main';
         deck = deck || maindeck;
         card = (card || '').trim();
@@ -172,12 +175,18 @@ function parseDecklist() {
 
         if (recognized) {
             if (recognized.f) {
-              return recognizeCard(recognized.f, quantity, list, deck);
+              return recognizeCard(recognized.f, quantity, list, deck, local_sideboard_count);
             }
             list_add(list, list === 'main' ? deck : sideboard, recognized.n, quantity);
+            if (list === 'side') {
+                local_sideboard_count += parseInt(quantity);
+            }
             goodcards.push(recognized);
         } else {
             list_add(list, list === 'main' ? deck : sideboard, "?? "+card, quantity);
+            if (list === 'side') {
+                local_sideboard_count += parseInt(quantity);
+            }
             unrecognized[htmlEncode(card)] = 1;
         }
         return card;

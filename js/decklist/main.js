@@ -615,6 +615,20 @@ function addHLCardsToDL(dl, val) {
             return value[0] != "";
         });
 
+        // Calculate the card count for this specific deck
+        var deckMaindeckCount = 0;
+        for (let i = 0; i < maindeck.length; i++) {
+            if (maindeck[i][1] != 0) {
+                deckMaindeckCount += parseInt(maindeck[i][1]);
+            }
+        }
+        
+        // Get the sideboard count from the parsed counts array
+        var deckSideboardCount = 0;
+        if (typeof sideboard_counts !== 'undefined' && sideboard_counts[deckIndex]) {
+            deckSideboardCount = sideboard_counts[deckIndex];
+        }
+
         // If this is not the first deck and it has cards, add a new page
         if (deckIndex > 0 && maindeck.length > 0) {
             dl.addPage();
@@ -651,10 +665,10 @@ function addHLCardsToDL(dl, val) {
                 if (row > 0 && ((row % 60 == 0) && maindeck.length > (60 * (numPages+1)))) {
                     // Add the maindeck count and sideboard count to the front page too
                     dl.setFontSize(20);
-                    if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
-                    if (sideboard_count != 0) {
-                        if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
-                        else { dl.text(String(sideboard_count), 709, 480); }
+                    if (deckMaindeckCount != 0)  { dl.text(String(deckMaindeckCount), 710, 460); }
+                    if (deckSideboardCount != 0) {
+                        if (deckSideboardCount < 10) { dl.text(String(deckSideboardCount), 714, 480); }
+                        else { dl.text(String(deckSideboardCount), 709, 480); }
                     }
                     dl.setFontSize(7);
                     dl.text(val, 540, 435);
@@ -731,10 +745,10 @@ function addHLCardsToDL(dl, val) {
 
         // Add the maindeck count and sideboard count
         dl.setFontSize(20);
-        if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
-        if (sideboard_count != 0) {
-            if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
-            else { dl.text(String(sideboard_count), 709, 480); }
+        if (deckMaindeckCount != 0)  { dl.text(String(deckMaindeckCount), 710, 460); }
+        if (deckSideboardCount != 0) {
+            if (deckSideboardCount < 10) { dl.text(String(deckSideboardCount), 714, 480); }
+            else { dl.text(String(deckSideboardCount), 709, 480); }
         }
 
         // Add validation warnings
