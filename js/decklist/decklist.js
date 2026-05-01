@@ -1,11 +1,24 @@
 // Try to gracefully parse as many decks as possible
 // Parsing data is like the worst
 function parseDecklist() {
-    deckmain = $('#deckmain').val();
-    deckside = $('#deckside').val();
+    let deckmain = $('#deckmain').val() || '';
+    let deckside = $('#deckside').val() || '';
+    let deckmain2_val = $('#deckmain2').val() || '';
+    let deckmain3_val = $('#deckmain3').val() || '';
 
     // Let's store the lists in a tidy little array
     maindeck = [];
+    maindecks = [maindeck];
+    let maindeck2;
+    let maindeck3;
+    if (deckmain2_val) {
+        maindeck2 = [];
+        maindecks.push(maindeck2);
+    }
+    if (deckmain3_val) {
+        maindeck3 = [];
+        maindecks.push(maindeck3);
+    }
     sideboard = [];
 
     // And let's store their counts for future reference
@@ -17,106 +30,103 @@ function parseDecklist() {
     unrecognized = {};
     unparseable = [];
     goodcards = [];
-    // Stop processing the function if there's no main deck
-    if (deckmain == '') { return (null, null); }
+    if (!deckmain && !deckmain2_val && !deckmain3_val) { return (null, null); }
 
-    // Split main deck and sideboard by newlines
-    deckmain = deckmain.split('\n');
-    deckside = deckside.split('\n');
+    const deckmainLines = deckmain.split('\n');
+    const decksideLines = deckside.split('\n');
 
-    var mtgoRE     = /^(\d+)x*\s(.+)/; // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
-    var mtgosbRE   = /^SB:\s+(\d+)*\s*(.+)/; // Sideboard lines begin with SB:
-    var mwsRE      = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
-    var mwssbRE    = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
-    var tosbRE     = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
-    var moxfieldRE = /^(\d+) (.*)? \(\w+\) (\S+-?)+( \*?(?:F|E)\*?)?$/ // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
+    const mtgoRE     = /^(\d+)x*\s(.+)/; // MTGO deck format (4 Brainstorm) also TCG (4x Brainstorm)
+    const mtgosbRE   = /^SB:\s+(\d+)*\s*(.+)/; // Sideboard lines begin with SB:
+    const mwsRE      = /^\s*(\d+)\s+\[.*\]\s+(.+)/; // MWS, what an ugly format
+    const mwssbRE    = /^SB:\s*(\d+)\s+\[.*\]\s(.+)/; // MWS, what an ugly format
+    const tosbRE     = /^Sideboard|SIDEBOARD:/; // Tappedout looks like MTGO, except sideboard begins with Sideboard:  Salvation, same, but no colon
+    const moxfieldRE = /^(\d+) (.*)? \(\w+\) (\S+-?)+( \*?(?:F|E)\*?)?$/; // Moxfield: 1 Collector Ouphe (PLST) MH1-158 *F*
 
-    // Loop through all the cards in the main deck field
-    in_sb = false;
-    for (i = 0; i < deckmain.length; i++) {
-        deckmain[i] = deckmain[i].trim()
-        deckmain[i] = deckmain[i].replace("\"", "");
-        deckmain[i] = deckmain[i].replace(/\*+/, "");
-        // Parse for Magic Workstation style deck
-        if (mwsRE.exec(deckmain[i]) != null) {
-            quantity = mwsRE.exec(deckmain[i])[1];
-            card = mwsRE.exec(deckmain[i])[2];
+    function parseDeckLines(lines, deck) {
+        let in_sb = false;
+        for (let i = 0; i < lines.length; i++) {
+            let line = (lines[i] || '').trim();
+            line = line.replace(/"/g, '');
+            line = line.replace(/\*+/g, '');
+            if (line === '') { continue; }
 
-            card = recognizeCard(card, quantity);
-        }
+            let quantity;
+            let card;
 
-        // Parse for Magic Workstation sideboards
-        else if (mwssbRE.exec(deckmain[i]) != null) {
-            quantity = mwssbRE.exec(deckmain[i])[1];
-            card = mwssbRE.exec(deckmain[i])[2];
-
-            card = recognizeCard(card, quantity, 'side');
-        }
-
-        else if (moxfieldRE.exec(deckmain[i]) != null) {
-          quantity = moxfieldRE.exec(deckmain[i])[1];
-          card = moxfieldRE.exec(deckmain[i])[2];
-
-          if (in_sb) {
-            card = recognizeCard(card, quantity, 'side');
-          } else {
-            card = recognizeCard(card, quantity);
-          }
-        }
-
-
-        // Parse for MTGO/TappedOut style decks
-        else if (mtgoRE.exec(deckmain[i]) != null) {
-            quantity = mtgoRE.exec(deckmain[i])[1];
-            card = mtgoRE.exec(deckmain[i])[2];
-
-            if (in_sb) { // TappedOut style Sideboard listing
-                card = recognizeCard(card, quantity, 'side');
-            } else {
-                card = recognizeCard(card, quantity);
+            if (mwsRE.exec(line) != null) {
+                quantity = mwsRE.exec(line)[1];
+                card = mwsRE.exec(line)[2];
+                card = recognizeCard(card, quantity, 'main', deck);
             }
-        }
-
-        // Parse for MTGO style sideboard cards
-        else if (mtgosbRE.exec(deckmain[i]) != null) {
-            quantity = mtgosbRE.exec(deckmain[i])[1];
-            card = mtgosbRE.exec(deckmain[i])[2];
-
-            if(quantity == undefined) { quantity = "1"; }
-
-            card = recognizeCard(card, quantity, 'side');
-        }
-
-        // If we see "Sideboard:", then we're in the TappedOut style sideboard entries from now on
-        else if (tosbRE.test(deckmain[i])) { in_sb = true; }
-
-        // Assume anything else is 1x cardname
-        else {
-            //addUnparseable(deckmain[i]);
-            if(deckmain[i].trim() != '') {
-                card = deckmain[i];
+            else if (mwssbRE.exec(line) != null) {
+                quantity = mwssbRE.exec(line)[1];
+                card = mwssbRE.exec(line)[2];
+                card = recognizeCard(card, quantity, 'side');
+            }
+            else if (moxfieldRE.exec(line) != null) {
+                quantity = moxfieldRE.exec(line)[1];
+                card = moxfieldRE.exec(line)[2];
+                if (in_sb) {
+                    card = recognizeCard(card, quantity, 'side');
+                } else {
+                    card = recognizeCard(card, quantity, 'main', deck);
+                }
+            }
+            else if (mtgoRE.exec(line) != null) {
+                quantity = mtgoRE.exec(line)[1];
+                card = mtgoRE.exec(line)[2];
+                if (in_sb) {
+                    card = recognizeCard(card, quantity, 'side');
+                } else {
+                    card = recognizeCard(card, quantity, 'main', deck);
+                }
+            }
+            else if (mtgosbRE.exec(line) != null) {
+                quantity = mtgosbRE.exec(line)[1];
+                card = mtgosbRE.exec(line)[2];
+                if (quantity == undefined) { quantity = '1'; }
+                card = recognizeCard(card, quantity, 'side');
+            }
+            else if (tosbRE.test(line)) {
+                in_sb = true;
+            }
+            else {
+                card = line;
                 quantity = '1';
-                card = recognizeCard(card, quantity);
+                card = recognizeCard(card, quantity, 'main', deck);
             }
         }
     }
 
+    const deckSources = [
+        { lines: deckmainLines, deck: maindeck }
+    ];
+    if (deckmain2_val) {
+        deckSources.push({ lines: deckmain2_val.split('\n'), deck: maindeck2 });
+    }
+    if (deckmain3_val) {
+        deckSources.push({ lines: deckmain3_val.split('\n'), deck: maindeck3 });
+    }
+    deckSources.forEach(function(source) {
+        parseDeckLines(source.lines, source.deck);
+    });
+
     // Now we get to do the same for the sideboard, but we only have to worry about TCG/MTGO and Moxfield style entries
-    for (i = 0; i < deckside.length; i++) {
-        deckside[i] = deckside[i].replace("\"", "");
-        if (moxfieldRE.exec(deckside[i]) != null) {
-          quantity = moxfieldRE.exec(deckside[i])[1];
-          card = moxfieldRE.exec(deckside[i])[2];
+    for (let i = 0; i < decksideLines.length; i++) {
+        let line = (decksideLines[i] || '').replace(/"/g, '');
+        if (moxfieldRE.exec(line) != null) {
+          quantity = moxfieldRE.exec(line)[1];
+          card = moxfieldRE.exec(line)[2];
           card = recognizeCard(card, quantity, 'side');
-        } else if (mtgoRE.exec(deckside[i]) != null) {
-            quantity = mtgoRE.exec(deckside[i])[1];
-            card = mtgoRE.exec(deckside[i])[2];
+        } else if (mtgoRE.exec(line) != null) {
+            quantity = mtgoRE.exec(line)[1];
+            card = mtgoRE.exec(line)[2];
             card = recognizeCard(card, quantity, 'side');
         } else {
             // Could not be parsed, store in appropriate array
-            //addUnparseable(deckside[i]);
-            if(deckside[i] != '') {
-                card = deckside[i];
+            //addUnparseable(line);
+            if(line != '') {
+                card = line;
                 quantity = '1';
                 card = recognizeCard(card, quantity, 'side');
             }
@@ -124,49 +134,50 @@ function parseDecklist() {
     }
 
     // Now we need to sort the deck lists, with the sideboard always being sorted alphabetically
+    let sortorder;
     if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder1' ) { // alpabetical
-        maindeck = sortDecklist(maindeck, 'alphabetically');
-        sideboard = sortDecklist(sideboard, 'alphabetically');
+        sortorder = 'alphabetically';
     }
     else if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder2' ) { // CMC
-        maindeck = sortDecklist(maindeck, 'cmc');
-        sideboard = sortDecklist(sideboard, 'alphabetically');
+        sortorder = 'cmc';
     }
     else if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder3' ) { // color
-        maindeck = sortDecklist(maindeck, 'color');
-        sideboard = sortDecklist(sideboard, 'alphabetically');
+        sortorder = 'color';
     }
     else if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder4' ) { // numeric
-        maindeck = sortDecklist(maindeck, 'numerically');
-        sideboard = sortDecklist(sideboard, 'alphabetically');
+        sortorder = 'numerically';
     }
     else if ( $('#sortorderfloat input[name=sortorder]:checked').prop('id') == 'sortorder6' ) { // type
-        maindeck = sortDecklist(maindeck, 'type');
-        sideboard = sortDecklist(sideboard, 'alphabetically');
+        sortorder = 'type';
     }
+    for (let i = 0; i < maindecks.length; i++) {
+        maindecks[i] = sortDecklist(maindecks[i], sortorder);
+    }
+    sideboard = sortDecklist(sideboard, 'alphabetically');
 
     // Check the card name against the card database. If it exists, add it to the
     // appropriate list (main or side), otherwise add it to the unrecognized map.
-    function recognizeCard(card, quantity, list) {
+    function recognizeCard(card, quantity, list, deck) {
         list = list || 'main';
-        card = card.trim();
+        deck = deck || maindeck;
+        card = (card || '').trim();
 
         //if (card.slice(0,2).toLowerCase() === 'ae') { recognized = objectHasPropertyCI(cards, '\u00e6'+card.slice(2)); }
         //else { recognized = objectHasPropertyCI(cards, card); }
         card = card.replace("’", "'").replace(" / ", " // ");
-        recognized = objectHasPropertyCI(cards, card);
+        const recognized = objectHasPropertyCI(cards, card);
 
         // Always add the card to the list, regardless of if the card is recognized
         // Still, if not recognized, add it to its special dictionary (unrecognized)
 
         if (recognized) {
             if (recognized.f) {
-              return recognizeCard(recognized.f, quantity, list);
+              return recognizeCard(recognized.f, quantity, list, deck);
             }
-            list_add(list, recognized.n, quantity);
+            list_add(list, list === 'main' ? deck : sideboard, recognized.n, quantity);
             goodcards.push(recognized);
         } else {
-            list_add(list, "?? "+card, quantity);
+            list_add(list, list === 'main' ? deck : sideboard, "?? "+card, quantity);
             unrecognized[htmlEncode(card)] = 1;
         }
         return card;
@@ -430,30 +441,23 @@ function sortDecklist(deck, sortorder) {
 
 // Stub to simplify updating deck and sideboard counts
 // Adds a new entry for unique entries, increments existing entries for duplicates
-function list_add(type, card, quantity) {
+function list_add(type, deck, card, quantity) {
+  const cardIndex = listContainsCard(deck, card);
+  if (cardIndex !== -1) {
+    // arggh, strings!
+    deck[cardIndex][1] = parseInt(deck[cardIndex][1]) + parseInt(quantity) + '';
+  } else {
+    deck.push([card, quantity]);
+  }
   if (type === 'main') {
-    cardIndex = listContainsCard(maindeck,card);
-    if (cardIndex !== -1) {
-      // arggh, strings!
-      maindeck[cardIndex][1] = parseInt(maindeck[cardIndex][1]) + parseInt(quantity) + '';
-    } else {
-      maindeck.push([card, quantity]);
-    }
     maindeck_count += parseInt(quantity);
   } else if (type === 'side') {
-    cardIndex = listContainsCard(sideboard,card);
-    if (cardIndex !== -1) {
-      // arggh, strings!
-      sideboard[cardIndex][1] = parseInt(sideboard[cardIndex][1]) + parseInt(quantity) + '';
-    } else {
-      sideboard.push([card, quantity]);
-    }
     sideboard_count += parseInt(quantity);
   }
 
   // Returns the index of the card:quantity pair within the given list, or -1 if not found
   function listContainsCard(list, card) {
-    for (j=0; j < list.length; j++) {
+    for (let j = 0; j < list.length; j++) {
       if (list[j][0] === card) {
         return j;
       }
@@ -531,7 +535,7 @@ function importCSV(event) {
                         parseDecklist();
 
                         if (firstDeck) {
-                            if ($("select[name=eventformat]").val() == "Highlander") {
+                            if ($("select[name=eventformat]").val().startsWith("Highlander")) {
                                 dl = generateHLDecklistLayout();
                             } else {
                                 dl = generateDecklistLayout();
@@ -541,7 +545,7 @@ function importCSV(event) {
                             dl.addPage();
                         }
 
-                        if ($("select[name=eventformat]").val() == "Highlander") {
+                        if ($("select[name=eventformat]").val().startsWith("Highlander")) {
                             addHLTemplateToDL(dl);
                             addHLMetadataToDL(dl);
                             addHLCardsToDL(dl);

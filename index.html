@@ -84,12 +84,19 @@
                                     <option value="Pioneer">Pioneer</option>
                                     <option value="Modern">Modern</option>
                                     <option value="Highlander">Australian 7pt Highlander</option>
+                                    <option value="HighlanderTrios">Australian 7pt Highlander - Team Trios</option>
+                                    <option value="HighlanderUniPointsTrios">Australian 7pt Highlander - Team Trios - Unified Points</option>
+                                    <option value="HighlanderUniNonBasicTrios">Australian 7pt Highlander - Team Trios - Unified Non-Basics</option>
                                     <option value="Legacy">Legacy</option>
                                     <option value="Vintage">Vintage</option>
                                 </select></div>
                             </label><br/>
                             <label for="deckmain">
-                                <textarea id="deckmain" placeholder="Main Deck. You can copy/paste most decks from online sources here without separating the Sideboard."></textarea>
+                                <div id="deckContainer">
+                                    <textarea id="deckmain" placeholder="Main Deck. You can copy/paste most decks from online sources here without separating the Sideboard."></textarea>
+                                    <textarea id="deckmain2" hidden placeholder="Main Deck 2. You can copy/paste most decks from online sources here without separating the Sideboard."></textarea>
+                                    <textarea id="deckmain3" hidden placeholder="Main Deck 3. You can copy/paste most decks from online sources here without separating the Sideboard."></textarea>
+                                </div>
                             </label><br/>
                             <input type="text" id="cardentry" placeholder="Manual Entry (Alt-⏎ for Sideboard)" style="width: 60%;">
                             <input type="button" id="cardtomain" value="↑" class="cardbutton ui-button" role="button" onclick="cardToMain();">

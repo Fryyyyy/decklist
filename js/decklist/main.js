@@ -11,7 +11,7 @@ var newDeckURL = '';
 $(document).ready(function() {
     // bind events to all the input fields on the left side, to generate a PDF on change
     $('div.left input, div.left textarea').on('input', pdfChangeWait);
-    $("select[name=eventformat]").on("change", pdfChangeWait);
+    $("select[name=eventformat]").on("change", function() { formatChange($("select[name=eventformat]").val()); });
     $("#eventdate, input[type='radio']").change(pdfChangeWait);
 
     // bind a date picker to the event date (thanks, jQuery UI)
@@ -119,6 +119,17 @@ $(document).ready(function() {
     // parse the GET parameters and set them, also generates preview (via event)
     parseGET();
 });
+
+function formatChange(format) {
+    if(format.endsWith("Trios")) {
+        $('#deckmain2').prop('hidden', false);
+        $('#deckmain3').prop('hidden', false);
+    } else {
+        $('#deckmain2').prop('hidden', true);
+        $('#deckmain3').prop('hidden', true);
+    }
+    pdfChangeWait();
+}
 
 function cardToMain() {
     if($("#cardentry").val() == "") {
@@ -256,7 +267,7 @@ function detectPDFPreviewSupport() {
 function addLogoToDL(dl) {
     for(var i = 1; i <= dl.internal.getNumberOfPages(); i++) {
         dl.setPage(i);
-        if($("select[name=eventformat]").val() == "Highlander") {
+        if($("select[name=eventformat]").val().startsWith("Highlander")) {
             dl.addImage(logo, 'JPEG', 33, 12, 45, 45);
         } else {
             dl.addImage(logo, 'JPEG', 30, 30, 70, 70);
@@ -597,134 +608,140 @@ function addMetaDataToDL(dl) {
 }
 
 function addHLCardsToDL(dl, val) {
-    // Strip the empty lines sorting gives us, since we can fit exactly 60 on one page
-    // Maybe we can get a little bit smarter and leave as many in as possible in case basic lands free up some individual lines
-    maindeck = jQuery.grep(maindeck, function(value) {
-        return value[0] != "";
-    });
+    for (var deckIndex = 0; deckIndex < maindecks.length; deckIndex++) {
+        // Strip the empty lines sorting gives us, since we can fit exactly 60 on one page
+        // Maybe we can get a little bit smarter and leave as many in as possible in case basic lands free up some individual lines
+        var maindeck = jQuery.grep(maindecks[deckIndex], function(value) {
+            return value[0] != "";
+        });
 
-    // Add the deck to the decklist
-    var x = 47;
-    var y = 78;
-    var numPages = 0;
-    dl.setFontStyle('normal');
-    if (maindeck != []) {
-        var cardIndex = 0;
-        var loopEnd = maindeck.length;
-        var truncateDFCs = false;
+        // If this is not the first deck and it has cards, add a new page
+        if (deckIndex > 0 && maindeck.length > 0) {
+            dl.addPage();
+            addHLTemplateToDL(dl);
+            addHLMetadataToDL(dl);
+        }
 
-        // Pre loop for DFCs
-        var numDFCs = 0;
-        for (i = 0; i < loopEnd; i++) {
-            if(maindeck[i][1] != 0) {
-                cardname = maindeck[i][0];
-                var both_halves = cardname.split(' // ');
-                    if (both_halves.length == 2){
+        // Add the deck to the decklist
+        var x = 47;
+        var y = 78;
+        var numPages = 0;
+        dl.setFontStyle('normal');
+        if (maindeck != []) {
+            var cardIndex = 0;
+            var loopEnd = maindeck.length;
+            var truncateDFCs = false;
+
+            // Pre loop for DFCs
+            var numDFCs = 0;
+            for (let i = 0; i < loopEnd; i++) {
+                if(maindeck[i][1] != 0) {
+                    cardname = maindeck[i][0];
+                    var both_halves = cardname.split(' // ');
+                    if (both_halves.length == 2) {
                         numDFCs++;
                     }
-            }
-        }
-        if (maindeck.length + numDFCs > 60) { 
-            truncateDFCs = true;
-        }
-
-
-        for (i = 0; cardIndex < maindeck.length; i++) {
-            if(i > 0 && ((i % 60 == 0) && maindeck.length > (60 * (numPages+1))))
-            {
-                // Add the maindeck count and sideboard count to the front page too
-                dl.setFontSize(20);
-                if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
-                if (sideboard_count != 0) {
-                    if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
-                    else { dl.text(String(sideboard_count), 709, 480); }
                 }
-                dl.setFontSize(7);
-                dl.text(val, 540, 435);
-                dl.setFontStyle('normal');
-
-                numPages++;
-                dl.addPage();
-                addHLTemplateToDL(dl);
-                addHLMetadataToDL(dl);
-                x = 47;
-                y = 78;
             }
-            if (i == (21 + (numPages * 60))) { x = 300; y = 78; } // jump to the next column
-            else if (i == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next column
+            if (maindeck.length + numDFCs > 60) {
+                truncateDFCs = true;
+            }
 
-            // Ignore zero quantity entries (blank)
-            if(maindeck[cardIndex][1] != 0) {
-                dl.text(maindeck[cardIndex][1], x, y);
-                cardname = maindeck[cardIndex][0];
+            for (let row = 0; cardIndex < maindeck.length; row++) {
+                if (row > 0 && ((row % 60 == 0) && maindeck.length > (60 * (numPages+1)))) {
+                    // Add the maindeck count and sideboard count to the front page too
+                    dl.setFontSize(20);
+                    if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
+                    if (sideboard_count != 0) {
+                        if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
+                        else { dl.text(String(sideboard_count), 709, 480); }
+                    }
+                    dl.setFontSize(7);
+                    dl.text(val, 540, 435);
+                    dl.setFontStyle('normal');
+
+                    numPages++;
+                    dl.addPage();
+                    addHLTemplateToDL(dl);
+                    addHLMetadataToDL(dl);
+                    x = 47;
+                    y = 78;
+                }
+                if (row == (21 + (numPages * 60))) { x = 300; y = 78; } // jump to the next column
+                else if (row == (42 + (numPages * 60))) { x = 550; y = 78; } // jump to the next column
+
+                // Ignore zero quantity entries (blank)
+                if(maindeck[cardIndex][1] != 0) {
+                    dl.text(maindeck[cardIndex][1], x, y);
+                    cardname = maindeck[cardIndex][0];
+                    goodcards.forEach(function(element, index, array) {
+                        if(element.n == cardname) {
+                            if (typeof element.p === 'undefined') { element.p = 0; }
+                            cardname = Array(element.p+1).join("*") + " " + cardname;
+                        }
+                    });
+                    if(cardname.length >= 35) {
+                        if (truncateDFCs) {
+                            dl.text(cardname.substring(0, 30) + "...", x + 38, y)
+                        } else {
+                            var both_halves = cardname.split(' // ');
+                            if (both_halves.length == 2) {
+                                // Would spill to next column?
+                                if (((row+1) == (21 + (numPages * 60))) || ((row+1) == (42 + (numPages * 60)))) {
+                                    dl.text(cardname.substring(0, 30) + "...", x + 38, y)
+                                } else {
+                                    dl.text(both_halves[0] + ' // ', x + 38, y);
+                                    y = y + 20;
+                                    row++;
+                                    dl.text(both_halves[1], x + 42, y);
+                                }
+                                loopEnd++;
+                            }
+                        }
+                    } else {
+                        dl.text(cardname, x + 38, y);
+                    }
+
+                }
+                y = y + 20;  // move to the next row
+                cardIndex++;
+            }
+        }
+
+        // Add the sideboard to the decklist
+        x = 47;
+        y = 508;
+        if (sideboard != []) {
+            for (let i = 0; i < sideboard.length; i++) {
+                if (i == 5) { x = 300; y = 508; } // jump to the next row
+                if (i == 10) { x = 550; y = 508; } // jump to the next row
+
+                dl.text(sideboard[i][1], x, y);
+                cardtext = sideboard[i][0];
                 goodcards.forEach(function(element, index, array) {
-                    if(element.n == cardname) {
+                    if(element.n == cardtext) {
                         if (typeof element.p === 'undefined') { element.p = 0; }
-                        cardname = Array(element.p+1).join("*") + " " + cardname;
+                        cardtext = Array(element.p+1).join("*") + " " + cardtext;
                     }
                 });
-                if(cardname.length >= 35) {
-                    if (truncateDFCs) {
-                        dl.text(cardname.substring(0, 30) + "...", x + 38, y)
-                    } else {
-                        var both_halves = cardname.split(' // ');
-                        if (both_halves.length == 2){
-                            // Would spill to next column?
-                            if (((i+1) == (21 + (numPages * 60))) || ((i+1) == (42 + (numPages * 60)))) {
-                                 dl.text(cardname.substring(0, 30) + "...", x + 38, y)
-                            } else {
-                                dl.text(both_halves[0] + ' // ', x + 38, y);
-                                y = y + 20;
-                                i++;
-                                dl.text(both_halves[1], x + 42, y);
-                            }
-                            loopEnd++;
-                        }
-                    }
-                } else {
-                    dl.text(cardname, x + 38, y);
-                }
-
+                dl.text(cardtext, x + 38, y);
+                y = y + 20;  // move to the next row
             }
-            y = y + 20;  // move to the next row
-            cardIndex++;
         }
-    }
 
-    // Add the sideboard to the decklist
-    x = 47;
-    y = 508;
-    if (sideboard != []) {
-        for (i = 0; i < sideboard.length; i++) {
-            if (i == 5) { x = 300; y = 508; } // jump to the next row
-            if (i == 10) { x = 550; y = 508; } // jump to the next row
-
-            dl.text(sideboard[i][1], x, y);
-            cardtext = sideboard[i][0];
-            goodcards.forEach(function(element, index, array) {
-                if(element.n == cardtext) {
-                    if (typeof element.p === 'undefined') { element.p = 0; }
-                    cardtext = Array(element.p+1).join("*") + " " + cardtext;
-                }
-            });
-            dl.text(cardtext, x + 38, y);
-            y = y + 20;  // move to the next row
+        // Add the maindeck count and sideboard count
+        dl.setFontSize(20);
+        if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
+        if (sideboard_count != 0) {
+            if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
+            else { dl.text(String(sideboard_count), 709, 480); }
         }
-    }
 
-    // Add the maindeck count and sideboard count
-    dl.setFontSize(20);
-    if (maindeck_count != 0)  { dl.text(String(maindeck_count), 710, 460); }
-    if (sideboard_count != 0) {
-        if (sideboard_count < 10) { dl.text(String(sideboard_count), 714, 480); }
-        else { dl.text(String(sideboard_count), 709, 480); }
+        // Add validation warnings
+        dl.setFontSize(7);
+        dl.text(val, 540, 435);
+        dl.setFontStyle('normal');
     }
-
-    // Add validation warnings
-    dl.setFontSize(7);
-    dl.text(val, 540, 435);
-    dl.setFontStyle('normal');
-    
 }
 
 function addCardsToDL(dl) {
@@ -736,7 +753,7 @@ function addCardsToDL(dl) {
     if (maindeck != []) {
         var cardIndex = 0;
         var loopEnd = maindeck.length;
-        for (i = 0; i < loopEnd; i++) {
+        for (let i = 0; i < loopEnd; i++) {
             if(i > 0 && ((i % 44 == 0) && maindeck.length > (44 * (numPages+1))))
             {
                 numPages++;
@@ -775,7 +792,7 @@ function addCardsToDL(dl) {
     x = 356;
     y = 434;
     if (sideboard != []) {
-        for (i = 0; i < sideboard.length; i++) {
+        for (let i = 0; i < sideboard.length; i++) {
             dl.text(sideboard[i][1], x, y);
             dl.text(sideboard[i][0], x + 38, y);
             y = y + 18;  // move to the next row
@@ -812,7 +829,7 @@ function generateDecklistPDF(outputtype) {
     val = validateInput();
 
     // start with the blank PDF
-    if($("select[name=eventformat]").val() == "Highlander") {
+    if($("select[name=eventformat]").val().startsWith("Highlander")) {
         dl = generateHLDecklistLayout();
         addHLMetadataToDL(dl);
         addHLCardsToDL(dl, val);
@@ -842,7 +859,7 @@ function generateDecklistPDF(outputtype) {
         for (i = 0; i < maindeck.length; i++) {
             if (maindeck[i][1] != 0) {
                 data += maindeck[i][1] + ' ';
-                if($("select[name=eventformat]").val() == "Highlander") {
+                if($("select[name=eventformat]").val().startsWith("Highlander")) {
                     cardtext = maindeck[i][0];
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
@@ -866,7 +883,7 @@ function generateDecklistPDF(outputtype) {
                     data += "SB: ";
                 }
                 data += sideboard[i][1] + ' ';
-                if($("select[name=eventformat]").val() == "Highlander") {
+                if($("select[name=eventformat]").val().startsWith("Highlander")) {
                     cardtext = sideboard[i][0];
                     goodcards.forEach(function(element, index, array) {
                         if(element.n == cardtext) {
@@ -987,7 +1004,7 @@ function validateInput() {
     'Snow-Covered Forest', 'Wastes', 'Relentless Rats', 'Shadowborn Apostle'];
     for (i = 0; i < mainPlusSide.length; i++) {
         var maxNumber = 4;
-        if($("select[name=eventformat]").val() == "Highlander") { maxNumber = 1; }
+        if($("select[name=eventformat]").val().startsWith("Highlander")) { maxNumber = 1; }
         else if($("select[name=eventformat]").val() == "Vintage") {
             goodcards.forEach(function(element, index, array) {
                 if((element.r).indexOf('v') != -1) {
@@ -1029,7 +1046,7 @@ function validateInput() {
                 illegalCards.push(element.n);
             }
         });
-    } else if($("select[name=eventformat]").val() == "Highlander") {
+    } else if($("select[name=eventformat]").val().startsWith("Highlander")) {
         totalHLPoints = 0;
         totalRLCards = 0;
         goodcards.forEach(function(element, index, array) {
