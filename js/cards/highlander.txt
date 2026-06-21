@@ -26,10 +26,11 @@ Nadu, Winged Wisdom 2
 Ragavan, Nimble Pilferer 2
 Reanimate 2
 Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 2
+The One Ring 2
+Tinker 2
 Tolarian Academy 2
 Treasure Cruise 2
 Psychic Frog 2
-Tinker 2
 Wrenn and Six 2
 Abhorrent Oculus 1
 Ancient Tomb 1
@@ -76,7 +77,6 @@ Snapcaster Mage 1
 Strip Mine 1
 Tainted Pact 1
 Tezzeret, Cruel Captain 1
-The One Ring 1
 Timetwister 1
 True-Name Nemesis 1
 Undermountain Adventurer 1
