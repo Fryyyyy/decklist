@@ -701,13 +701,18 @@ function addHLCardsToDL(dl, val) {
 
             dl.text(sideboard[i][1], x, y);
             cardtext = sideboard[i][0];
+            
             goodcards.forEach(function(element, index, array) {
                 if(element.n == cardtext) {
                     if (typeof element.p === 'undefined') { element.p = 0; }
                     cardtext = Array(element.p+1).join("*") + " " + cardtext;
                 }
             });
-            dl.text(cardtext, x + 38, y);
+            if(cardtext.length >= 35) {
+                dl.text(cardtext.substring(0, 28) + "...", x + 38, y)
+            } else {
+                dl.text(cardtext, x + 38, y);
+            }
             y = y + 20;  // move to the next row
         }
     }
