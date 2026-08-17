@@ -1,9 +1,9 @@
 Ancestral Recall 5
 Black Lotus 5
 Mana Crypt 5
+Thassa's Oracle 5
 Time Walk 5
 Time Vault 4
-Thassa's Oracle 4
 Flash 3
 Lutri, the Spellchaser 3
 Lurrus of the Dream-Den 3
@@ -25,6 +25,7 @@ Minsc & Boo, Timeless Heroes 2
 Nadu, Winged Wisdom 2
 Ragavan, Nimble Pilferer 2
 Reanimate 2
+Strip Mine 2
 Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar 2
 The One Ring 2
 Tinker 2
@@ -46,7 +47,9 @@ Deathrite Shaman 1
 Demonic Counsel 1
 Dig Through Time 1
 Dreadhorde Arcanist 1
+Emperor of Bones 1
 Fable of the Mirror-Breaker // Reflection of Kiki-Jiki 1
+Fantasticar 1
 Force of Will 1
 Forth Eorlingas! 1
 Gamble 1
@@ -74,7 +77,6 @@ Sensei's Divining Top 1
 Spellseeker 1
 Skullclamp 1
 Snapcaster Mage 1
-Strip Mine 1
 Tainted Pact 1
 Tezzeret, Cruel Captain 1
 Timetwister 1
