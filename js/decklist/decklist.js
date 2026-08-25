@@ -664,6 +664,7 @@ function importCSV(event) {
                         }
 
                         parseDecklist();
+                        let warnings = validateInput();
 
                         if (firstDeck) {
                             if ($("select[name=eventformat]").val() == "Highlander") {
@@ -679,7 +680,7 @@ function importCSV(event) {
                         if ($("select[name=eventformat]").val() == "Highlander") {
                             addHLTemplateToDL(dl);
                             addHLMetadataToDL(dl);
-                            addHLCardsToDL(dl);
+                            addHLCardsToDL(dl, warnings);
                         } else {
                             addTemplateToDL(dl);
                             addMetaDataToDL(dl);

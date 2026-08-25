@@ -345,8 +345,8 @@ function addHLTemplateToDL(dl) {
     }
 
 
-    dl.rect(684, 444, 86, 19); // Box for main deck total
-    dl.rect(684, 464, 86, 19); // Box for side board total
+    dl.rect(683, 443, 87, 20); // Box for main deck total
+    dl.rect(683, 463, 87, 20); // Box for side board total
 
     // Shaded rectangles
     dl.setLineWidth(1);
@@ -665,24 +665,24 @@ function addHLCardsToDL(dl, val) {
                 });
                 if(cardname.length >= 35) {
                     if (truncateDFCs) {
-                        dl.text(cardname.substring(0, 30) + "...", x + 38, y)
+                        dl.text(cardname.substring(0, 30) + "...", x + 33, y)
                     } else {
                         var both_halves = cardname.split(' // ');
                         if (both_halves.length == 2){
                             // Would spill to next column?
                             if (((i+1) == (21 + (numPages * 60))) || ((i+1) == (42 + (numPages * 60)))) {
-                                 dl.text(cardname.substring(0, 30) + "...", x + 38, y)
+                                 dl.text(cardname.substring(0, 30) + "...", x + 33, y)
                             } else {
-                                dl.text(both_halves[0] + ' // ', x + 38, y);
+                                dl.text(both_halves[0] + ' // ', x + 33, y);
                                 y = y + 20;
                                 i++;
-                                dl.text(both_halves[1], x + 42, y);
+                                dl.text(both_halves[1], x + 37, y);
                             }
                             loopEnd++;
                         }
                     }
                 } else {
-                    dl.text(cardname, x + 38, y);
+                    dl.text(cardname, x + 33, y);
                 }
 
             }
