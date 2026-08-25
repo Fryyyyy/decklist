@@ -470,7 +470,112 @@ $(document).ready(function() {
     $('#import-csv-button').on('click', function(event) {
         importCSV(event);
     });
+    $('#import-decklist-lol-button').on('click', async function(event) {
+        await importDecklistLol(event);
+    });
 });
+
+async function importDecklistLol(event) {
+    let file = $('#decklist-lol-file-input').prop('files')[0];
+    if (!file) {
+        alert("Please select a file!");
+        return;
+    }
+    let playerNameRegex = /^Player: (\w+)\s?(.*)$/;
+    let deckNameRegex = /^Deck Name: (.*)$/;
+    let cardRegex = /^(\d+) (.+)$/;
+    let dl;
+
+    let firstDeck = true;
+    let sideboard = false;
+    let mainDeckText = "";
+    let sideBoardText = "";
+
+    $("select[name=eventformat]").val("Highlander");
+
+    // Decklist.lol exports all lists in one file, with lists separated by the line "=====".
+    // Parse the decklists by iterating through each line.
+    for await (let line of asyncLinesFromFile(file)) {
+        if (playerNameRegex.test(line)) {
+            // Player Name
+            let result = playerNameRegex.exec(line);
+            $("#firstname").val(result[1]);
+            $("#lastname").val(result[2]);
+        }
+        else if (deckNameRegex.test(line)) {
+            // Deck Name
+            $("#deckname").val(deckNameRegex.exec(line)[1]);
+        }
+        else if (cardRegex.test(line)) {
+            // Card -> Add to the appropriate board
+            if (sideboard) {
+                sideBoardText += line + "\n";
+            }
+            else {
+                mainDeckText += line + "\n";
+            }
+        }
+        else if (line === "Sideboard") {
+            // All future cards for this deck are sideboard
+            sideboard = true;
+        }
+        else if (line === "======") {
+            // End of decklist: Generate this one and reset for the next
+            $("#deckmain").val(mainDeckText);
+            $("#deckside").val(sideBoardText);
+            parseDecklist();
+            let warnings = validateInput();
+            if (firstDeck) {
+                dl = generateHLDecklistLayout();
+                firstDeck = false;
+            }
+            else {
+                dl.addPage();
+            }
+            addHLTemplateToDL(dl);
+            addHLMetadataToDL(dl);
+            addHLCardsToDL(dl, warnings);
+
+            sideboard = false;
+            mainDeckText = "";
+            sideBoardText = "";
+        }
+    }
+    if (dl) {
+        let filename = "decklists.pdf";
+        savePDF(dl, filename);
+        addLogoToDL(dl);
+        let domdl = dl.output("dataurlstring");
+        $("iframe").attr("src", domdl);
+    }
+
+}
+
+async function * asyncLinesFromFile(file) {
+    // Generator that asynchronously reads each line in a file.
+    let textStream = file.stream().pipeThrough(
+        new TextDecoderStream("utf-8", {fatal: true})
+    );
+    let regex = /\r\n?|\n/g;
+    let remainder = "";
+    let skipN = false;
+
+    for await (let text of textStream) {
+        text = remainder + text;
+
+        let li = (skipN && text.startsWith("\n")) ? 1 : 0;
+        regex.lastIndex = remainder.length || li;
+        for (let m; (m = regex.exec(text)) !== null;) {
+            yield text.slice(li, m.index);
+            li = regex.lastIndex;
+        }
+
+        remainder = text.slice(li);
+        skipN = !remainder && text.endsWith("\r");
+    }
+    yield remainder;
+}
+
 
 function importCSV(event) {
     let file = $('#csv-file-input').prop('files')[0];
