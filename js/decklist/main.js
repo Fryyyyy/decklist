@@ -345,8 +345,8 @@ function addHLTemplateToDL(dl) {
     }
 
 
-    dl.rect(684, 444, 86, 19); // Box for main deck total
-    dl.rect(684, 464, 86, 19); // Box for side board total
+    dl.rect(683, 443, 87, 20); // Box for main deck total
+    dl.rect(683, 463, 87, 20); // Box for side board total
 
     // Shaded rectangles
     dl.setLineWidth(1);
