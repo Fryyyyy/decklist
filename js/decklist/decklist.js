@@ -470,7 +470,142 @@ $(document).ready(function() {
     $('#import-csv-button').on('click', function(event) {
         importCSV(event);
     });
+    $('#import-decklist-lol-button').on('click', async function(event) {
+        await importDecklistLol(event);
+    });
 });
+
+async function importDecklistLol(event) {
+    let file = $('#decklist-lol-file-input').prop('files')[0];
+    if (!file) {
+        alert("Please select a file!");
+        return;
+    }
+    let playerNameRegex = /^Player: (\w+)\s?(.*)$/;
+    let deckNameRegex = /^Deck Name: (.*)$/;
+    let cardRegex = /^(\d+) (.+)$/;
+    let dl;
+    let isHighlander;
+    let formatSelect = $("select[name=eventformat]");
+
+    let firstDeck = true;
+    let sideboard = false;
+    let mainDeckText = "";
+    let sideBoardText = "";
+
+    // Decklist.lol exports all lists in one file, with lists separated by the line "=====".
+    // Parse the decklists by iterating through each line.
+    for await (let line of asyncLinesFromFile(file)) {
+        if (playerNameRegex.test(line)) {
+            // Player Name
+            let result = playerNameRegex.exec(line);
+            $("#firstname").val(result[1]);
+            $("#lastname").val(result[2]);
+        }
+        else if (deckNameRegex.test(line)) {
+            // Deck Name
+            $("#deckname").val(deckNameRegex.exec(line)[1]);
+        }
+        else if (cardRegex.test(line)) {
+            // Card -> Add to the appropriate board
+            if (sideboard) {
+                sideBoardText += line + "\n";
+            }
+            else {
+                mainDeckText += line + "\n";
+            }
+        }
+        else if (line === "Sideboard") {
+            // All future cards for this deck are sideboard
+            sideboard = true;
+        }
+        else if (line === "======") {
+            // End of decklist: Generate this one and reset for the next
+            $("#deckmain").val(mainDeckText);
+            $("#deckside").val(sideBoardText);
+            let warnings;
+
+            if (firstDeck) {
+                // Check whether we use the main template or the 7PH template
+                let currentFormat = formatSelect.val()
+                if (currentFormat !== "Highlander") {
+                    // If Highlander has been chosen, assume all lists are 7PH.
+                    // If Highlander hasn't been chosen, parse the first deck as 7PH.
+                    // If there are errors, assume the lists are in the format chosen.
+                    formatSelect.val("Highlander");
+                    parseDecklist();
+                    warnings = validateInput();
+                    if (warnings.includes("E=")) {
+                        // Decklist currently contains excess cards. Assume not 7PH.
+                        formatSelect.val(currentFormat);
+                    }
+                }
+                if (formatSelect.val() === "Highlander") {
+                    dl = generateHLDecklistLayout();
+                    isHighlander = true;
+                }
+                else {
+                    dl = generateDecklistLayout();
+                    isHighlander = false;
+                }
+                firstDeck = false;
+            }
+            else {
+                dl.addPage();
+            }
+            parseDecklist();
+            warnings = validateInput();
+            if (isHighlander) {
+                addHLTemplateToDL(dl);
+                addHLMetadataToDL(dl);
+                addHLCardsToDL(dl, warnings);
+            }
+            else {
+                addTemplateToDL(dl);
+                addMetaDataToDL(dl);
+                addCardsToDL(dl);
+            }
+
+            sideboard = false;
+            mainDeckText = "";
+            sideBoardText = "";
+        }
+    }
+    if (dl) {
+        let filename = "decklists.pdf";
+        savePDF(dl, filename);
+        addLogoToDL(dl);
+        let domdl = dl.output("dataurlstring");
+        $("iframe").attr("src", domdl);
+    }
+
+}
+
+async function * asyncLinesFromFile(file) {
+    // Generator that asynchronously reads each line in a file.
+    let textStream = file.stream().pipeThrough(
+        new TextDecoderStream("utf-8", {fatal: true})
+    );
+    let regex = /\r\n?|\n/g;
+    let remainder = "";
+    let skipN = false;
+
+    for await (let text of textStream) {
+        text = remainder + text;
+
+        let li = (skipN && text.startsWith("\n")) ? 1 : 0;
+        regex.lastIndex = remainder.length || li;
+        for (let m; (m = regex.exec(text)) !== null;) {
+            yield text.slice(li, m.index);
+            li = regex.lastIndex;
+        }
+
+        remainder = text.slice(li);
+        skipN = !remainder && text.endsWith("\r");
+    }
+    yield remainder;
+}
+
 
 function importCSV(event) {
     let file = $('#csv-file-input').prop('files')[0];
