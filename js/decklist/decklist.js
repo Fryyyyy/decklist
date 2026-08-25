@@ -485,13 +485,13 @@ async function importDecklistLol(event) {
     let deckNameRegex = /^Deck Name: (.*)$/;
     let cardRegex = /^(\d+) (.+)$/;
     let dl;
+    let isHighlander;
+    let formatSelect = $("select[name=eventformat]");
 
     let firstDeck = true;
     let sideboard = false;
     let mainDeckText = "";
     let sideBoardText = "";
-
-    $("select[name=eventformat]").val("Highlander");
 
     // Decklist.lol exports all lists in one file, with lists separated by the line "=====".
     // Parse the decklists by iterating through each line.
@@ -523,18 +523,48 @@ async function importDecklistLol(event) {
             // End of decklist: Generate this one and reset for the next
             $("#deckmain").val(mainDeckText);
             $("#deckside").val(sideBoardText);
-            parseDecklist();
-            let warnings = validateInput();
+            let warnings;
+
             if (firstDeck) {
-                dl = generateHLDecklistLayout();
+                // Check whether we use the main template or the 7PH template
+                let currentFormat = formatSelect.val()
+                if (currentFormat !== "Highlander") {
+                    // If Highlander has been chosen, assume all lists are 7PH.
+                    // If Highlander hasn't been chosen, parse the first deck as 7PH.
+                    // If there are errors, assume the lists are in the format chosen.
+                    formatSelect.val("Highlander");
+                    parseDecklist();
+                    warnings = validateInput();
+                    if (warnings.includes("E=")) {
+                        // Decklist currently contains excess cards. Assume not 7PH.
+                        formatSelect.val(currentFormat);
+                    }
+                }
+                if (formatSelect.val() === "Highlander") {
+                    dl = generateHLDecklistLayout();
+                    isHighlander = true;
+                }
+                else {
+                    dl = generateDecklistLayout();
+                    isHighlander = false;
+                }
                 firstDeck = false;
             }
             else {
                 dl.addPage();
             }
-            addHLTemplateToDL(dl);
-            addHLMetadataToDL(dl);
-            addHLCardsToDL(dl, warnings);
+            parseDecklist();
+            warnings = validateInput();
+            if (isHighlander) {
+                addHLTemplateToDL(dl);
+                addHLMetadataToDL(dl);
+                addHLCardsToDL(dl, warnings);
+            }
+            else {
+                addTemplateToDL(dl);
+                addMetaDataToDL(dl);
+                addCardsToDL(dl);
+            }
 
             sideboard = false;
             mainDeckText = "";
