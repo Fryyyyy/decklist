@@ -476,7 +476,7 @@ $(document).ready(function() {
 });
 
 async function importDecklistLol(event) {
-    let file = $('#decklist-lol-file-input').prop('files')[0];
+    let file = $('#decklist-file-input').prop('files')[0];
     if (!file) {
         alert("Please select a file!");
         return;
@@ -608,7 +608,7 @@ async function * asyncLinesFromFile(file) {
 
 
 function importCSV(event) {
-    let file = $('#csv-file-input').prop('files')[0];
+    let file = $('#decklist-file-input').prop('files')[0];
     if (!file) {
         alert("Please select a file!");
         return;

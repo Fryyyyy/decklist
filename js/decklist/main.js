@@ -24,7 +24,6 @@ $(document).ready(function() {
     $('#getlink').button().on("click", function() { openDeckWindow('index'); });
     $('#getplaytest').button().on("click", function() { openDeckWindow('playtest'); });
     $('#deckcheck').button().on("click", function() { openDeckWindow('deckcheck'); });
-    $('#import-csv-button').button().on("click", function() { handleCSVImport(); });
     $('#deckcheck').hide();
     $('input[type=radio]').checkboxradio({
         icon: false
