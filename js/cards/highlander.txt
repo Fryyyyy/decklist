@@ -4,6 +4,7 @@ Mana Crypt 5
 Thassa's Oracle 5
 Time Walk 5
 Time Vault 4
+The Fantasticar 3
 Flash 3
 Lutri, the Spellchaser 3
 Lurrus of the Dream-Den 3
@@ -18,6 +19,7 @@ Vampiric Tutor 3
 White Plume Adventurer 3
 Channel 2
 Demonic Tutor 2
+Force of Will 2
 Gush 2
 Imperial Seal 2
 Mana Vault 2
@@ -49,8 +51,6 @@ Dig Through Time 1
 Dreadhorde Arcanist 1
 Emperor of Bones 1
 Fable of the Mirror-Breaker // Reflection of Kiki-Jiki 1
-The Fantasticar 1
-Force of Will 1
 Forth Eorlingas! 1
 Gamble 1
 Gifts Ungiven 1
@@ -72,6 +72,7 @@ Orcish Bowmasters 1
 Phlage, Titan of Fire's Fury 1
 Planar Nexus 1
 Profane Tutor 1
+Quantum Riddler 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
 Spellseeker 1
@@ -86,3 +87,4 @@ Uro, Titan of Nature's Wrath 1
 Urza's Saga 1
 Wasteland 1
 Wishclaw Talisman 1
+Yawgmoth's Will 1
