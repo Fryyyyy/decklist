@@ -72,6 +72,7 @@ Orcish Bowmasters 1
 Phlage, Titan of Fire's Fury 1
 Planar Nexus 1
 Profane Tutor 1
+Quantum Riddler 1
 Seasoned Dungeoneer 1
 Sensei's Divining Top 1
 Spellseeker 1
@@ -81,7 +82,6 @@ Tainted Pact 1
 Tezzeret, Cruel Captain 1
 Timetwister 1
 True-Name Nemesis 1
-Quantum Riddler 1
 Undermountain Adventurer 1
 Uro, Titan of Nature's Wrath 1
 Urza's Saga 1
